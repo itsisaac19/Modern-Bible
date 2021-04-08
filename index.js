@@ -15,6 +15,12 @@ function dummy (book, chapter, verse) {
     }
 }
 
+setTimeout(function() {
+    console.log(document.getElementsByClassName('bookName'))
+    document.getElementsByClassName('bookName')[0].click()
+}, 1)
+
+
 function parse (main) {
     console.log(main)
 
