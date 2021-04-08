@@ -1,0 +1,272 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    background: rgb(247, 247, 247);
+}
+
+
+
+.outerwrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    grid-template-areas: 'reg';
+
+    column-gap: 10px;
+}
+
+.outerwrap .biblecontainer {
+    grid-area: reg;
+    position: relative;
+    margin: 50px auto auto auto;
+    padding-bottom: 120px;
+
+    height: min-content;
+    width: 67%;  
+}
+.outerwrap .biblecontainer.pushed {
+    padding-left: 120px;
+}
+
+biblepassageinfo {
+    position: relative;
+    left: -50%;
+    display: block;
+    margin-bottom: 20px;
+}
+
+biblebook {
+    display: block;
+    position: absolute;
+    left: -50%;
+    white-space: nowrap;
+    font-weight: 600;
+    font-size: 148px;
+    color: rgb(228, 228, 228);
+    z-index: -1;
+}
+biblechapterverse {
+    display: block;
+
+    position: absolute;
+    top: 125px;
+    left: 50%;
+
+    font-weight: 600;
+    font-size: 30px;
+
+    white-space: nowrap;
+    z-index: -1;
+}
+
+bibletextcontainer {
+    margin-top: 200px;
+
+    display: block;
+    color: #1e1e1e;
+
+    font-weight: 400;
+    font-size: 20px;
+    
+    line-height: 46px;
+}
+
+versenumber {
+    color: #858585;
+    font-size: 16px;
+    letter-spacing: 2px;
+}
+versenumber.narrative {
+    letter-spacing: unset;
+    
+    font-style: italic;
+    font-weight: 400;
+
+    color: rgb(175, 175, 175);
+}
+
+.outerwrap bibletextcontainer > br {
+    display: none;
+}
+.outerwrap bibletextcontainer > br:not(:nth-child(1)):not(:nth-child(2)) {
+    display: block;
+}
+
+.absoluteIcon {
+    user-select: none;
+    cursor: pointer;
+    position: fixed;
+    top: 35px;
+    left: 20px;
+    width: 140px;
+    display: grid;
+    place-items: center;
+    transition: 0.3s ease;
+    color: rgb(114, 114, 114);
+    background-color: #dbdbdb;
+    border-radius: 12px;
+}
+.absoluteIcon span{
+    margin: 8px 0;
+    color: inherit;
+}
+.absoluteIcon.sticky {
+    background-color: #c7c7c7;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.13);
+
+    top: 0;
+    left: 0;
+    width: 200px;
+    border-radius: 0px;
+}
+
+
+.absoluteIcon:hover {
+    color: #1e1e1e;
+    transform: scale(1.05);
+}
+.absoluteIcon.sticky:hover {
+    color: #1e1e1e;
+    transform: scale(1);
+}
+.absoluteIcon:active {
+    transform: scale(1);
+}
+
+.sidebar {
+    grid-area: reg;
+    position: fixed;
+
+    height: 100vh;
+    width: 200px;
+
+    left: 0;
+
+    font-size: 15px;
+    font-weight: 500;
+
+    border-right: 1px solid #e2e2e2;
+    background-color: #f1f1f1;
+    
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    transition: 0.3s ease;
+}
+.sidebar.hidden {
+    left: -120px;
+}
+.sidebar.hidden > div.sidebarinner > span.bookName {
+    margin: 10px 0 10px 135px;
+    width:min-content;
+}
+
+.absoluteIcon.hidden{
+    top: 20px;
+    left: 15px;
+    width: 40px;
+
+    background-color: rgba(255, 255, 255, 0);
+}
+.absoluteIcon.hidden.sticky {
+    background-color: #c7c7c7;
+
+    top: 0;
+    left: 0;
+    width: 80px;
+    border-radius: 0px;
+}
+
+/* SCROLLING */
+.on-scrollbar::-webkit-scrollbar {
+    width: 13px;
+    transition: 0.3s ease;
+}
+.on-scrollbar::-webkit-scrollbar-thumb {
+    height: 56px;
+    border-radius: 16px;
+    border: 4px solid transparent;
+    background-clip: content-box;
+    background-color: rgb(187, 187, 187);
+    transition: 0.3s ease;
+}
+
+.on-scrollbar::-webkit-scrollbar-track {
+    background-color: transparent;
+    transition: 0.3s ease;
+}
+
+
+/* NOT SCROLLING */
+.off-scrollbar {
+    transition: 0.3s ease;
+}
+.off-scrollbar::-webkit-scrollbar {
+    background-color: transparent;
+    transition: 0.3s ease;
+}
+.off-scrollbar::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    transition: 0.3s ease;
+}
+
+.sidebarinner {
+    margin: 80px 0 0 0;
+    height: min-content;
+
+    display: grid;
+
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-auto-flow: row;
+
+    transition: inherit;
+}
+
+
+.sidebar > div > span.bookName {
+    cursor: pointer;
+    margin: 10px 30px 10px 20px;
+    border-radius: 12px;
+    padding: 10px;
+    color: rgb(180, 180, 180);
+    white-space: nowrap;
+    transition: 0.3s ease;
+}
+.sidebar > div > span.bookName:hover, .sidebar > div > span.bookName.active {
+    background-color: #e6e6e6;
+    color: #4e4e4e;
+}
+
+.sidebar.hidden > div > span.newTestament {
+    margin: 40px 0px 10px 145px;
+    white-space: nowrap;
+}
+.sidebar.hidden > div > span.newTestament::after {
+    content:"NT";
+}
+.sidebar > div > span.newTestament::after {
+    content:"New Testament";
+}
+
+.sidebar > div > span.newTestament {
+    margin: 40px 40px 10px 30px;
+    transition: inherit;
+}
+.sidebar.hidden > div > hr {
+    margin: 0 20px 20px 143px;
+}
+.sidebar > div > hr {
+    margin: 0 30px 20px 30px;
+    border: rgb(145, 145, 145) 1px solid;
+    transition: inherit;
+}
