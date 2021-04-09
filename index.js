@@ -1,4 +1,6 @@
 function dummy (book, chapter, verse) {
+    console.log("Fetching: ", book, chapter, verse)
+
     if (chapter && verse) {
         fetch('https://bible-api.com/'+ book +'+'+ chapter + ':' + verse +'?verse_numbers=true')
         .then(response => response.json())
@@ -13,18 +15,18 @@ function dummy (book, chapter, verse) {
             parse(data)
         })
     }
+
+    hideMainContent()
 }
 
 setTimeout(function() {
-    console.log(document.getElementsByClassName('bookName'))
     document.getElementsByClassName('bookName')[0].click()
 }, 1)
 
 
 function parse (main) {
-    console.log(main)
-
-
+    showMainContent()
+    console.log("Response: ", main)
 
     var chapter;
     var fullChapter = false;
@@ -71,8 +73,14 @@ function parse (main) {
 
     // DOM Insert: if full chapter get last verse
     setTimeout(function() {
+    window.scroll({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+    });
+
     var lastVerseNumber = document.querySelector('bibletextcontainer versenumber:last-of-type').innerHTML
-    lastVerseNumber = lastVerseNumber.replaceAll(/(\()/g, '').replaceAll(/(\))/g, '');
+    lastVerseNumber = lastVerseNumber.replaceAll(/(\()/g, '').replaceAll(/(\))/g, '');     
     if (fullChapter == true) topChapterVerse.innerHTML = chapter + ':' + verse + '-' + lastVerseNumber
     }, 10)
     // DOM Insert: text content
@@ -80,8 +88,7 @@ function parse (main) {
     body.innerHTML = helper_parseVerseNumbers(bodyText)
     helper_parseNarratives(bodyText)
 
-
-   
+    ChapterNavigation(chapter)
 }
 
 
@@ -101,9 +108,9 @@ function helper_parseNarratives(str) {
             var reg = /\(([^)]+)\)/g;
             vers.innerHTML = reg.exec(vers.innerHTML)[1]
 
-            var endsWithPunc = !!vers.innerHTML.match(/[.,:!?]$/)
+            var endsWithPunc = !!vers.innerHTML.match(/[.,:!?;]$/)
             if (endsWithPunc == true) {
-                console.log(endsWithPunc)
+                //console.log(endsWithPunc)
             } else {
                 vers.innerHTML = vers.innerHTML + ':'
             }
@@ -116,7 +123,7 @@ function helper_parseNarratives(str) {
 function helper_checkChapterLength (book) {
     if (!(books.includes(book))) return;
 
-    return console.log(booksAndInfo[book][0])
+    return
 }
 helper_checkChapterLength('Genesis')
 
@@ -172,8 +179,6 @@ function helper_formatCollapsedSideBarHTML (revert) {
             var abrv = helper_parseIntoAbbreviations(el.innerHTML)
             el.classList.add(el.innerHTML.replaceAll(/\s/g, '&'))
             el.innerHTML = abrv
-
-            console.log(bookNames.length)
         })
     } else {
         Array.prototype.forEach.call(bookNames, function(el) {
@@ -190,11 +195,33 @@ function helper_formatCollapsedSideBarHTML (revert) {
 
 // DOM Level
 
+function hideMainContent() {
+    var wrap = document.querySelector('.biblecontainer')
+    
+    wrap.style.transition = '0.3s ease'
+    wrap.style.opacity = '0'
+}
+function showMainContent() {
+    var wrap = document.querySelector('.biblecontainer')
+
+    wrap.style.opacity = '1'
+
+    setTimeout(function() {wrap.style.transition = null}, 300)
+}
+
 Array.prototype.forEach.call(document.querySelectorAll('.bookName'), function(el) {
     el.onclick = function() {
         if (this.classList[1]) {
             var book = this.classList[1].replaceAll("&", "")
-            dummy(book, 1, '')
+
+            if (this.classList[2] && this.classList[2] != "active") {
+                dummy(book, this.classList[2].replace("CHAP", ""))
+                this.classList.remove(this.classList[2])
+            } else {
+                dummy(book, 1, '')
+            }
+
+
             if (document.querySelector('.sidebar > div > span.bookName.active')) {
                 document.querySelector('.sidebar > div > span.bookName.active').classList.remove('active')
             }
@@ -202,6 +229,7 @@ Array.prototype.forEach.call(document.querySelectorAll('.bookName'), function(el
         } else {
             var book = this.innerHTML.replaceAll("&", "")
             dummy(book, 1, '')
+
             if (document.querySelector('.sidebar > div > span.bookName.active')) {
                 document.querySelector('.sidebar > div > span.bookName.active').classList.remove('active')
             }
@@ -285,3 +313,157 @@ function passiveScrollBar (elm, reverse) {
         }, 1000)    
     }
 }
+
+
+// SEARCH 
+
+function addSearchListener() {
+    document.querySelector('.searchBox > .material-icons.ready').onclick = initSearch
+}
+addSearchListener()
+
+function closeSearch() {
+    var box = this.parentElement;
+    var querysBox = box.children[0];
+
+    this.classList.remove("active")
+    this.classList.add("ready")
+
+    querysBox.classList.remove("shown")
+
+    document.querySelector('.searchBox > .material-icons.ready').onclick = initSearch
+
+    setTimeout(function() {
+        querysBox.style.display = null
+    }, 300)
+}
+
+function initSearch () {
+    var thisTransfer = this
+    var box = this.parentElement;
+    var querysBox = box.children[0];
+
+    querysBox.style.display = "grid"
+
+    setTimeout(function() {
+        thisTransfer.classList.remove("ready")
+        thisTransfer.classList.add("active")
+    
+        querysBox.classList.add("shown")
+        document.querySelector('.searchBox > .material-icons.active').onclick = closeSearch
+
+    }, 10)
+}
+
+
+function ChapterNavigation(currChap) {
+    var currentBook = booksAndInfo[document.querySelector('span.bookName.active').classList[1].replace("&", " ")];
+    var currBookName = document.querySelector('span.bookName.active').classList[1].replace("&", " ")
+
+    var prevWrap = document.querySelector('.prevChap')
+    var nextWrap = document.querySelector('.nextChap')
+
+    if (parseInt(currChap) - 1 > 0) {
+        prevWrap.innerHTML = '&larr; Chapter' + ' ' + (parseInt(currChap) - 1)
+        
+        prevWrap.onclick = function () {
+            dummy(currBookName, (parseInt(currChap) - 1))
+        } 
+    } else {
+        var currIndex = books.indexOf(currBookName)
+
+        if (currIndex > 0) {
+            var nameOfPrev = books[currIndex - 1]
+            prevWrap.innerHTML = '&larr; ' + nameOfPrev
+            prevWrap.onclick = function () {
+                console.log(nameOfPrev.replace(" ", "&"))
+                document.getElementsByClassName(nameOfPrev.replace(" ", "&"))[0].classList.add("CHAP" + booksAndInfo[nameOfPrev][0])
+                document.getElementsByClassName(nameOfPrev.replace(" ", "&"))[0].click()
+                //dummy(nameOfPrev, booksAndInfo[nameOfPrev][0])
+            } 
+        } else {
+            prevWrap.innerHTML = null
+        }
+    }
+
+    if (parseInt(currChap) + 1 <= currentBook[0]) {
+        console.log(currentBook)
+        nextWrap.innerHTML = 'Chapter' + ' ' + (parseInt(currChap) + 1) + ' &rarr;'
+        nextWrap.onclick = function () {
+            dummy(currBookName, (parseInt(currChap) + 1))
+        } 
+    } else {
+        var currIndex = books.indexOf(currBookName)
+
+        if (currIndex < 27) {
+            var nameOfNext = books[currIndex + 1]
+            nextWrap.innerHTML = nameOfNext + ' &rarr;' 
+            nextWrap.onclick = function () {
+                console.log(nameOfNext.replace(" ", "&"))
+                document.getElementsByClassName(nameOfNext.replace(" ", "&"))[0].click()
+                //dummy(nameOfNext, booksAndInfo[nameOfNext][0])
+            } 
+        } else {
+            nextWrap.innerHTML = null
+        }
+    }
+}
+
+
+
+function placeDataLists() {
+    var currentBook = document.querySelector('span.bookName.active').classList[1]
+    // BOOKS
+    var booksList = document.querySelector('#booksDataList');
+    booksList.innerHTML = "";
+
+    books.forEach(function(book) {
+        var optionEl = document.createElement('option');
+        optionEl.innerHTML = book;
+
+        booksList.appendChild(optionEl)
+    })
+
+    // CHAPTERS
+    var chaptersList = document.querySelector('#chapterDataList');
+    chaptersList.innerHTML = "";
+
+    for(i = 0; i < booksAndInfo[currentBook][0]; i++) {
+        var optionEl = document.createElement('option');
+        optionEl.innerHTML = (i+1);
+
+        chaptersList.appendChild(optionEl)
+    }
+}
+
+setTimeout(placeDataLists, 500)
+
+
+document.querySelector('.gobutton').onclick = function () {
+    var book = document.querySelector('.searchqueryBook').value;
+    var chap = document.querySelector('.searchqueryChapter').value;
+    var verse = document.querySelector('.searchqueryVerse').value;
+
+    if (!(book) || (!chap)){
+        if (!(book)) document.querySelector('.searchqueryBook').style.boxShadow = '0 0 0 2px #d49b9b'
+        if (!(chap)) document.querySelector('.searchqueryChapter').style.boxShadow = '0 0 0 2px #d49b9b'
+        return;
+    }
+
+    dummy(book, chap, verse)
+}
+
+document.querySelector('.searchqueryBook').addEventListener('input', function() {
+    this.style.boxShadow = null
+})
+document.querySelector('.searchqueryChapter').addEventListener('input', function() {
+    this.style.boxShadow = null
+})
+document.querySelector('.searchqueryVerse').addEventListener('keypress', function(e) {
+    this.style.boxShadow = null
+
+    if (e.key === 'Enter') {
+        this.blur();
+        document.querySelector('.gobutton').click();
+    }
+})

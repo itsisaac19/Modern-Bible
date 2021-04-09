@@ -4,6 +4,8 @@ body {
     overflow-y: scroll;
 
     background: rgb(247, 247, 247);
+
+    scroll-behavior: smooth;
 }
 
 
@@ -35,6 +37,111 @@ body {
 }
 .outerwrap .biblecontainer.pushed {
     padding-left: 120px;
+}
+
+.searchBox {
+    z-index: 100;
+    user-select:none;
+    position: fixed;
+    top: 30px;
+    right: 30px;
+}
+.searchBox > span.material-icons {
+    position: absolute;
+    right: 0;
+
+    user-select: inherit;
+    cursor: pointer;
+
+    border-radius: 12px;
+    background-color: #c7c7c7;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.034);
+
+    padding: 12px;
+    font-size: 25px;
+
+    transition: 0.3s ease;
+
+    color: rgb(66, 66, 66);
+}
+.searchBox > span.material-icons.active {
+    color: white;
+}
+.searchBox > span.material-icons:active {
+    transform: scale(0.9);
+}
+.searchBox > span.material-icons:hover {
+    background: #cecece;
+}
+
+.searchqueryswrap {
+    display: none;
+    position: absolute;
+    opacity: 0;
+
+    right: 0px;
+
+    height: 50px;
+    width: min-content;
+
+    padding-left: 5px;
+
+    border-radius: 12px;
+    background-color: #e4e4e4;
+
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.034);
+
+    transition: 0.3s ease;
+
+    grid-template-columns: auto;
+    grid-template-rows: 1fr;
+
+    grid-auto-flow: column;
+}
+
+.searchqueryswrap.shown {
+    width: min-content;
+    opacity: 1;
+}
+
+input::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+.searchqueryswrap > input:focus{
+    outline: none;
+    box-shadow: 0 0 0 2px rgb(255, 255, 255);
+}
+.searchqueryswrap > input{
+    margin: 8px 4px;
+    border-radius: 10px;
+    border: none;
+    background-color: #d0d0d0;
+    text-indent: 10px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+#searchqueryVerse{
+    margin-right: 0px;
+}
+.searchqueryChapter, .searchqueryVerse {
+    width: 100px;
+}
+.searchqueryswrap > div.gobutton {
+    cursor: pointer;
+    margin: 8px 60px 8px 10px;
+    padding: 0 10px;
+    width: min-content;
+    border-radius: 9px;
+    background-color: rgb(138, 138, 138);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.014);
+    color: rgb(255 255 255);
+    font-size: 15px;
+    display: grid;
+    place-items: center;
+    transition: 0.3s ease;
+}
+.searchqueryswrap > div.gobutton:active {
+    transform: scale(0.9);
 }
 
 biblepassageinfo {
@@ -94,6 +201,48 @@ versenumber.narrative {
     color: rgb(175, 175, 175);
 }
 
+.bookNav {
+    margin-top: 10px;
+    height: min-content;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: min-content 1fr;
+    grid-auto-flow: column;
+    /* column-gap: 20px; */
+}
+.bookNav > hr {
+    grid-area: 1/1/1/4;
+    width: 100%;
+    margin: 20px 0 40px 0;
+
+    border: 1px solid rgb(219, 219, 219);
+}
+.bookNav > div {
+    cursor: pointer;
+    padding: 10px 15px;
+    height: 50px;
+    font-weight: 500;
+    display: grid;
+    white-space: nowrap;
+    width: min-content;
+}
+.prevChap {
+    grid-area: 2/1/2/1;
+    color: #7a7a7a;
+    border-radius: 16px 0 0 16px;
+    place-items: center left;
+}
+.nextChap {
+    grid-area: 2/2/2/4;
+    margin-left: auto;
+    margin-right: 0;
+    color: #3d3d3d;
+    border-radius: 0 16px 16px 0;
+    place-items: center right;
+}
+
+
 .outerwrap bibletextcontainer > br {
     display: none;
 }
@@ -132,14 +281,14 @@ versenumber.narrative {
 
 .absoluteIcon:hover {
     color: #1e1e1e;
-    transform: scale(1.05);
+    transform: scale(1);
 }
 .absoluteIcon.sticky:hover {
     color: #1e1e1e;
     transform: scale(1);
 }
 .absoluteIcon:active {
-    transform: scale(1);
+    transform: scale(0.9);
 }
 
 .sidebar {

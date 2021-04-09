@@ -14,6 +14,27 @@
 </head>
 <body>
     <div class="outerwrap">
+        <div class="searchBox">
+
+            <div class="searchqueryswrap">
+                <input placeholder="Book" class="searchqueryBook" list="booksDataList"></input>
+                <datalist id="booksDataList">
+
+                </datalist>
+
+                <input placeholder="Chapter" class="searchqueryChapter" list="chapterDataList"></input>
+                <datalist id="chapterDataList">
+                </datalist>
+
+                <input placeholder="Verse/range" id="searchqueryVerse"  class="searchqueryVerse" list="verseDataList"></input>
+                <datalist id="verseDataList">
+                </datalist>
+
+                <div class="gobutton">GO</div>
+            </div>
+            <span class="material-icons ready">book</span>
+        </div>
+
         <div class="biblecontainer">
             <biblepassageinfo>
                 <biblebook>
@@ -24,6 +45,11 @@
             <bibletextcontainer>
 
             </bibletextcontainer>
+            <div class="bookNav">
+                <hr>
+                <div class="prevChap">Chapter</div>
+                <div class="nextChap">Chapter</div>
+            </div>
         </div>
         <div class="sidebar hidden off-scrollbar">
             <div class="absoluteIcon hidden">
