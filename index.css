@@ -457,4 +457,20 @@ versenumber.narrative {
     .searchBox {
         top: 20px;
     }
+    .searchBox > span.material-icons {
+        padding: 9.5px;
+        font-size: 21px;
+        color: #727272;
+    }
+    .searchBox > span.material-icons.active {
+        padding: 12px;
+        font-size: 25px;
+    }
+    .absoluteIcon.hidden.sticky, .absoluteIcon.hidden {
+        top: 20px;
+        left: 15px;
+        background-color:rgb(218, 218, 218);
+        width: 40px;
+        border-radius: 12px;
+    }
 }
