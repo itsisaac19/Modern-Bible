@@ -7,7 +7,12 @@ body {
 
     scroll-behavior: smooth;
 }
-
+html, body {
+    overflow-x: hidden;
+}
+ body {
+    width:100%;
+}
 
 
 .outerwrap {
