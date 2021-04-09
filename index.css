@@ -419,3 +419,42 @@ versenumber.narrative {
     border: rgb(145, 145, 145) 1px solid;
     transition: inherit;
 }
+
+@media (max-width: 900px) {
+    .outerwrap .biblecontainer {
+        margin: 0px auto auto 27px;
+        width: 85%;
+    }
+    .outerwrap .biblecontainer.pushed {
+        padding-left: 200px;
+    }
+    bibletextcontainer {
+        font-size: 16px;
+        line-height: 41px;
+    }
+    biblebook {
+        line-height: 245px;
+        font-size: 58px;
+    }
+    biblechapterverse {
+        top: 130px;
+        font-size: 25px;
+    }
+    .sidebar.hidden {
+        left: -200px;
+    }
+
+    .searchqueryswrap > input {
+        text-indent: 7px;
+        font-size: 10px;
+    }
+    .searchqueryChapter, .searchqueryVerse {
+        width: 50px;
+    }
+    .searchqueryBook {
+        width: 60px;
+    }
+    .searchBox {
+        top: 20px;
+    }
+}
