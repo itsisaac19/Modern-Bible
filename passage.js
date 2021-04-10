@@ -3,7 +3,13 @@ function dummy (book, chapter, verse) {
 
     if (chapter && verse) {
         fetch('https://bible-api.com/'+ book +'+'+ chapter + ':' + verse +'?verse_numbers=true')
-        .then(response => response.json())
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Something went wrong');
+            }
+        })
         .then(data => {
             parse(data)
         })
@@ -11,7 +17,13 @@ function dummy (book, chapter, verse) {
     if (book && chapter && !(verse)) {
         console.log('https://bible-api.com/'+ book +'+'+ chapter +'?verse_numbers=true')
         fetch('https://bible-api.com/'+ book +':'+ chapter +'?verse_numbers=true')
-        .then(response => response.json())
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Something went wrong');
+            }
+        })
         .then(data => {
             parse(data)
         })
