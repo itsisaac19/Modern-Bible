@@ -9,7 +9,8 @@ function dummy (book, chapter, verse) {
         })
     }
     if (book && chapter && !(verse)) {
-        fetch('https://bible-api.com/'+ book +'+'+ chapter +'?verse_numbers=true')
+        console.log('https://bible-api.com/'+ book +'+'+ chapter +'?verse_numbers=true')
+        fetch('https://bible-api.com/'+ book +':'+ chapter +'?verse_numbers=true')
         .then(response => response.json())
         .then(data => {
             parse(data)
@@ -19,25 +20,34 @@ function dummy (book, chapter, verse) {
     hideMainContent()
 }
 
-setTimeout(function() {
-    var queryString = window.location.search;
-    var urlParams = new URLSearchParams(queryString);
-
-    if (queryString) {
-        var book = urlParams.get('book').replace(/(\%)/g, " ")
-        var chapter = urlParams.get('chapter').replace(/(\%)/g, " ")
-        var verse = urlParams.get('verse').replace(/(\%)/g, " ")
-
-        if (book && chapter && verse) {
-            console.log(book, chapter, verse)
-            focusBook(book.replace(" ", "&"))
-            dummy(book, chapter, verse)
+function getQueryParams () {
+    setTimeout(function() {
+        var queryString = window.location.search;
+        var urlParams = new URLSearchParams(queryString);
+    
+        if (queryString) {
+            var book = urlParams.get('book').replace(/(\%)/g, " ")
+            var chapter = urlParams.get('chapter').replace(/(\%)/g, " ")
+    
+            var verse;
+    
+            if (urlParams.get('verse')) {
+                verse =  urlParams.get('verse').replace(/(\%)/g, " ")
+                console.log(book, chapter, verse)
+    
+                focusBook(book.replace(" ", "&"))
+                dummy(book, chapter, verse)
+            } else {
+                focusBook(book.replace(" ", "&"))
+                dummy(book, chapter)
+            }
             return;
         }
-    }
-
-    document.getElementsByClassName('bookName')[0].click()
-}, 1)
+    
+        document.getElementsByClassName('bookName')[0].click()
+    }, 1)
+}
+getQueryParams()
 
 function focusBook(book) {
     Array.prototype.forEach.call(document.getElementsByClassName('bookName'), function(el) {
@@ -73,8 +83,14 @@ function parse (main) {
     var verse;
     var book;
 
+    var refModified = main.reference.replace(" ", "")
+
+    console.log()
+
     books.forEach(b => {
-        if (main.reference.includes(b)) {
+        if (refModified.includes(b)) {
+            if (isNaN(refModified.charAt(0)) == false && ( isNaN(b.charAt(0)) == true )) return console.log('Book does not start with number, but book fetched does.')
+
             book = (b.toUpperCase() + '&nbsp');
             if (40 / book.length) {
                 var num = Math.ceil(40 / (b.length + 1))
@@ -82,7 +98,9 @@ function parse (main) {
             }
 
             var reg = new RegExp(b, "g");
-            var chapterVerse = main.reference.replace(reg, "")
+            var chapterVerse = refModified.replace(reg, "")
+
+            console.log(refModified, chapterVerse)
 
             if (chapterVerse.includes(":")) {
                 chapter = chapterVerse.substring(0, chapterVerse.indexOf(":"))
@@ -233,6 +251,13 @@ function helper_formatCollapsedSideBarHTML (revert) {
 
 
 // DOM Level
+// DOM Level
+// DOM Level
+// DOM Level
+// DOM Level
+// DOM Level
+
+
 
 function hideMainContent() {
     var wrap = document.querySelector('.biblecontainer')
@@ -248,34 +273,30 @@ function showMainContent() {
     setTimeout(function() {wrap.style.transition = null}, 300)
 }
 
-Array.prototype.forEach.call(document.querySelectorAll('.bookName'), function(el) {
-    el.onclick = function() {
-        if (this.classList[1]) {
-            var book = this.classList[1].replace("&", "")
-
-            if (this.classList[2] && this.classList[2] != "active") {
-                dummy(book, this.classList[2].replace("CHAP", ""))
-                this.classList.remove(this.classList[2])
-            } else {
-                dummy(book, 1, '')
+function addBookNameClicks () {
+    Array.prototype.forEach.call(document.querySelectorAll('.bookName'), function(el) {
+        el.onclick = function() {
+            if (this.classList[1]) {
+                var book = this.classList[1]
+    
+                if (this.classList[2] && this.classList[2] != "active") {
+                    dummy(book, this.classList[2].replace("CHAP", ""))
+                    this.classList.remove(this.classList[2])
+                } else {
+                    dummy(book, 1, '')
+                }
+    
+    
+                if (document.querySelector('.sidebar > div > span.bookName.active')) {
+                    document.querySelector('.sidebar > div > span.bookName.active').classList.remove('active')
+                }
+                this.classList.add('active')
             }
-
-
-            if (document.querySelector('.sidebar > div > span.bookName.active')) {
-                document.querySelector('.sidebar > div > span.bookName.active').classList.remove('active')
-            }
-            this.classList.add('active')
-        } else {
-            var book = this.innerHTML.replace("&", "")
-            dummy(book, 1, '')
-
-            if (document.querySelector('.sidebar > div > span.bookName.active')) {
-                document.querySelector('.sidebar > div > span.bookName.active').classList.remove('active')
-            }
-            this.classList.add('active')
         }
-    }
-})
+    })
+}
+addBookNameClicks()
+
 
 document.querySelector('.absoluteIcon').onclick = expandSideBar
 
@@ -309,25 +330,29 @@ function expandSideBar () {
     }
 }
 
-document.querySelector('.sidebar').onscroll = function () {
-    passiveScrollBar(this)
 
-    if (this.scrollTop && this.scrollTop > 10) {
-        if (!(document.querySelector('.absoluteIcon').classList.contains('sticky'))) {
-            document.querySelector('.absoluteIcon').classList.add('sticky')
-        }
-    } else {
-        if (document.querySelector('.absoluteIcon').classList.contains('sticky')) {
-            document.querySelector('.absoluteIcon').classList.remove('sticky') 
+function sideBarScrollListeners () {
+    document.querySelector('.sidebar').onscroll = function () {
+        passiveScrollBar(this)
+    
+        if (this.scrollTop && this.scrollTop > 10) {
+            if (!(document.querySelector('.absoluteIcon').classList.contains('sticky'))) {
+                document.querySelector('.absoluteIcon').classList.add('sticky')
+            }
+        } else {
+            if (document.querySelector('.absoluteIcon').classList.contains('sticky')) {
+                document.querySelector('.absoluteIcon').classList.remove('sticky') 
+            }
         }
     }
+    document.querySelector('.sidebar').onmouseenter = function () {
+        passiveScrollBar(this)
+    }
+    document.querySelector('.sidebar').onmouseleave = function () {
+        passiveScrollBar(this, true)
+    }
 }
-document.querySelector('.sidebar').onmouseenter = function () {
-    passiveScrollBar(this)
-}
-document.querySelector('.sidebar').onmouseleave = function () {
-    passiveScrollBar(this, true)
-}
+sideBarScrollListeners()
 
 var scrollTimer;
 function passiveScrollBar (elm, reverse) {
@@ -396,11 +421,13 @@ function initSearch () {
 
 
 function ChapterNavigation(currChap) {
-    var currentBook = booksAndInfo[document.querySelector('span.bookName.active').classList[1].replace("&", " ")];
+    var currentBook = booksAndInfo[document.querySelector('span.bookName.active').classList[1]];
     var currBookName = document.querySelector('span.bookName.active').classList[1].replace("&", " ")
 
     var prevWrap = document.querySelector('.prevChap')
     var nextWrap = document.querySelector('.nextChap')
+
+
 
     if (parseInt(currChap) - 1 > 0) {
         prevWrap.innerHTML = '&larr; Chapter' + ' ' + (parseInt(currChap) - 1)
@@ -433,8 +460,8 @@ function ChapterNavigation(currChap) {
         } 
     } else {
         var currIndex = books.indexOf(currBookName)
+        if (currIndex <= 64) {
 
-        if (currIndex < 27) {
             var nameOfNext = books[currIndex + 1]
             nextWrap.innerHTML = nameOfNext + ' &rarr;' 
             nextWrap.onclick = function () {
@@ -491,36 +518,38 @@ function chapterListBasedOffBook(book) {
 
 setTimeout(placeDataLists, 500)
 
-
-document.querySelector('.gobutton').onclick = function () {
-    var book = document.querySelector('.searchqueryBook').value;
-    var chap = document.querySelector('.searchqueryChapter').value;
-    var verse = document.querySelector('.searchqueryVerse').value;
-
-    if (!(book) || (!chap)){
-        if (!(book)) document.querySelector('.searchqueryBook').style.boxShadow = '0 0 0 2px #d49b9b'
-        if (!(chap)) document.querySelector('.searchqueryChapter').style.boxShadow = '0 0 0 2px #d49b9b'
-        return;
+function searchListeners() {
+    document.querySelector('.gobutton').onclick = function () {
+        var book = document.querySelector('.searchqueryBook').value.trim();
+        var chap = document.querySelector('.searchqueryChapter').value.trim();
+        var verse = document.querySelector('.searchqueryVerse').value.trim();
+    
+        if (!(book) || (!chap)){
+            if (!(book)) document.querySelector('.searchqueryBook').style.boxShadow = '0 0 0 2px #d49b9b'
+            if (!(chap)) document.querySelector('.searchqueryChapter').style.boxShadow = '0 0 0 2px #d49b9b'
+            return;
+        }
+    
+        dummy(book, chap, verse)
     }
-
-    dummy(book, chap, verse)
+    
+    document.querySelector('.searchqueryBook').addEventListener('input', function() {
+        this.style.boxShadow = null
+    
+        if (books.includes(this.value)) {
+            chapterListBasedOffBook(this.value)
+        }
+    })
+    document.querySelector('.searchqueryChapter').addEventListener('input', function() {
+        this.style.boxShadow = null
+    })
+    document.querySelector('.searchqueryVerse').addEventListener('keypress', function(e) {
+        this.style.boxShadow = null
+    
+        if (e.key === 'Enter') {
+            this.blur();
+            document.querySelector('.gobutton').click();
+        }
+    })
 }
-
-document.querySelector('.searchqueryBook').addEventListener('input', function() {
-    this.style.boxShadow = null
-
-    if (books.includes(this.value)) {
-        chapterListBasedOffBook(this.value)
-    }
-})
-document.querySelector('.searchqueryChapter').addEventListener('input', function() {
-    this.style.boxShadow = null
-})
-document.querySelector('.searchqueryVerse').addEventListener('keypress', function(e) {
-    this.style.boxShadow = null
-
-    if (e.key === 'Enter') {
-        this.blur();
-        document.querySelector('.gobutton').click();
-    }
-})
+searchListeners()

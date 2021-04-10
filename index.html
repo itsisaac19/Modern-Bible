@@ -278,18 +278,14 @@ function chapterListBasedOffBook(book) {
 setTimeout(placeDataLists, 500)
 
 document.querySelector('.gobutton').onclick = function () {
-    var book = document.querySelector('.searchqueryBook').value.replace(/\s/g, "%");
-    var chap = document.querySelector('.searchqueryChapter').value.replace(/\s/g, "%");
-    var verse = document.querySelector('.searchqueryVerse').value.replace(/\s/g, "%");
+    var book = document.querySelector('.searchqueryBook').value.trim().replace(/\s/g, "%");
+    var chap = document.querySelector('.searchqueryChapter').value.trim().replace(/\s/g, "");
+    var verse = document.querySelector('.searchqueryVerse').value.trim().replace(/\s/g, "");
 
     if (!(book) || (!chap)){
         if (!(book)) document.querySelector('.searchqueryBook').style.boxShadow = '0 0 0 2px #d49b9b'
         if (!(chap)) document.querySelector('.searchqueryChapter').style.boxShadow = '0 0 0 2px #d49b9b'
         return;
-    }
-
-    if (!(verse)) {
-        verse = '1'
     }
 
     dummy(book, chap, verse)
