@@ -436,6 +436,20 @@ function placeDataLists() {
     }
 }
 
+function chapterListBasedOffBook(book) {
+    var currentBook = book
+
+    var chaptersList = document.querySelector('#chapterDataList');
+    chaptersList.innerHTML = "";
+
+    for(i = 0; i < booksAndInfo[currentBook][0]; i++) {
+        var optionEl = document.createElement('option');
+        optionEl.innerHTML = (i+1);
+
+        chaptersList.appendChild(optionEl)
+    }
+}
+
 setTimeout(placeDataLists, 500)
 
 
@@ -455,6 +469,10 @@ document.querySelector('.gobutton').onclick = function () {
 
 document.querySelector('.searchqueryBook').addEventListener('input', function() {
     this.style.boxShadow = null
+
+    if (books.includes(this.value)) {
+        chapterListBasedOffBook(this.value)
+    }
 })
 document.querySelector('.searchqueryChapter').addEventListener('input', function() {
     this.style.boxShadow = null
