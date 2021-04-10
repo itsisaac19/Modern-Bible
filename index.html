@@ -60,7 +60,7 @@
 
     .mainwrapper > .dailyverse {
         position: absolute;
-        bottom: -50%;
+        bottom: -610px;
         left: 50%;
         transform: translateX(-50%);
 
@@ -91,7 +91,7 @@
 
     .searchbarwrapper {
         position: absolute;
-        top: 52%;
+        top: calc(34% + 170px);
         left: 10%;
 
         height: 70px;
@@ -172,6 +172,47 @@ input:-internal-autofill-selected {
 .searchqueryswrap > div.gobutton:active {
     transform: scale(0.9);
 }
+
+@media (max-width: 568px) {
+    .mainwrapper > .dailyverse {
+        min-width: 0;
+        max-height: 400px;
+        min-height: 250px;
+        width: calc(100% - 150px);
+        bottom: -250px;
+    }
+    .dailyverse > h1.hero {
+        font-size: 20px;
+    }
+    .searchbarwrapper {
+        top: calc(34% + 130px);
+        width: 80%;
+        height: 230px;
+        left: 20%;
+    }
+    .searchqueryswrap {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr;
+        column-gap: 10px;
+        grid-auto-flow: row;
+        left: 0px;
+    }
+    .waves {
+        position: absolute;
+        bottom: 100px;
+    }
+    .mainwrapper > .hero-wrapper {
+        top: 24%;
+        left: 20%;
+        width: 60%;
+    }
+    .hero-wrapper > h1.hero {
+        font-size: 40px;
+    }
+    .spacer {
+        bottom: -300px;
+    }
+}
 </style>
 <body>
     <div class="mainwrapper">
@@ -211,7 +252,44 @@ input:-internal-autofill-selected {
         </div>
         <div class="spacer"></div>
     </div>
-</body>
+<!-- Code injected by live-server -->
+<script type="text/javascript">
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script></body>
 <script src="data.js"></script>
 <script>
 function dummy (book, chapter, verse) {
