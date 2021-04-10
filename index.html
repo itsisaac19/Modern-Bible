@@ -3,19 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="user-scalable=no width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
-    <title>Bible-App</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-    <link href="https://api.fontshare.com/css?f[]=satoshi@300,400,500,700,900,1&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="index.css">
-
-    <link id="dark" rel="icon" href="icons8-open-book-50 (1).png" type="png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
 </head>
-<body>
-    <div class="outerwrap">
-        <div class="searchBox">
+<style>
+    body {
+        width: 100%;
+        overflow-x: hidden;
+        background-color: rgb(235, 235, 235);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    .mainwrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
 
+        width: 100%;
+        height: 100%;
+    }
+    .waves {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        color: #969696;
+    }
+    .waves > svg {
+        position: absolute;
+    }
+    .waves > svg:first-child {
+        bottom: 12vw;
+    }
+    .waves > svg:not(:first-child):not(:last-child) {
+        bottom: 6vw;
+    }
+    .waves > svg:last-child {
+        bottom: 0px;
+    }
+
+    .mainwrapper > .hero-wrapper {
+        position: absolute;
+        top: 34%;
+        left: 10%;   
+    }
+    .hero-wrapper > h1.hero {
+        font-weight: 600;
+        font-size: 50px;
+        color: rgb(0, 0, 0);
+        text-align: left;
+        margin-block-end: 0;
+    }
+    .hero-wrapper > p {
+        margin-top: 25px;
+        font-weight: 400;
+        color: rgb(43, 43, 43);
+    }
+
+    .mainwrapper > .dailyverse {
+        position: absolute;
+        bottom: -50%;
+        left: 50%;
+        transform: translateX(-50%);
+
+        min-width: 400px;
+        width: 40%; 
+
+        padding: 20px 35px 25px 35px;
+        margin-bottom: 25px;
+
+        border-radius: 12px;
+        background-color: rgb(250, 250, 250);
+        box-shadow: 0 14px 20px rgba(0, 0, 0, 0.315);
+    }
+    .dailyverse > h1.hero {
+        font-weight: 500;
+        font-size: 40px;
+        color: rgb(0, 0, 0);
+        text-align: left;
+    }
+    .dailyverse > p {
+        font-weight: 600;
+        color: rgb(68, 68, 68);
+    }
+    .dailyverse > p > span.ref {
+        font-weight: 400;
+        color: rgb(0, 0, 0);
+    }
+
+    .searchbarwrapper {
+        position: absolute;
+        top: 52%;
+        left: 10%;
+
+        height: 70px;
+        width: 50%;
+
+        border-radius: 12px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0);
+        display: grid;
+    }
+    .spacer {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+
+        left: 0;
+        bottom: -1000px;
+    }
+
+
+.searchqueryswrap {
+    position: absolute;
+    opacity: 1;
+
+    left: 0px;
+
+    height: 100%;
+
+    padding: 0 10px;
+
+    border-radius: 12px;
+    background-color: rgb(224, 224, 224);
+
+    transition: 0.3s ease;
+
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    column-gap: 10px;
+
+    grid-auto-flow: column;
+}
+
+input::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+.searchqueryswrap > input:focus{
+    outline: none;
+    box-shadow: 0 0 0 2px rgb(255, 255, 255);
+}
+input:-internal-autofill-selected {
+    background-color: unset;
+}
+.searchqueryswrap > input{
+    width: 100%;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: none;
+    background-color: #d0d0d0;
+    text-indent: 10px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+#searchqueryVerse{
+    margin-right: 0px;
+}
+.searchqueryswrap > div.gobutton {
+    cursor: pointer;
+    margin: 10px 0;
+    border-radius: 9px;
+    background-color: rgb(138, 138, 138);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.014);
+    color: rgb(255 255 255);
+    font-size: 15px;
+    display: grid;
+    place-items: center;
+    transition: 0.3s ease;
+}
+.searchqueryswrap > div.gobutton:active {
+    transform: scale(0.9);
+}
+</style>
+<body>
+    <div class="mainwrapper">
+        <div class="waves">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#7a7a7a" fill-opacity="1" d="M0,128L120,149.3C240,171,480,213,720,197.3C960,181,1200,107,1320,69.3L1440,32L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#969696" fill-opacity="1" d="M0,128L120,149.3C240,171,480,213,720,197.3C960,181,1200,107,1320,69.3L1440,32L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#afafaf" fill-opacity="1" d="M0,128L120,149.3C240,171,480,213,720,197.3C960,181,1200,107,1320,69.3L1440,32L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"></path></svg>
+        </div>
+
+        <div class="dailyverse">
+            <p>VERSE OF THE DAY •  <span class="ref">Ezekiel 36:25</span></p>
+            <h1 class="hero">I will sprinkle clean water on you, and you will be clean. I will cleanse you from all your filthiness, and from all your idols.</h1>
+        </div>
+
+        <div class="hero-wrapper">
+            <h1 class="hero">Modern Bible</h1>
+            <p class="hero-desc">Bringing you clean, fast, and intuitive bible content.</p>
+        </div>
+
+        <div class="searchbarwrapper">
             <div class="searchqueryswrap">
                 <input placeholder="Book" class="searchqueryBook" list="booksDataList"></input>
                 <datalist id="booksDataList">
@@ -32,106 +208,110 @@
 
                 <div class="gobutton">GO</div>
             </div>
-            <span class="material-icons ready">book</span>
         </div>
-
-        <div class="biblecontainer">
-            <biblepassageinfo>
-                <biblebook>
-
-                </biblebook>
-                <biblechapterverse></biblechapterverse>
-            </biblepassageinfo>
-            <bibletextcontainer>
-
-            </bibletextcontainer>
-            <div class="bookNav">
-                <hr>
-                <div class="prevChap">Chapter</div>
-                <div class="nextChap">Chapter</div>
-            </div>
-        </div>
-        <div class="sidebar hidden off-scrollbar">
-            <div class="absoluteIcon hidden">
-                <span class="material-icons">subject</span>
-            </div>
-            <div class="sidebarinner">
-                <span class="bookName Genesis">Ge</span>
-                <span class="bookName Exodus">Ex</span>
-                <span class="bookName Leviticus">Le</span>
-                <span class="bookName Numbers">Nu</span>
-                <span class="bookName Deuteronomy">De</span>
-                <span class="bookName Joshua">Jo</span>
-                <span class="bookName Judges">Ju</span>
-                <span class="bookName Ruth">Ru</span>
-                <span class="bookName 1&amp;Samuel">1 Sa</span>
-                <span class="bookName 2&amp;Samuel">2 Sa</span>
-                <span class="bookName 1&amp;Kings">1 Ki</span>
-                <span class="bookName 2&amp;Kings">2 Ki</span>
-                <span class="bookName 1&amp;Chronicles">1 Ch</span>
-                <span class="bookName 2&amp;Chronicles">2 Ch</span>
-                <span class="bookName Ezra">Ez</span>
-                <span class="bookName Nehemiah">Ne</span>
-                <span class="bookName Esther">Es</span>
-                <span class="bookName Job">Jo</span>
-                <span class="bookName Psalm">Ps</span>
-                <span class="bookName Proverbs">Pr</span>
-                <span class="bookName Ecclesiastes">Ec</span>
-                <span class="bookName Song&amp;of&amp;Solomon">So</span>
-                <span class="bookName Isaiah">Is</span>
-                <span class="bookName Jeremiah">Je</span>
-                <span class="bookName Lamentations">La</span>
-                <span class="bookName Ezekiel">Ez</span>
-                <span class="bookName Daniel">Da</span>
-                <span class="bookName Hosea">Ho</span>
-                <span class="bookName Joel">Jo</span>
-                <span class="bookName Amos">Am</span>
-                <span class="bookName Obadiah">Ob</span>
-                <span class="bookName Jonah">Jo</span>
-                <span class="bookName Micah">Mi</span>
-                <span class="bookName Nahum">Na</span>
-                <span class="bookName Habakkuk">Ha</span>
-                <span class="bookName Zephaniah">Ze</span>
-                <span class="bookName Haggai">Ha</span>
-                <span class="bookName Zechariah">Ze</span>
-                <span class="bookName Malachi">Ma</span>
-                <span class="newTestament"></span>
-                <hr>
-                <span class="bookName Matthew">Ma</span>
-                <span class="bookName Mark">Ma</span>
-                <span class="bookName Luke">Lu</span>
-                <span class="bookName John">Jo</span>
-                <span class="bookName Acts">Ac</span>
-                <span class="bookName Romans">Ro</span>
-                <span class="bookName 1&amp;Corinthians">1 Co</span>
-                <span class="bookName 2&amp;Corinthians">2 Co</span>
-                <span class="bookName Galatians">Ga</span>
-                <span class="bookName Ephesians">Ep</span>
-                <span class="bookName Philippians">Ph</span>
-                <span class="bookName Colossians">Co</span>
-                <span class="bookName 1&amp;Thessalonians">1 Th</span>
-                <span class="bookName 2&amp;Thessalonians">2 Th</span>
-                <span class="bookName 1&amp;Timothy">1 Ti</span>
-                <span class="bookName 2&amp;Timothy">2 Ti</span>
-                <span class="bookName Titus">Ti</span>
-                <span class="bookName Philemon">Ph</span>
-                <span class="bookName Hebrews">He</span>
-                <span class="bookName James">Ja</span>
-                <span class="bookName 1&amp;Peter">1 Pe</span>
-                <span class="bookName 2&amp;Peter">2 Pe</span>
-                <span class="bookName 1&amp;John">1 Jo</span>
-                <span class="bookName 2&amp;John">2 Jo</span>
-                <span class="bookName 3&amp;John">3 Jo</span>
-                <span class="bookName Jude">Ju</span>
-                <span class="bookName Revelation">Re</span>
-            </div>
-        </div>
-
-
+        <div class="spacer"></div>
     </div>
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
-
 <script src="data.js"></script>
-<script src="index.js"></script>
+<script>
+function dummy (book, chapter, verse) {
+    console.log("Fetching: ", book, chapter, verse)
+
+    if (chapter && verse) {
+        window.location.href = "passage.html?book=" + book + "&chapter=" + chapter + "&verse=" + verse
+        
+        //fetch('https://bible-api.com/'+ book +'+'+ chapter + ':' + verse +'?verse_numbers=true')
+        //.then(response => response.json())
+        //.then(data => {
+            //parse(data)
+        //})
+    }
+    if (book && chapter && !(verse)) {
+        window.location.href = "passage.html?book=" + book + "&chapter=" + chapter
+
+        //fetch('https://bible-api.com/'+ book +'+'+ chapter +'?verse_numbers=true')
+        //.then(response => response.json())
+        //.then(data => {
+            //parse(data)
+        //})
+    }
+}
+
+function placeDataLists() {
+    var currentBook = 'Genesis'
+    // BOOKS
+    var booksList = document.querySelector('#booksDataList');
+    booksList.innerHTML = "";
+
+    books.forEach(function(book) {
+        var optionEl = document.createElement('option');
+        optionEl.innerHTML = book;
+
+        booksList.appendChild(optionEl)
+    })
+
+    // CHAPTERS
+    var chaptersList = document.querySelector('#chapterDataList');
+    chaptersList.innerHTML = "";
+
+    for(i = 0; i < booksAndInfo[currentBook][0]; i++) {
+        var optionEl = document.createElement('option');
+        optionEl.innerHTML = (i+1);
+
+        chaptersList.appendChild(optionEl)
+    }
+}
+function chapterListBasedOffBook(book) {
+    var currentBook = book
+
+    var chaptersList = document.querySelector('#chapterDataList');
+    chaptersList.innerHTML = "";
+
+    for(i = 0; i < booksAndInfo[currentBook][0]; i++) {
+        var optionEl = document.createElement('option');
+        optionEl.innerHTML = (i+1);
+
+        chaptersList.appendChild(optionEl)
+    }
+}
+
+setTimeout(placeDataLists, 500)
+
+document.querySelector('.gobutton').onclick = function () {
+    var book = document.querySelector('.searchqueryBook').value;
+    var chap = document.querySelector('.searchqueryChapter').value;
+    var verse = document.querySelector('.searchqueryVerse').value;
+
+    if (!(book) || (!chap)){
+        if (!(book)) document.querySelector('.searchqueryBook').style.boxShadow = '0 0 0 2px #d49b9b'
+        if (!(chap)) document.querySelector('.searchqueryChapter').style.boxShadow = '0 0 0 2px #d49b9b'
+        return;
+    }
+
+    if (!(verse)) {
+        verse = '1'
+    }
+
+    dummy(book, chap, verse)
+}
+
+document.querySelector('.searchqueryBook').addEventListener('input', function() {
+    this.style.boxShadow = null
+
+    if (books.includes(this.value)) {
+        chapterListBasedOffBook(this.value)
+    }
+})
+document.querySelector('.searchqueryChapter').addEventListener('input', function() {
+    this.style.boxShadow = null
+})
+document.querySelector('.searchqueryVerse').addEventListener('keypress', function(e) {
+    this.style.boxShadow = null
+
+    if (e.key === 'Enter') {
+        this.blur();
+        document.querySelector('.gobutton').click();
+    }
+})
+</script>
 </html>

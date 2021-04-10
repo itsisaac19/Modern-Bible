@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="user-scalable=no width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <title>Bible-App</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+    <link href="https://api.fontshare.com/css?f[]=satoshi@300,400,500,700,900,1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="passage.css">
+
+    <link id="dark" rel="icon" href="icons8-open-book-50 (1).png" type="png">
+</head>
+<body>
+    <div class="outerwrap">
+        <div class="searchBox">
+
+            <div class="searchqueryswrap">
+                <input placeholder="Book" class="searchqueryBook" list="booksDataList"></input>
+                <datalist id="booksDataList">
+
+                </datalist>
+
+                <input placeholder="Chapter" class="searchqueryChapter" list="chapterDataList"></input>
+                <datalist id="chapterDataList">
+                </datalist>
+
+                <input placeholder="Verse/range" id="searchqueryVerse"  class="searchqueryVerse" list="verseDataList"></input>
+                <datalist id="verseDataList">
+                </datalist>
+
+                <div class="gobutton">GO</div>
+            </div>
+            <span class="material-icons ready">book</span>
+        </div>
+
+        <div class="biblecontainer">
+            <biblepassageinfo>
+                <biblebook>
+
+                </biblebook>
+                <biblechapterverse></biblechapterverse>
+            </biblepassageinfo>
+            <bibletextcontainer>
+
+            </bibletextcontainer>
+            <div class="bookNav">
+                <hr>
+                <div class="prevChap">Chapter</div>
+                <div class="nextChap">Chapter</div>
+            </div>
+        </div>
+        <div class="sidebar hidden off-scrollbar">
+            <div class="absoluteIcon hidden">
+                <span class="material-icons">subject</span>
+            </div>
+            <div class="sidebarinner">
+                <span class="bookName Genesis">Ge</span>
+                <span class="bookName Exodus">Ex</span>
+                <span class="bookName Leviticus">Le</span>
+                <span class="bookName Numbers">Nu</span>
+                <span class="bookName Deuteronomy">De</span>
+                <span class="bookName Joshua">Jo</span>
+                <span class="bookName Judges">Ju</span>
+                <span class="bookName Ruth">Ru</span>
+                <span class="bookName 1&amp;Samuel">1 Sa</span>
+                <span class="bookName 2&amp;Samuel">2 Sa</span>
+                <span class="bookName 1&amp;Kings">1 Ki</span>
+                <span class="bookName 2&amp;Kings">2 Ki</span>
+                <span class="bookName 1&amp;Chronicles">1 Ch</span>
+                <span class="bookName 2&amp;Chronicles">2 Ch</span>
+                <span class="bookName Ezra">Ez</span>
+                <span class="bookName Nehemiah">Ne</span>
+                <span class="bookName Esther">Es</span>
+                <span class="bookName Job">Jo</span>
+                <span class="bookName Psalm">Ps</span>
+                <span class="bookName Proverbs">Pr</span>
+                <span class="bookName Ecclesiastes">Ec</span>
+                <span class="bookName Song&amp;of&amp;Solomon">So</span>
+                <span class="bookName Isaiah">Is</span>
+                <span class="bookName Jeremiah">Je</span>
+                <span class="bookName Lamentations">La</span>
+                <span class="bookName Ezekiel">Ez</span>
+                <span class="bookName Daniel">Da</span>
+                <span class="bookName Hosea">Ho</span>
+                <span class="bookName Joel">Jo</span>
+                <span class="bookName Amos">Am</span>
+                <span class="bookName Obadiah">Ob</span>
+                <span class="bookName Jonah">Jo</span>
+                <span class="bookName Micah">Mi</span>
+                <span class="bookName Nahum">Na</span>
+                <span class="bookName Habakkuk">Ha</span>
+                <span class="bookName Zephaniah">Ze</span>
+                <span class="bookName Haggai">Ha</span>
+                <span class="bookName Zechariah">Ze</span>
+                <span class="bookName Malachi">Ma</span>
+                <span class="newTestament"></span>
+                <hr>
+                <span class="bookName Matthew">Ma</span>
+                <span class="bookName Mark">Ma</span>
+                <span class="bookName Luke">Lu</span>
+                <span class="bookName John">Jo</span>
+                <span class="bookName Acts">Ac</span>
+                <span class="bookName Romans">Ro</span>
+                <span class="bookName 1&amp;Corinthians">1 Co</span>
+                <span class="bookName 2&amp;Corinthians">2 Co</span>
+                <span class="bookName Galatians">Ga</span>
+                <span class="bookName Ephesians">Ep</span>
+                <span class="bookName Philippians">Ph</span>
+                <span class="bookName Colossians">Co</span>
+                <span class="bookName 1&amp;Thessalonians">1 Th</span>
+                <span class="bookName 2&amp;Thessalonians">2 Th</span>
+                <span class="bookName 1&amp;Timothy">1 Ti</span>
+                <span class="bookName 2&amp;Timothy">2 Ti</span>
+                <span class="bookName Titus">Ti</span>
+                <span class="bookName Philemon">Ph</span>
+                <span class="bookName Hebrews">He</span>
+                <span class="bookName James">Ja</span>
+                <span class="bookName 1&amp;Peter">1 Pe</span>
+                <span class="bookName 2&amp;Peter">2 Pe</span>
+                <span class="bookName 1&amp;John">1 Jo</span>
+                <span class="bookName 2&amp;John">2 Jo</span>
+                <span class="bookName 3&amp;John">3 Jo</span>
+                <span class="bookName Jude">Ju</span>
+                <span class="bookName Revelation">Re</span>
+            </div>
+        </div>
+
+
+    </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+
+<script src="data.js"></script>
+<script src="passage.js"></script>
+</html>

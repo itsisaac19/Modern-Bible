@@ -20,8 +20,34 @@ function dummy (book, chapter, verse) {
 }
 
 setTimeout(function() {
+    var queryString = window.location.search;
+    var urlParams = new URLSearchParams(queryString);
+
+    if (queryString) {
+        var book = urlParams.get('book')
+        var chapter = urlParams.get('chapter')
+        var verse = urlParams.get('verse')
+
+        if (book && chapter && verse) {
+            focusBook(book)
+            dummy(book, chapter, verse)
+            return;
+        }
+    }
+
     document.getElementsByClassName('bookName')[0].click()
 }, 1)
+
+function focusBook(book) {
+    Array.prototype.forEach.call(document.getElementsByClassName('bookName'), function(el) {
+        if (document.getElementsByClassName(book)[0].classList.contains("active")) {
+            document.getElementsByClassName(book)[0].classList.remove("active")
+        }
+    })
+    if (!(document.getElementsByClassName(book)[0].classList.contains("active"))) {
+        document.getElementsByClassName(book)[0].classList.add("active")
+    }
+}
 
 
 function parse (main) {
