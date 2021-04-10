@@ -24,12 +24,13 @@ setTimeout(function() {
     var urlParams = new URLSearchParams(queryString);
 
     if (queryString) {
-        var book = urlParams.get('book')
-        var chapter = urlParams.get('chapter')
-        var verse = urlParams.get('verse')
+        var book = urlParams.get('book').replace(/(\%)/g, " ")
+        var chapter = urlParams.get('chapter').replace(/(\%)/g, " ")
+        var verse = urlParams.get('verse').replace(/(\%)/g, " ")
 
         if (book && chapter && verse) {
-            focusBook(book)
+            console.log(book, chapter, verse)
+            focusBook(book.replace(" ", "&"))
             dummy(book, chapter, verse)
             return;
         }
@@ -47,6 +48,18 @@ function focusBook(book) {
     if (!(document.getElementsByClassName(book)[0].classList.contains("active"))) {
         document.getElementsByClassName(book)[0].classList.add("active")
     }
+
+    
+
+    var $container = $('.sidebar');
+
+    $container.scrollTop = $container.scrollHeight;
+    // If I uncomment out the above line, the code does not work any more
+    setTimeout(function() {
+        $container.scrollTop = $('.active').offset().top;
+        document.querySelector('.sidebar').scrollTop = ($container.scrollTop - 90)
+    }, 500)
+
 }
 
 
@@ -106,7 +119,7 @@ function parse (main) {
     });
 
     var lastVerseNumber = document.querySelector('bibletextcontainer versenumber:last-of-type').innerHTML
-    lastVerseNumber = lastVerseNumber.replaceAll(/(\()/g, '').replaceAll(/(\))/g, '');     
+    lastVerseNumber = lastVerseNumber.replace(/(\()/g, '').replace(/(\))/g, '');     
     if (fullChapter == true) topChapterVerse.innerHTML = chapter + ':' + verse + '-' + lastVerseNumber
     }, 10)
     // DOM Insert: text content
@@ -119,9 +132,9 @@ function parse (main) {
 
 
 function helper_parseVerseNumbers(string) {
-    var result = string.replaceAll(/(\()/g, '<br><br><versenumber>(');
-    result = result.replaceAll(/(\))/g, ')</versenumber>');
-    result = result.replaceAll(":", "")
+    var result = string.replace(/(\()/g, '<br><br><versenumber>(');
+    result = result.replace(/(\))/g, ')</versenumber>');
+    result = result.replace(":", "")
 
     return result
 }
@@ -203,13 +216,13 @@ function helper_formatCollapsedSideBarHTML (revert) {
     if (revert != true) {
         Array.prototype.forEach.call(bookNames, function(el) {
             var abrv = helper_parseIntoAbbreviations(el.innerHTML)
-            el.classList.add(el.innerHTML.replaceAll(/\s/g, '&'))
+            el.classList.add(el.innerHTML.replace(/\s/g, '&'))
             el.innerHTML = abrv
         })
     } else {
         Array.prototype.forEach.call(bookNames, function(el) {
             var abrv = helper_parseIntoAbbreviations(el.innerHTML)
-            el.innerHTML = el.classList[1].replaceAll("&", " ")
+            el.innerHTML = el.classList[1].replace("&", " ")
         })
     }
 
@@ -238,7 +251,7 @@ function showMainContent() {
 Array.prototype.forEach.call(document.querySelectorAll('.bookName'), function(el) {
     el.onclick = function() {
         if (this.classList[1]) {
-            var book = this.classList[1].replaceAll("&", "")
+            var book = this.classList[1].replace("&", "")
 
             if (this.classList[2] && this.classList[2] != "active") {
                 dummy(book, this.classList[2].replace("CHAP", ""))
@@ -253,7 +266,7 @@ Array.prototype.forEach.call(document.querySelectorAll('.bookName'), function(el
             }
             this.classList.add('active')
         } else {
-            var book = this.innerHTML.replaceAll("&", "")
+            var book = this.innerHTML.replace("&", "")
             dummy(book, 1, '')
 
             if (document.querySelector('.sidebar > div > span.bookName.active')) {
@@ -438,7 +451,7 @@ function ChapterNavigation(currChap) {
 
 
 function placeDataLists() {
-    var currentBook = document.querySelector('span.bookName.active').classList[1]
+    var currentBook = document.querySelector('span.bookName.active').classList[1].replace("&", " ")
     // BOOKS
     var booksList = document.querySelector('#booksDataList');
     booksList.innerHTML = "";
