@@ -189,7 +189,7 @@ bibletextcontainer {
     font-weight: 400;
     font-size: 20px;
     
-    line-height: 46px;
+    line-height: 56px;
 }
 
 versenumber {
@@ -246,7 +246,6 @@ versenumber.narrative {
     border-radius: 0 16px 16px 0;
     place-items: center right;
 }
-
 
 .outerwrap bibletextcontainer > br {
     display: none;
@@ -396,7 +395,11 @@ versenumber.narrative {
     white-space: nowrap;
     transition: 0.3s ease;
 }
-.sidebar > div > span.bookName:hover, .sidebar > div > span.bookName.active {
+.sidebar > div > span.bookName:hover {
+    background-color: #f4f4f4;
+    color: #4e4e4e;
+}
+ .sidebar > div > span.bookName.active {
     background-color: #e6e6e6;
     color: #4e4e4e;
 }
@@ -435,7 +438,7 @@ versenumber.narrative {
     }
     bibletextcontainer {
         font-size: 16px;
-        line-height: 41px;
+        line-height: 44px;
     }
     biblebook {
         line-height: 245px;

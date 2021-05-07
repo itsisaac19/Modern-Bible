@@ -1,7 +1,27 @@
-function dummy (book, chapter, verse) {
-    console.log("Fetching: ", book, chapter, verse)
+var GLOBAL_VAR_ARRAY = {
+    "urlParamsObject": {
+        0: {
+            "name": "book",
+            "value": ""
+        },
+        1: {
+            "name": "chapter",
+            "value": ""
+        },
+        2: {
+            "name": "verse",
+            "value": ""
+        },
+        3: {
+            "name": "version",
+            "value": "WEB"
+        }
+    }
+}
 
+function WEB_VersionRequest (book, chapter, verse) {
     if (chapter && verse) {
+        let requestStr = 'https://bible-api.com/'+ book +'+'+ chapter + ':' + verse +'?verse_numbers=true'
         fetch('https://bible-api.com/'+ book +'+'+ chapter + ':' + verse +'?verse_numbers=true')
         .then(response => {
             if (response.ok) {
@@ -11,11 +31,12 @@ function dummy (book, chapter, verse) {
             }
         })
         .then(data => {
-            parse(data)
+            parseAPIContent(data)
         })
+        console.log("Fetching: " + ` @${requestStr}`, book, chapter, verse)
     }
     if (book && chapter && !(verse)) {
-        console.log('https://bible-api.com/'+ book +'+'+ chapter +'?verse_numbers=true')
+        let requestStr = 'https://bible-api.com/'+ book +':'+ chapter +'?verse_numbers=true'
         fetch('https://bible-api.com/'+ book +':'+ chapter +'?verse_numbers=true')
         .then(response => {
             if (response.ok) {
@@ -25,144 +46,176 @@ function dummy (book, chapter, verse) {
             }
         })
         .then(data => {
-            parse(data)
+            parseAPIContent(data)
         })
+        console.log("Fetching: " + ` @${requestStr}`, book, chapter)
     }
 
-    hideMainContent()
 }
 
-function getQueryParams () {
-    setTimeout(function() {
-        var queryString = window.location.search;
-        var urlParams = new URLSearchParams(queryString);
-    
-        if (queryString) {
-            var book = urlParams.get('book').replace(/(\%)/g, " ")
-            var chapter = urlParams.get('chapter').replace(/(\%)/g, " ")
-    
-            var verse;
-    
-            if (urlParams.get('verse')) {
-                verse =  urlParams.get('verse').replace(/(\%)/g, " ")
-                console.log(book, chapter, verse)
-    
-                focusBook(book.replace(" ", "&"))
-                dummy(book, chapter, verse)
-            } else {
-                focusBook(book.replace(" ", "&"))
-                dummy(book, chapter)
+function ESV_VersionRequest (book, chapter, verse) {
+    if (chapter && verse) {
+        fetch('https://api.esv.org/v3/passage/text/?q='+ book +'+'+ chapter + ':' + verse, {
+                Authorization: 'Token {{e397a574363672586c9b6df4b5d2b819451dc909}}'
             }
-            return;
-        }
-    
+        ).then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Something went wrong');
+            }
+        }).then(data => {
+            parseAPIContent(data, "ESV")
+        })
+        console.log("Fetching: ", book, chapter, verse)
+    }
+    if (book && chapter && !(verse)) {
+        fetch('https://api.esv.org/v3/passage/text/?q='+ book +'+'+ chapter, {
+                Authorization: 'Token {{e397a574363672586c9b6df4b5d2b819451dc909}}'
+            }
+        ).then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Something went wrong');
+            }
+        })
+        .then(data => {
+            parseAPIContent(data)
+        })
+        console.log("Fetching: ", book, chapter)
+    }
+
+}
+
+
+function fetchBible (book, chapter, verse, version) {
+    hideMainContent(false)
+
+    if (!version) return WEB_VersionRequest(book, chapter, verse);
+
+    if (version == "WEB"){ WEB_VersionRequest(book, chapter, verse) }
+    if (version == "ESV"){ ESV_VersionRequest(book, chapter, verse) }
+}
+
+function getQueryParams (returnParamsOnly = false) {
+    var urlParams = new URLSearchParams(window.location.search);
+
+    if (!urlParams) {
         document.getElementsByClassName('bookName')[0].click()
-    }, 1)
+    }
+
+    let paramArray = {
+        "version": urlParams.get('version') || "WEB", 
+        "book": urlParams.get('book'), 
+        "chapter": urlParams.get('chapter'), 
+        "verse": urlParams.get('verse') || undefined
+    }
+    if (returnParamsOnly == true) { return paramArray }
+
+    console.log("Query params: ", paramArray)
+
+    focusBook(paramArray.book)
+    fetchBible(paramArray.book, paramArray.chapter, paramArray.verse, paramArray.version)
 }
 getQueryParams()
 
-function focusBook(book) {
-    Array.prototype.forEach.call(document.getElementsByClassName('bookName'), function(el) {
-        if (document.getElementsByClassName(book)[0].classList.contains("active")) {
-            document.getElementsByClassName(book)[0].classList.remove("active")
+
+function changeQueryParams () {
+    paramArray = GLOBAL_VAR_ARRAY.urlParamsObject
+
+    console.log(paramArray)
+
+    var newStateURL = "/passage.html?";
+
+    for (var attr in paramArray) {
+        if (paramArray[attr].value) {
+            if (attr > 0) {
+                console.log(newStateURL)
+                newStateURL += `&${paramArray[attr].name}=${paramArray[attr].value}`
+                continue;
+            }
+            newStateURL += `${paramArray[attr].name}=${paramArray[attr].value}`
         }
-    })
-    if (!(document.getElementsByClassName(book)[0].classList.contains("active"))) {
-        document.getElementsByClassName(book)[0].classList.add("active")
     }
-
     
-
-    var $container = $('.sidebar');
-
-    $container.scrollTop = $container.scrollHeight;
-    // If I uncomment out the above line, the code does not work any more
-    setTimeout(function() {
-        $container.scrollTop = $('.active').offset().top;
-        document.querySelector('.sidebar').scrollTop = ($container.scrollTop - 90)
-    }, 500)
-
+    console.log(newStateURL)
+    window.history.pushState('page', 'title', newStateURL);
 }
 
 
-function parse (main) {
-    showMainContent()
-    console.log("Response: ", main)
+function parseAPIContent (main, version) {
+    console.log("From " + main.translation_name, main)
 
-    var chapter;
     var fullChapter = false;
-
+    var chapter;
     var verse;
     var book;
 
     var refModified = main.reference.replace(" ", "")
 
-    console.log()
-
     books.forEach(b => {
-        if (refModified.includes(b)) {
-            if (isNaN(refModified.charAt(0)) == false && ( isNaN(b.charAt(0)) == true )) return console.log('Book does not start with number, but book fetched does.')
+        if (refModified.includes(b) == false) return;
+        if (isNaN(refModified.charAt(0)) == false && ( isNaN(b.charAt(0)) == true )) return console.log('Book does not start with number, but book fetched does.')
 
-            book = (b.toUpperCase() + '&nbsp');
-            if (40 / book.length) {
-                var num = Math.ceil(40 / (b.length + 1))
-                book = book.repeat(num)
-            }
+        book = `${b.toUpperCase()}&nbsp`.repeat(Math.ceil(40 / (b.length + 1)))
+        
+        var chapterVerse = refModified.replace(b, "")
 
-            var reg = new RegExp(b, "g");
-            var chapterVerse = refModified.replace(reg, "")
-
-            console.log(refModified, chapterVerse)
-
-            if (chapterVerse.includes(":")) {
-                chapter = chapterVerse.substring(0, chapterVerse.indexOf(":"))
-                verse = chapterVerse.substring((chapterVerse.indexOf(":") + 1), chapterVerse.length)
-            } else {
-                fullChapter = true;
-                chapter = chapterVerse
-                verse = "1"
-            }
-
-
+        if (chapterVerse.includes(":") == true) {
+            chapter = chapterVerse.substring(0, chapterVerse.indexOf(":"))
+            verse = chapterVerse.substring((chapterVerse.indexOf(":") + 1), chapterVerse.length)
+        } else {
+            fullChapter = true;
+            chapter = chapterVerse
+            verse = "1"
         }
     })
-
-
 
     var bodyText = main.text
     var translation = main.translation_name
 
-    // DOM Insert: book
+    // DOM Insert: Book
     var topBook = document.querySelector('.biblecontainer biblepassageinfo biblebook')
     topBook.innerHTML = book
 
-    // DOM Insert: chapter and verse 
+    // DOM Insert: Chapter and verse 
     var topChapterVerse = document.querySelector('.biblecontainer biblepassageinfo bibleChapterVerse')
-    topChapterVerse.innerHTML = chapter + ':' + verse
+    topChapterVerse.innerHTML = `${chapter}:${verse}`
 
-    // DOM Insert: if full chapter get last verse
-    setTimeout(function() {
-    window.scroll({
-        top: 0,
-        left: 0,
-        behavior: 'smooth'
-    });
-
-    var lastVerseNumber = document.querySelector('bibletextcontainer versenumber:last-of-type').innerHTML
-    lastVerseNumber = lastVerseNumber.replace(/(\()/g, '').replace(/(\))/g, '');     
-    if (fullChapter == true) topChapterVerse.innerHTML = chapter + ':' + verse + '-' + lastVerseNumber
-    }, 10)
-    // DOM Insert: text content
+    // DOM Insert: Text content
     var body = document.querySelector('.biblecontainer bibletextcontainer')
     body.innerHTML = helper_parseVerseNumbers(bodyText)
     helper_parseNarratives(bodyText)
 
-    ChapterNavigation(chapter)
+    ChapterNavigation(parseInt(chapter))
+    showMainContent()
+
+    function spaceOutVerses () {
+        let verseNumbers = document.querySelectorAll('bibletextcontainer versenumber')
+
+        verseNumbers.forEach(v => {
+            let rawNum = v.innerHTML.replace(/[{()}]/g, '');
+            if (parseInt(rawNum) % 5 == 0) {
+                v.innerHTML = `<br><br>${v.innerHTML}`
+            }
+        })
+    }
+    spaceOutVerses()
+
+    // DOM Timings: Scrolling back to top, and displaying last verse number for a full chapter
+    setTimeout(function() {
+        window.scroll({top: 0, behavior: 'smooth'});
+
+        var lastVerseNumber = document.querySelector('bibletextcontainer versenumber:last-of-type').innerHTML
+        lastVerseNumber = lastVerseNumber.replace(/(\()/g, '').replace(/(\))/g, '');     
+        if (fullChapter == true) topChapterVerse.innerHTML = chapter + ':' + verse + '-' + lastVerseNumber
+    }, 10)
 }
 
 
 function helper_parseVerseNumbers(string) {
-    var result = string.replace(/(\()/g, '<br><br><versenumber>(');
+    var result = string.replace(/(\()/g, '<versenumber>(');
     result = result.replace(/(\))/g, ')</versenumber>');
     result = result.replace(":", "")
 
@@ -261,274 +314,95 @@ function helper_formatCollapsedSideBarHTML (revert) {
 
 
 
-
-// DOM Level
-// DOM Level
-// DOM Level
-// DOM Level
-// DOM Level
-// DOM Level
-
-
-
-function hideMainContent() {
-    var wrap = document.querySelector('.biblecontainer')
-    
-    wrap.style.transition = '0.3s ease'
-    wrap.style.opacity = '0'
-}
-function showMainContent() {
-    var wrap = document.querySelector('.biblecontainer')
-
-    wrap.style.opacity = '1'
-
-    setTimeout(function() {wrap.style.transition = null}, 300)
-}
+// DOM Levels that need to be in under the passage.js scope
 
 function addBookNameClicks () {
-    Array.prototype.forEach.call(document.querySelectorAll('.bookName'), function(el) {
-        el.onclick = function() {
-            if (this.classList[1]) {
-                var book = this.classList[1]
-    
-                if (this.classList[2] && this.classList[2] != "active") {
-                    dummy(book, this.classList[2].replace("CHAP", ""))
-                    this.classList.remove(this.classList[2])
-                } else {
-                    dummy(book, 1, '')
-                }
-    
-    
-                if (document.querySelector('.sidebar > div > span.bookName.active')) {
-                    document.querySelector('.sidebar > div > span.bookName.active').classList.remove('active')
-                }
-                this.classList.add('active')
+    let masterAllBooks = document.querySelectorAll('.bookName')
+
+    masterAllBooks.forEach(bookEl => {
+        bookEl.onclick = function () {
+            var book = this.classList[1]
+
+            if (this.classList[2] && this.classList[2] != "active") {
+                fetchBible(book, this.classList[2].replace("CHAP", ""))
+                this.classList.remove(this.classList[2])
+            } else {
+                fetchBible(book, 1, '')
             }
+
+            let activeEl = document.querySelector('.bookName.active');
+            if (activeEl) {activeEl.classList.remove('active')}
+
+            this.classList.add('active')
         }
     })
 }
 addBookNameClicks()
 
-
-document.querySelector('.absoluteIcon').onclick = expandSideBar
-
-function expandSideBar () {
-    var textWrap = document.querySelector('.outerwrap .biblecontainer');
-
-    if (this.parentElement.classList.contains('hidden')) {
-        // EXPANDED
-        this.parentElement.classList.remove('hidden')
-
-        this.children[0].classList.remove('material-icons')
-        this.classList.remove('hidden')
-        this.children[0].innerHTML = 'close'
-
-        textWrap.style.transition = '0.3s ease'
-        textWrap.classList.add('pushed')
-
-        helper_formatCollapsedSideBarHTML(true)
-    } else {
-        // CLOSED
-        this.parentElement.classList.add('hidden')
-
-        this.children[0].classList.add('material-icons')
-        this.classList.add('hidden')
-        this.children[0].innerHTML = 'subject'
-
-        textWrap.classList.remove('pushed')
-        setTimeout(function(){textWrap.style.transition = null}, 300)
-
-        helper_formatCollapsedSideBarHTML()
-    }
+function pushCurrentParamsToGlobal () {
+    GLOBAL_VAR_ARRAY.urlParamsObject[0].value = getQueryParams(true).book
+    GLOBAL_VAR_ARRAY.urlParamsObject[1].value = getQueryParams(true).chapter
+    GLOBAL_VAR_ARRAY.urlParamsObject[2].value = getQueryParams(true).verse
+    GLOBAL_VAR_ARRAY.urlParamsObject[3].value = getQueryParams(true).version
 }
-
-
-function sideBarScrollListeners () {
-    document.querySelector('.sidebar').onscroll = function () {
-        passiveScrollBar(this)
-    
-        if (this.scrollTop && this.scrollTop > 10) {
-            if (!(document.querySelector('.absoluteIcon').classList.contains('sticky'))) {
-                document.querySelector('.absoluteIcon').classList.add('sticky')
-            }
-        } else {
-            if (document.querySelector('.absoluteIcon').classList.contains('sticky')) {
-                document.querySelector('.absoluteIcon').classList.remove('sticky') 
-            }
-        }
-    }
-    document.querySelector('.sidebar').onmouseenter = function () {
-        passiveScrollBar(this)
-    }
-    document.querySelector('.sidebar').onmouseleave = function () {
-        passiveScrollBar(this, true)
-    }
-}
-sideBarScrollListeners()
-
-var scrollTimer;
-function passiveScrollBar (elm, reverse) {
-    if (!(elm.classList.contains("on-scrollbar"))) {
-        clearTimeout(scrollTimer)
-
-        elm.classList.add("on-scrollbar");
-        elm.classList.remove("off-scrollbar");
-
-        scrollTimer = setTimeout(function(){
-            passiveScrollBar(elm, true)
-        }, 1500)    
-    } else if (reverse == true) {
-        clearTimeout(scrollTimer)
-
-        elm.classList.remove("on-scrollbar");
-        elm.classList.add("off-scrollbar");
-    } else if (elm.classList.contains("on-scrollbar")) {
-        clearTimeout(scrollTimer)
-        scrollTimer = setTimeout(function(){
-            passiveScrollBar(elm, true)
-        }, 1000)    
-    }
-}
-
-
-// SEARCH 
-
-function addSearchListener() {
-    document.querySelector('.searchBox > .material-icons.ready').onclick = initSearch
-}
-addSearchListener()
-
-function closeSearch() {
-    var box = this.parentElement;
-    var querysBox = box.children[0];
-
-    this.classList.remove("active")
-    this.classList.add("ready")
-
-    querysBox.classList.remove("shown")
-
-    document.querySelector('.searchBox > .material-icons.ready').onclick = initSearch
-
-    setTimeout(function() {
-        querysBox.style.display = null
-    }, 300)
-}
-
-function initSearch () {
-    var thisTransfer = this
-    var box = this.parentElement;
-    var querysBox = box.children[0];
-
-    querysBox.style.display = "grid"
-
-    setTimeout(function() {
-        thisTransfer.classList.remove("ready")
-        thisTransfer.classList.add("active")
-    
-        querysBox.classList.add("shown")
-        document.querySelector('.searchBox > .material-icons.active').onclick = closeSearch
-
-    }, 10)
-}
-
 
 function ChapterNavigation(currChap) {
+
+
+
+    function chapterNavHandler() {
+        pushCurrentParamsToGlobal()
+        console.log(this.dataset)
+
+        if (this.dataset.bibleBook) {
+            GLOBAL_VAR_ARRAY.urlParamsObject[0].value = this.dataset.bibleBook
+            changeQueryParams()
+
+            return;
+        }
+
+        GLOBAL_VAR_ARRAY.urlParamsObject[1].value = this.dataset.bibleChapter
+        changeQueryParams()
+        console.log(this.dataset.bibleChapter)
+    }
+
     var currentBook = booksAndInfo[document.querySelector('span.bookName.active').classList[1]];
     var currBookName = document.querySelector('span.bookName.active').classList[1].replace("&", " ")
+    var bookIndex = books.indexOf(currBookName)
 
     var prevWrap = document.querySelector('.prevChap')
     var nextWrap = document.querySelector('.nextChap')
 
+    var chapterBefore = currChap - 1
+    var chapterAfter = currChap + 1
 
+    var bookBefore = books[bookIndex - 1]
+    var bookAfter = books[bookIndex + 1]
 
-    if (parseInt(currChap) - 1 > 0) {
-        prevWrap.innerHTML = '&larr; Chapter' + ' ' + (parseInt(currChap) - 1)
-        
-        prevWrap.onclick = function () {
-            dummy(currBookName, (parseInt(currChap) - 1))
-        } 
+    // DOM Level: Chapter navigation - previous button 
+    if (chapterBefore > 0) {
+        prevWrap.dataset.bibleChapter = chapterBefore
+        prevWrap.innerHTML = `&larr; Chapter ${chapterBefore}`
+        prevWrap.onclick = chapterNavHandler
     } else {
-        var currIndex = books.indexOf(currBookName)
-
-        if (currIndex > 0) {
-            var nameOfPrev = books[currIndex - 1]
-            prevWrap.innerHTML = '&larr; ' + nameOfPrev
-            prevWrap.onclick = function () {
-                console.log(nameOfPrev.replace(" ", "&"))
-                document.getElementsByClassName(nameOfPrev.replace(" ", "&"))[0].classList.add("CHAP" + booksAndInfo[nameOfPrev][0])
-                document.getElementsByClassName(nameOfPrev.replace(" ", "&"))[0].click()
-                //dummy(nameOfPrev, booksAndInfo[nameOfPrev][0])
-            } 
-        } else {
-            prevWrap.innerHTML = null
-        }
+        prevWrap.dataset.bibleBook = bookBefore
+        prevWrap.innerHTML = `&larr; ${bookBefore}`
+        prevWrap.onclick = chapterNavHandler
     }
 
-    if (parseInt(currChap) + 1 <= currentBook[0]) {
-        console.log(currentBook)
-        nextWrap.innerHTML = 'Chapter' + ' ' + (parseInt(currChap) + 1) + ' &rarr;'
-        nextWrap.onclick = function () {
-            dummy(currBookName, (parseInt(currChap) + 1))
-        } 
+    // DOM Level: Chapter navigation - next button
+    if (chapterAfter <= currentBook[0]) {
+        nextWrap.dataset.bibleChapter = chapterAfter
+        nextWrap.innerHTML = `Chapter ${chapterAfter} &rarr;`
+        nextWrap.onclick = chapterNavHandler
     } else {
-        var currIndex = books.indexOf(currBookName)
-        if (currIndex <= 64) {
-
-            var nameOfNext = books[currIndex + 1]
-            nextWrap.innerHTML = nameOfNext + ' &rarr;' 
-            nextWrap.onclick = function () {
-                console.log(nameOfNext.replace(" ", "&"))
-                document.getElementsByClassName(nameOfNext.replace(" ", "&"))[0].click()
-                //dummy(nameOfNext, booksAndInfo[nameOfNext][0])
-            } 
-        } else {
-            nextWrap.innerHTML = null
-        }
+        if (bookIndex <= 64) {
+            nextWrap.dataset.bibleBook = bookAfter
+            nextWrap.innerHTML = `${bookAfter} &rarr;`
+            nextWrap.onclick = chapterNavHandler
+        } 
     }
 }
-
-
-
-function placeDataLists() {
-    var currentBook = document.querySelector('span.bookName.active').classList[1].replace("&", " ")
-    // BOOKS
-    var booksList = document.querySelector('#booksDataList');
-    booksList.innerHTML = "";
-
-    books.forEach(function(book) {
-        var optionEl = document.createElement('option');
-        optionEl.innerHTML = book;
-
-        booksList.appendChild(optionEl)
-    })
-
-    // CHAPTERS
-    var chaptersList = document.querySelector('#chapterDataList');
-    chaptersList.innerHTML = "";
-
-    for(i = 0; i < booksAndInfo[currentBook][0]; i++) {
-        var optionEl = document.createElement('option');
-        optionEl.innerHTML = (i+1);
-
-        chaptersList.appendChild(optionEl)
-    }
-}
-
-function chapterListBasedOffBook(book) {
-    var currentBook = book
-
-    var chaptersList = document.querySelector('#chapterDataList');
-    chaptersList.innerHTML = "";
-
-    for(i = 0; i < booksAndInfo[currentBook][0]; i++) {
-        var optionEl = document.createElement('option');
-        optionEl.innerHTML = (i+1);
-
-        chaptersList.appendChild(optionEl)
-    }
-}
-
-setTimeout(placeDataLists, 500)
 
 function searchListeners() {
     document.querySelector('.gobutton').onclick = function () {
@@ -542,7 +416,8 @@ function searchListeners() {
             return;
         }
     
-        dummy(book, chap, verse)
+        focusBook(book)
+        fetchBible(book, chap, verse)
     }
     
     document.querySelector('.searchqueryBook').addEventListener('input', function() {
