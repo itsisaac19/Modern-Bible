@@ -98,7 +98,7 @@ function fetchBible (book, chapter, verse, version) {
     if (version == "ESV"){ ESV_VersionRequest(book, chapter, verse) }
 }
 
-function getQueryParams (returnParamsOnly = false) {
+function getQueryParams (returnParamsOnly = false, firstTime = false) {
     var urlParams = new URLSearchParams(window.location.search);
 
     if (!urlParams) {
@@ -115,12 +115,12 @@ function getQueryParams (returnParamsOnly = false) {
 
     console.log("Query params: ", paramArray)
 
-    focusBook(paramArray.book)
+    focusBook(paramArray.book, firstTime)
     fetchBible(paramArray.book, paramArray.chapter, paramArray.verse, paramArray.version)
 
     pushCurrentParamsToGlobal()
 }
-getQueryParams()
+getQueryParams(false, true)
 
 
 function changeQueryParams () {
@@ -407,8 +407,8 @@ function searchListeners() {
         var verseValue = document.querySelector('.searchqueryVerse').value.trim();
     
         if (!bookValue || !chapValue){
-            if (!bookValue) document.querySelector('.searchqueryBook').style.boxShadow = '0 0 0 2px #d49b9b'
-            if (!chapValue) document.querySelector('.searchqueryChapter').style.boxShadow = '0 0 0 2px #d49b9b'
+            if (!bookValue) document.querySelector('.searchqueryBook').classList.add('unfilled')
+            if (!chapValue) document.querySelector('.searchqueryChapter').classList.add('unfilled')
             return;
         }
 
@@ -420,17 +420,17 @@ function searchListeners() {
     }
     
     document.querySelector('.searchqueryBook').addEventListener('input', function() {
-        this.style.boxShadow = null
+        this.classList.remove('unfilled')
     
         if (books.includes(this.value)) {
             chapterListBasedOffBook(this.value)
         }
     })
     document.querySelector('.searchqueryChapter').addEventListener('input', function() {
-        this.style.boxShadow = null
+        this.classList.remove('unfilled')
     })
     document.querySelector('.searchqueryVerse').addEventListener('keypress', function(e) {
-        this.style.boxShadow = null
+        this.classList.remove('unfilled')
     
         if (e.key === 'Enter') {
             this.blur();

@@ -21,7 +21,9 @@ function showMainContent(animate = true) {
     setTimeout(function() {wrap.style.transition = null}, 300)
 }
 
-function focusBook(book) {
+
+function focusBook(book, firstTime) {
+    let sidebar = document.querySelector('.sidebar')
     let activeBookEl = document.querySelector('.bookName.active')
 
     if (activeBookEl && activeBookEl.classList.contains(book)) {
@@ -34,11 +36,18 @@ function focusBook(book) {
     if (bookEl && bookEl.classList.contains('active') == false) bookEl.classList.add('active');
 
     // SCROLL
-
-    var rectOverflow = document.querySelector('.sidebar').getBoundingClientRect();
-    var rectAnchor = document.querySelector('.active').getBoundingClientRect();
-
-    document.querySelector('.sidebar').scrollTop = (rectAnchor.top - rectOverflow.top) - 100;
+    if (firstTime == true) {
+        setTimeout(() =>{
+            sidebar.classList.remove('ready')
+            document.querySelector('.bookName.active').scrollIntoView({block: "center", behavior: 'smooth'});
+            setTimeout(() =>{
+                sideBarScrollListeners()
+            }, 100)
+        }, 1000)
+        console.warn(firstTime, book)
+    } else {
+        document.querySelector('.bookName.active').scrollIntoView({block: "center", behavior: 'smooth'});
+    }
 }
 
 
@@ -96,7 +105,7 @@ function sideBarScrollListeners () {
         passiveScrollBar(this, true)
     }
 }
-sideBarScrollListeners()
+
 
 var scrollTimer;
 function passiveScrollBar (elm, reverse) {
@@ -131,6 +140,7 @@ function addSearchListener() {
 addSearchListener()
 
 function closeSearch() {
+    this.innerHTML = "search"
     var box = this.parentElement;
     var querysBox = box.children[0];
 
@@ -147,6 +157,7 @@ function closeSearch() {
 }
 
 function initSearch () {
+    this.innerHTML = "close"
     var thisTransfer = this
     var box = this.parentElement;
     var querysBox = box.children[0];

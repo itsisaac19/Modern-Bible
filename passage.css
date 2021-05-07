@@ -59,8 +59,9 @@ html, body {
     cursor: pointer;
 
     border-radius: 12px;
-    background-color: #c7c7c7;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.034);
+    background-color: #f7f7f7;
+    box-shadow:  5px 5px 10px #e3e3e3,
+    -5px -5px 10px #ffffff;
 
     padding: 12px;
     font-size: 25px;
@@ -70,13 +71,14 @@ html, body {
     color: rgb(66, 66, 66);
 }
 .searchBox > span.material-icons.active {
-    color: white;
+    color: rgb(206, 206, 206);
+    box-shadow: none;
 }
 .searchBox > span.material-icons:active {
     transform: scale(0.9);
 }
 .searchBox > span.material-icons:hover {
-    background: #cecece;
+    background-color: #eeeeee;
 }
 
 .searchqueryswrap {
@@ -86,15 +88,15 @@ html, body {
 
     right: 0px;
 
-    height: 50px;
+    height: 49px;
     width: min-content;
 
     padding-left: 5px;
 
     border-radius: 12px;
-    background-color: #e4e4e4;
-
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.034);
+    background-color: #f7f7f7;
+    box-shadow:  5px 5px 10px #e3e3e3,
+    -5px -5px 10px #ffffff;
 
     transition: 0.3s ease;
 
@@ -121,8 +123,18 @@ input::-webkit-calendar-picker-indicator {
     margin: 8px 4px;
     border-radius: 10px;
     border: none;
-    background-color: #d0d0d0;
+    background-color: #ececec;
     text-indent: 10px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.searchqueryswrap > input::placeholder {
+    color: #8f8f8f;
+    font-weight: 400;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.searchqueryswrap > input.unfilled::placeholder {
+    color: rgb(203, 59, 59);
+    font-weight: 400;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 #searchqueryVerse{
@@ -135,12 +147,17 @@ input::-webkit-calendar-picker-indicator {
     cursor: pointer;
     margin: 8px 60px 8px 10px;
     padding: 0 10px;
+
     width: min-content;
+    color: #1e1e1e;
+
     border-radius: 9px;
-    background-color: rgb(138, 138, 138);
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.014);
-    color: rgb(255 255 255);
+    background-color: #f7f7f7;
+    box-shadow:  4px 4px 8px #d2d2d2,
+    -4px -4px 8px #ffffff;
+
     font-size: 15px;
+
     display: grid;
     place-items: center;
     transition: 0.3s ease;
@@ -262,8 +279,8 @@ versenumber.narrative {
     user-select: none;
     cursor: pointer;
     position: fixed;
-    top: 35px;
-    left: 20px;
+    top: 65px;
+    left: 50px;
     width: 140px;
     display: grid;
     place-items: center;
@@ -277,13 +294,12 @@ versenumber.narrative {
     color: inherit;
 }
 .absoluteIcon.sticky {
-    background-color: #c7c7c7;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.13);
-
-    top: 0;
-    left: 0;
+    background-color: #e0e0e0;
+    box-shadow: 0px 4px 15px rgb(0 0 0 / 0%);
+    top: 40px;
+    left: 30px;
     width: 200px;
-    border-radius: 0px;
+    border-radius: 20px 20px 0 0;
 }
 
 
@@ -302,29 +318,32 @@ versenumber.narrative {
 .sidebar {
     grid-area: reg;
     position: fixed;
-
-    height: 100vh;
+    top: 4vh;
+    height: 92vh;
     width: 200px;
-
-    left: 0;
-
+    left: 30px;
     font-size: 15px;
     font-weight: 500;
-
-    border-right: 1px solid #e2e2e2;
+    border-radius: 20px;
+    box-shadow: 41px 41px 82px #dcdcdc, -41px -41px 82px #efefef;
     background-color: #f1f1f1;
-    
     overflow-y: scroll;
     overflow-x: hidden;
-
     transition: 0.3s ease;
 }
 .sidebar.hidden {
+    top: 0;
+    border-radius: 0;
     left: -120px;
+    height: 100vh;
+    box-shadow: 41px 41px 82px #dcdcdc, -41px -41px 82px #efefef;
 }
 .sidebar.hidden > div.sidebarinner > span.bookName {
     margin: 10px 0 10px 135px;
     width:min-content;
+}
+.sidebar.ready {
+    left: -200px;
 }
 
 .absoluteIcon.hidden{
@@ -335,7 +354,7 @@ versenumber.narrative {
     background-color: rgba(255, 255, 255, 0);
 }
 .absoluteIcon.hidden.sticky {
-    background-color: #c7c7c7;
+    background-color: #e0e0e0;
 
     top: 0;
     left: 0;
@@ -404,8 +423,9 @@ versenumber.narrative {
     color: #4e4e4e;
 }
  .sidebar > div > span.bookName.active {
-    background-color: #e6e6e6;
     color: #4e4e4e;
+    background-color: #f7f7f7;
+    box-shadow: 5px 5px 11px #dcdcdc, -5px -5px 11px #ffffff;
 }
 
 .sidebar.hidden > div > span.newTestament {
