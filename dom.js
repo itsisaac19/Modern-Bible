@@ -23,20 +23,22 @@ function showMainContent(animate = true) {
 
 function focusBook(book) {
     let activeBookEl = document.querySelector('.bookName.active')
+
+    if (activeBookEl && activeBookEl.classList.contains(book)) {
+        return console.log("Same book:", activeBookEl)
+    }
+
     let bookEl = document.querySelector(`.bookName[class='bookName ${book}']`)
 
     if (activeBookEl) activeBookEl.classList.remove('active');
     if (bookEl && bookEl.classList.contains('active') == false) bookEl.classList.add('active');
 
-    var $container = $('.sidebar');
+    // SCROLL
 
-    $container.scrollTop = $container.scrollHeight;
-    // If I uncomment out the above line, the code does not work any more
-    setTimeout(function() {
-        $container.scrollTop = $('.active').offset().top;
-        document.querySelector('.sidebar').scrollTop = ($container.scrollTop - 90)
-    }, 500)
+    var rectOverflow = document.querySelector('.sidebar').getBoundingClientRect();
+    var rectAnchor = document.querySelector('.active').getBoundingClientRect();
 
+    document.querySelector('.sidebar').scrollTop = (rectAnchor.top - rectOverflow.top) - 100;
 }
 
 

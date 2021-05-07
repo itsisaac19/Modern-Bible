@@ -1,18 +1,18 @@
 var GLOBAL_VAR_ARRAY = {
     "urlParamsObject": {
-        0: {
+        book: {
             "name": "book",
             "value": ""
         },
-        1: {
+        chapter: {
             "name": "chapter",
             "value": ""
         },
-        2: {
+        verse: {
             "name": "verse",
             "value": ""
         },
-        3: {
+        version: {
             "name": "version",
             "value": "WEB"
         }
@@ -117,6 +117,8 @@ function getQueryParams (returnParamsOnly = false) {
 
     focusBook(paramArray.book)
     fetchBible(paramArray.book, paramArray.chapter, paramArray.verse, paramArray.version)
+
+    pushCurrentParamsToGlobal()
 }
 getQueryParams()
 
@@ -130,8 +132,7 @@ function changeQueryParams () {
 
     for (var attr in paramArray) {
         if (paramArray[attr].value) {
-            if (attr > 0) {
-                console.log(newStateURL)
+            if (attr != "book") {
                 newStateURL += `&${paramArray[attr].name}=${paramArray[attr].value}`
                 continue;
             }
@@ -141,6 +142,7 @@ function changeQueryParams () {
     
     console.log(newStateURL)
     window.history.pushState('page', 'title', newStateURL);
+    getQueryParams()
 }
 
 
@@ -323,27 +325,21 @@ function addBookNameClicks () {
         bookEl.onclick = function () {
             var book = this.classList[1]
 
-            if (this.classList[2] && this.classList[2] != "active") {
-                fetchBible(book, this.classList[2].replace("CHAP", ""))
-                this.classList.remove(this.classList[2])
-            } else {
-                fetchBible(book, 1, '')
-            }
+            GLOBAL_VAR_ARRAY.urlParamsObject.book.value = book
+            GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value = 1
+            GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = null
 
-            let activeEl = document.querySelector('.bookName.active');
-            if (activeEl) {activeEl.classList.remove('active')}
-
-            this.classList.add('active')
+            changeQueryParams()
         }
     })
 }
 addBookNameClicks()
 
 function pushCurrentParamsToGlobal () {
-    GLOBAL_VAR_ARRAY.urlParamsObject[0].value = getQueryParams(true).book
-    GLOBAL_VAR_ARRAY.urlParamsObject[1].value = getQueryParams(true).chapter
-    GLOBAL_VAR_ARRAY.urlParamsObject[2].value = getQueryParams(true).verse
-    GLOBAL_VAR_ARRAY.urlParamsObject[3].value = getQueryParams(true).version
+    GLOBAL_VAR_ARRAY.urlParamsObject.book.value = getQueryParams(true).book
+    GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value = getQueryParams(true).chapter
+    GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = getQueryParams(true).verse
+    GLOBAL_VAR_ARRAY.urlParamsObject.version.value = getQueryParams(true).version
 }
 
 function ChapterNavigation(currChap) {
@@ -352,16 +348,16 @@ function ChapterNavigation(currChap) {
 
     function chapterNavHandler() {
         pushCurrentParamsToGlobal()
-        console.log(this.dataset)
+        GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = null
 
         if (this.dataset.bibleBook) {
-            GLOBAL_VAR_ARRAY.urlParamsObject[0].value = this.dataset.bibleBook
+            GLOBAL_VAR_ARRAY.urlParamsObject.book.value = this.dataset.bibleBook
             changeQueryParams()
 
             return;
         }
 
-        GLOBAL_VAR_ARRAY.urlParamsObject[1].value = this.dataset.bibleChapter
+        GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value = this.dataset.bibleChapter
         changeQueryParams()
         console.log(this.dataset.bibleChapter)
     }
@@ -406,18 +402,21 @@ function ChapterNavigation(currChap) {
 
 function searchListeners() {
     document.querySelector('.gobutton').onclick = function () {
-        var book = document.querySelector('.searchqueryBook').value.trim();
-        var chap = document.querySelector('.searchqueryChapter').value.trim();
-        var verse = document.querySelector('.searchqueryVerse').value.trim();
+        var bookValue = document.querySelector('.searchqueryBook').value.trim();
+        var chapValue = document.querySelector('.searchqueryChapter').value.trim();
+        var verseValue = document.querySelector('.searchqueryVerse').value.trim();
     
-        if (!(book) || (!chap)){
-            if (!(book)) document.querySelector('.searchqueryBook').style.boxShadow = '0 0 0 2px #d49b9b'
-            if (!(chap)) document.querySelector('.searchqueryChapter').style.boxShadow = '0 0 0 2px #d49b9b'
+        if (!bookValue || !chapValue){
+            if (!bookValue) document.querySelector('.searchqueryBook').style.boxShadow = '0 0 0 2px #d49b9b'
+            if (!chapValue) document.querySelector('.searchqueryChapter').style.boxShadow = '0 0 0 2px #d49b9b'
             return;
         }
-    
-        focusBook(book)
-        fetchBible(book, chap, verse)
+
+        pushCurrentParamsToGlobal()
+        GLOBAL_VAR_ARRAY.urlParamsObject.book.value = bookValue
+        GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value = chapValue
+        GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = verseValue
+        changeQueryParams()
     }
     
     document.querySelector('.searchqueryBook').addEventListener('input', function() {
