@@ -351,11 +351,14 @@ function ChapterNavigation(currChap) {
         GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = null
 
         if (this.dataset.bibleBook) {
-            GLOBAL_VAR_ARRAY.urlParamsObject.book.value = this.dataset.bibleBook
-            changeQueryParams()
-
-            return;
+            if (this.dataset.bibleBook != GLOBAL_VAR_ARRAY.urlParamsObject.book.value) {
+                GLOBAL_VAR_ARRAY.urlParamsObject.book.value = this.dataset.bibleBook
+                changeQueryParams()
+    
+                return;
+            }
         }
+
 
         GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value = this.dataset.bibleChapter
         changeQueryParams()
@@ -378,10 +381,12 @@ function ChapterNavigation(currChap) {
     // DOM Level: Chapter navigation - previous button 
     if (chapterBefore > 0) {
         prevWrap.dataset.bibleChapter = chapterBefore
+        delete prevWrap.dataset.bibleBook
         prevWrap.innerHTML = `&larr; Chapter ${chapterBefore}`
         prevWrap.onclick = chapterNavHandler
     } else {
         prevWrap.dataset.bibleBook = bookBefore
+        delete prevWrap.dataset.bibleChapter 
         prevWrap.innerHTML = `&larr; ${bookBefore}`
         prevWrap.onclick = chapterNavHandler
     }
@@ -389,15 +394,18 @@ function ChapterNavigation(currChap) {
     // DOM Level: Chapter navigation - next button
     if (chapterAfter <= currentBook[0]) {
         nextWrap.dataset.bibleChapter = chapterAfter
+        delete nextWrap.dataset.bibleBook
         nextWrap.innerHTML = `Chapter ${chapterAfter} &rarr;`
         nextWrap.onclick = chapterNavHandler
     } else {
         if (bookIndex <= 64) {
             nextWrap.dataset.bibleBook = bookAfter
+            delete nextWrap.dataset.bibleChapter
             nextWrap.innerHTML = `${bookAfter} &rarr;`
             nextWrap.onclick = chapterNavHandler
         } 
     }
+    console.log("Chapter after: " +chapterAfter, currentBook)
 }
 
 function searchListeners() {
