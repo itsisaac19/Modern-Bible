@@ -118,9 +118,9 @@ function NLTparser (HTML) {
     setTimeout(function() {
         window.scroll({top: 0, behavior: 'smooth'});
 
-        var lastVerseNumber = document.querySelector('bibletextcontainer > versenumber:last-of-type').innerHTML
-        lastVerseNumber = lastVerseNumber.replace(/(\()/g, '').replace(/(\))/g, '');     
-        if (fullChapter == true) topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + verse + '-' + lastVerseNumber
+        var lastVerseNumber = document.querySelectorAll('bibletextcontainer versenumber')[document.querySelectorAll('bibletextcontainer versenumber').length - 1].innerHTML
+        lastVerseNumber = lastVerseNumber.replace(/(\()/g, '').replace(/(\))/g, '').replaceAll("<br>", "");    
+        if (fullChapter == true) topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + verse + '-' + lastVerseNumber.trim()
     }, 10)
 }
 

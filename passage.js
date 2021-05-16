@@ -157,6 +157,8 @@ function getQueryParams (returnParamsOnly = false, firstTime = false) {
         return;
     } 
 
+    document.querySelector('.selectTranslations').value = paramArray.version
+
     console.log("QUERY PARAMS: ", paramArray)
     clearMessage()
 
@@ -518,6 +520,11 @@ function searchListeners() {
         if (e.key === 'Enter') {
             this.blur();
             document.querySelector('.gobutton').click();
+
+
+            if (!(this.value) || !(document.querySelector('.searchqueryChapter').value)) {
+                return;
+            } 
             document.querySelector('.searchBox > .material-icons.active').click()
         }
     })
@@ -526,6 +533,10 @@ function searchListeners() {
         if (e.key === 'Enter') {
             this.blur();
             document.querySelector('.gobutton').click();
+
+            if (!(this.value) || !(document.querySelector('.searchqueryBook').value)) {
+                return;
+            } 
             document.querySelector('.searchBox > .material-icons.active').click()
         }
     })
