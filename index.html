@@ -315,8 +315,15 @@ class APIString {
         this.txt = txt;
     }
     parseForAPI() {
-        let str = this.txt.trim()
-        return str.charAt(0).toUpperCase() + str.substr(1).toLowerCase()
+        let str = this.txt.trim().replace(/\s/g,'')
+
+        if (str.toLowerCase() == 'songofsolomon') {
+            return 'SongofSolomon';
+        } else if (isNaN(str.charAt(0)) == false) { // If the first character IS A NUMBER
+            return str.charAt(0) + str.charAt(1).toUpperCase() + str.substr(2).toLowerCase()
+        } else {
+            return str.charAt(0).toUpperCase() + str.substr(1).toLowerCase()
+        }
     }
 }
 
@@ -324,22 +331,10 @@ function dummy (book, chapter, verse) {
     console.log("Fetching: ", book, chapter, verse)
 
     if (chapter && verse) {
-        window.location.href = "passage.html?book=" + book + "&chapter=" + chapter + "&verse=" + verse
-        
-        //fetch('https://bible-api.com/'+ book +'+'+ chapter + ':' + verse +'?verse_numbers=true')
-        //.then(response => response.json())
-        //.then(data => {
-            //parse(data)
-        //})
+        window.location.href = "passage.html?book=" + book + "&chapter=" + chapter + "&verse=" + verse + '&version=WEB'
     }
     if (book && chapter && !(verse)) {
-        window.location.href = "passage.html?book=" + book + "&chapter=" + chapter
-
-        //fetch('https://bible-api.com/'+ book +'+'+ chapter +'?verse_numbers=true')
-        //.then(response => response.json())
-        //.then(data => {
-            //parse(data)
-        //})
+        window.location.href = "passage.html?book=" + book + "&chapter=" + chapter + '&version=WEB'
     }
 }
 
@@ -384,13 +379,18 @@ function chapterListBasedOffBook(book) {
 setTimeout(placeDataLists, 500)
 
 document.querySelector('.gobutton').onclick = function () {
-    var book = new APIString(document.querySelector('.searchqueryBook').value.trim().replace(/\s/g, "%")) 
+    var book = new APIString(document.querySelector('.searchqueryBook').value.trim().replace(/\s/g, "")) 
     var chap = document.querySelector('.searchqueryChapter').value.trim().replace(/\s/g, "");
     var verse = document.querySelector('.searchqueryVerse').value.trim().replace(/\s/g, "");
 
+    document.querySelector('.searchqueryBook').value = book.parseForAPI()
+    document.querySelector('.searchqueryChapter').value = chap
+    document.querySelector('.searchqueryVerse').value = verse
+
     if (!(book) || (!chap)){
-        if (!(book)) document.querySelector('.searchqueryBook').style.boxShadow = '0 0 0 2px #d49b9b'
-        if (!(chap)) document.querySelector('.searchqueryChapter').style.boxShadow = '0 0 0 2px #d49b9b'
+        if ((!booksAndInfo[book])) document.querySelector('.searchqueryBook').style.boxShadow = '0 0 0 2px #d49b9b';
+        if (!(book)) document.querySelector('.searchqueryBook').style.boxShadow = '0 0 0 2px #d49b9b';
+        if (!(chap)) document.querySelector('.searchqueryChapter').style.boxShadow = '0 0 0 2px #d49b9b';
         return;
     }
 
@@ -416,6 +416,19 @@ document.querySelector('.searchqueryVerse').addEventListener('keypress', functio
     }
 })
 
+document.querySelector('.searchqueryBook').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        this.blur();
+        document.querySelector('.gobutton').click();
+    }
+})
+
+document.querySelector('.searchqueryChapter').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        this.blur();
+        document.querySelector('.gobutton').click();
+    }
+})
 
 
 

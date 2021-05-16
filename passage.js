@@ -107,14 +107,14 @@ function NLT_VersionRequest (book, chapter, verse) {
 
     // Verse param unspecified:
     if (!verse) {
-        fetch(`http://api.nlt.to/api/passages?ref=${book}+${chapter}&version=NLT&key=251715bb-d01d-4b99-8a83-64043b090660`).then(response => response.text()).then(data => {
+        fetch(`https://api.nlt.to/api/passages?ref=${book}+${chapter}&version=NLT&key=251715bb-d01d-4b99-8a83-64043b090660`).then(response => response.text()).then(data => {
             NLTparser(data)
         })
         return;
     }
 
     // All params specified:
-    fetch(`http://api.nlt.to/api/passages?ref=${book}+${chapter}:${verse}&version=NLT&key=251715bb-d01d-4b99-8a83-64043b090660`).then(response => response.text()).then(data => {
+    fetch(`https://api.nlt.to/api/passages?ref=${book}+${chapter}:${verse}&version=NLT&key=251715bb-d01d-4b99-8a83-64043b090660`).then(response => response.text()).then(data => {
         NLTparser(data)
     })
 

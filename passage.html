@@ -20,10 +20,12 @@ class APIString {
         this.txt = txt;
     }
     parseForAPI() {
-        let str = this.txt.trim()
-
+        let str = this.txt.trim().replace(/\s/g,'')
+        
         if (str.toLowerCase() == 'songofsolomon') {
             return 'SongofSolomon';
+        } else if (isNaN(str.charAt(0)) == false) { // If the first character IS A NUMBER
+            return str.charAt(0) + str.charAt(1).toUpperCase() + str.substr(2).toLowerCase()
         } else {
             return str.charAt(0).toUpperCase() + str.substr(1).toLowerCase()
         }
