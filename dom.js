@@ -44,7 +44,7 @@ function focusBook(book, firstTime) {
                 sideBarScrollListeners()
             }, 100)
         }, 1000)
-        console.warn(firstTime, book)
+        console.warn("Scrolling to #"+book)
     } else {
         document.querySelector('.bookName.active').scrollIntoView({block: "center", behavior: 'smooth'});
     }
@@ -233,16 +233,12 @@ function faviconTheme() {
     if (window.matchMedia('prefers-color-scheme:dark').matches) {
         // It's a dark theme...'
         darkFavicon.remove()
-        console.log('dark')
     } else if (window.matchMedia('prefers-color-scheme:light').matches) {
         // It's not a dark theme...
         lightFavicon.remove()
-        console.log('light')
     } else {
         darkFavicon.remove()
         lightFavicon.remove()
-        
-        console.log(none)
     }
 }
 faviconTheme()

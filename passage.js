@@ -14,7 +14,7 @@ var GLOBAL_VAR_ARRAY = {
         },
         version: {
             "name": "version",
-            "value": "WEB"
+            "value": ""
         }
     }
 }
@@ -107,14 +107,14 @@ function NLT_VersionRequest (book, chapter, verse) {
 
     // Verse param unspecified:
     if (!verse) {
-        fetch(`http://api.nlt.to/api/passages?ref=${book}+${chapter}&key=251715bb-d01d-4b99-8a83-64043b090660`).then(response => response.text()).then(data => {
+        fetch(`http://api.nlt.to/api/passages?ref=${book}+${chapter}&version=NLT&key=251715bb-d01d-4b99-8a83-64043b090660`).then(response => response.text()).then(data => {
             NLTparser(data)
         })
         return;
     }
 
     // All params specified:
-    fetch(`http://api.nlt.to/api/passages?ref=${book}+${chapter}-${verse}&key=251715bb-d01d-4b99-8a83-64043b090660`).then(response => response.text()).then(data => {
+    fetch(`http://api.nlt.to/api/passages?ref=${book}+${chapter}:${verse}&version=NLT&key=251715bb-d01d-4b99-8a83-64043b090660`).then(response => response.text()).then(data => {
         NLTparser(data)
     })
 
@@ -149,13 +149,15 @@ function getQueryParams (returnParamsOnly = false, firstTime = false) {
 
     if (!(booksAndInfo[paramArray.book])) {
         console.warn('No such book:', paramArray.book)
-        displayMessage('No books match: ' + paramArray.book, {
+        displayMessage('No books match: ' + "'"+ paramArray.book + "'", {
             searchError: true 
         })
+        hideMainContent()
+        focusBook('Genesis', true)
         return;
     } 
 
-    console.log("Query params: ", paramArray)
+    console.log("QUERY PARAMS: ", paramArray)
     clearMessage()
 
     focusBook(paramArray.book, firstTime)
@@ -459,9 +461,9 @@ function ChapterNavigation(currChap) {
 
 function searchListeners() {
     document.querySelector('.gobutton').onclick = function () {
-        var bookValue = new APIString(document.querySelector('.searchqueryBook').value.trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").replace(/\s{2,}/g," "))
-        var chapValue = document.querySelector('.searchqueryChapter').value.trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").replace(/\s{2,}/g," ");
-        var verseValue = document.querySelector('.searchqueryVerse').value.trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").replace(/\s{2,}/g," ");
+        var bookValue = new APIString(document.querySelector('.searchqueryBook').value.trim().replace(/[.,\/#!$%\^&\*;:{}=\_`~()]/g,"").replace(/\s{2,}/g," "))
+        var chapValue = document.querySelector('.searchqueryChapter').value.trim().replace(/[.,\/#!$%\^&\*;:{}=\_`~()]/g,"").replace(/\s{2,}/g," ");
+        var verseValue = document.querySelector('.searchqueryVerse').value.trim().replace(/[.,\/#!$%\^&\*;:{}=\_`~()]/g,"").replace(/\s{2,}/g," ");
     
         document.querySelector('.searchqueryBook').value = bookValue.parseForAPI()
         document.querySelector('.searchqueryChapter').value = chapValue
@@ -527,5 +529,11 @@ function searchListeners() {
             document.querySelector('.searchBox > .material-icons.active').click()
         }
     })
+
+    document.querySelector('.selectTranslations').addEventListener('change', function () {
+        GLOBAL_VAR_ARRAY.urlParamsObject.version.value = this.value
+        changeQueryParams()
+    })
+
 }
 searchListeners()
