@@ -233,12 +233,13 @@ input:-internal-autofill-selected {
 </style>
 <body>
     <div class="mainwrapper">
+        <!--
         <div class="waves">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#7a7a7a" fill-opacity="1" d="M0,128L120,149.3C240,171,480,213,720,197.3C960,181,1200,107,1320,69.3L1440,32L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"></path></svg>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#969696" fill-opacity="1" d="M0,128L120,149.3C240,171,480,213,720,197.3C960,181,1200,107,1320,69.3L1440,32L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"></path></svg>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#afafaf" fill-opacity="1" d="M0,128L120,149.3C240,171,480,213,720,197.3C960,181,1200,107,1320,69.3L1440,32L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"></path></svg>
         </div>
-
+-->
         <div class="dailyverse">
             <p>VERSE OF THE DAY •  <span class="ref">Ezekiel 36:25</span></p>
             <h1 class="hero">I will sprinkle clean water on you, and you will be clean. I will cleanse you from all your filthiness, and from all your idols.</h1>
@@ -309,6 +310,16 @@ input:-internal-autofill-selected {
 </script></body>
 <script src="data.js"></script>
 <script>
+class APIString {
+    constructor(txt) {
+        this.txt = txt;
+    }
+    parseForAPI() {
+        let str = this.txt.trim()
+        return str.charAt(0).toUpperCase() + str.substr(1).toLowerCase()
+    }
+}
+
 function dummy (book, chapter, verse) {
     console.log("Fetching: ", book, chapter, verse)
 
@@ -373,7 +384,7 @@ function chapterListBasedOffBook(book) {
 setTimeout(placeDataLists, 500)
 
 document.querySelector('.gobutton').onclick = function () {
-    var book = document.querySelector('.searchqueryBook').value.trim().replace(/\s/g, "%");
+    var book = new APIString(document.querySelector('.searchqueryBook').value.trim().replace(/\s/g, "%")) 
     var chap = document.querySelector('.searchqueryChapter').value.trim().replace(/\s/g, "");
     var verse = document.querySelector('.searchqueryVerse').value.trim().replace(/\s/g, "");
 
@@ -383,7 +394,7 @@ document.querySelector('.gobutton').onclick = function () {
         return;
     }
 
-    dummy(book, chap, verse)
+    dummy(book.parseForAPI(), chap, verse)
 }
 
 document.querySelector('.searchqueryBook').addEventListener('input', function() {
@@ -404,5 +415,14 @@ document.querySelector('.searchqueryVerse').addEventListener('keypress', functio
         document.querySelector('.gobutton').click();
     }
 })
+
+
+
+
+
+var myString = new APIString('hello')
+
+console.log(myString.parseForAPI())
+
 </script>
 </html>

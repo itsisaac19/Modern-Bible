@@ -179,7 +179,9 @@ function initSearch () {
 
 
 
-function placeDataLists() {
+function placeDataLists(firstTime = true) {
+    if (!document.querySelector('span.bookName.active') && firstTime === true) return;
+
     var currentBook = document.querySelector('span.bookName.active').classList[1].replace("&", " ")
     // BOOKS
     var booksList = document.querySelector('#booksDataList');
@@ -220,3 +222,27 @@ function chapterListBasedOffBook(book) {
 
 setTimeout(placeDataLists, 500)
 
+
+
+
+function faviconTheme() {
+    const none = document.querySelector('link#none')
+    const darkFavicon = document.querySelector('link#dark')
+    const lightFavicon = document.querySelector('link#light')
+
+    if (window.matchMedia('prefers-color-scheme:dark').matches) {
+        // It's a dark theme...'
+        darkFavicon.remove()
+        console.log('dark')
+    } else if (window.matchMedia('prefers-color-scheme:light').matches) {
+        // It's not a dark theme...
+        lightFavicon.remove()
+        console.log('light')
+    } else {
+        darkFavicon.remove()
+        lightFavicon.remove()
+        
+        console.log(none)
+    }
+}
+faviconTheme()

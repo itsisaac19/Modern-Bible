@@ -4,16 +4,41 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="user-scalable=no width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
-    <title>Bible-App</title>
+    <title>Modern Bible</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link href="https://api.fontshare.com/css?f[]=satoshi@300,400,500,700,900,1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="passage.css">
 
-    <link id="dark" rel="icon" href="icons8-open-book-50 (1).png" type="png">
+    <link id="none" rel="icon" href="icons8-open-book-50-neutral.png" type="png">
+    <link id="light" rel="icon" href="icons8-open-book-50.png" media="(prefers-color-scheme:dark)" type="png">
+    <link id="dark" rel="icon" href="icons8-open-book-50 (1).png" media="(prefers-color-scheme:light)" type="png">
 </head>
+<script>
+class APIString {
+    constructor(txt) {
+        this.txt = txt;
+    }
+    parseForAPI() {
+        let str = this.txt.trim()
+
+        if (str.toLowerCase() == 'songofsolomon') {
+            return 'SongofSolomon';
+        } else {
+            return str.charAt(0).toUpperCase() + str.substr(1).toLowerCase()
+        }
+    }
+}
+</script>
 <body>
     <div class="outerwrap">
+        <div class="messageDisplay">
+            <div class="messageDisplayContent"></div>
+            <div class="messageDisplayLink"></div>
+            <div class="messageDisplaySearch"></div>
+            <div class="messageDisplayVersion"></div>
+        </div>
+
         <div class="searchBox">
 
             <div class="searchqueryswrap">
@@ -47,8 +72,8 @@
             </bibletextcontainer>
             <div class="bookNav">
                 <hr>
-                <div class="prevChap">Chapter</div>
-                <div class="nextChap">Chapter</div>
+                <div class="prevChap"></div>
+                <div class="nextChap"></div>
             </div>
         </div>
         <div class="sidebar ready hidden off-scrollbar">
@@ -134,5 +159,7 @@
 
 <script src="dom.js"></script>
 <script src="data.js"></script>
+
+<script src="NLT.js"></script>
 <script src="passage.js"></script>
 </html>
