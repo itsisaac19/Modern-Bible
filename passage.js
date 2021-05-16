@@ -120,7 +120,48 @@ function NLT_VersionRequest (book, chapter, verse) {
 
 
 }
-//NLT_VersionRequest()
+
+function ESV_VersionRequest (book, chapter, verse) {
+    console.log("Fetching: ", book, chapter, verse)
+
+    if (book.toLowerCase().includes('songofsolomon') == true) {
+        console.warn('Support for Song of Solomon is not available in NLT')
+        return displayMessage('Song of Solomon is not available in NLT.', {
+            switchVersion: true,
+            redirectLink: false,
+            searchError: false
+        });
+    }
+
+    if (book && isNaN(book.charAt(0)) == false) {
+        let num = book.charAt(0);
+        book = num + ' ' + book.substring(1, book.length);
+    }
+
+    var ESVHeaders = new Headers();
+    ESVHeaders.append("Authorization", "Token 21e8c9c7473c40e539c611b6b89b431e3e84514a");
+
+    var requestOptions = {
+        method: 'GET',
+        headers: ESVHeaders,
+        redirect: 'follow'
+    };
+
+    // Verse param unspecified:
+    if (!verse) {
+        fetch(`https://api.esv.org/v3/passage/text/?q=${book}`, requestOptions)
+        .then(response => response.json()).then(result => {
+            ESVparser(result)
+        })
+        return;
+    }
+
+    // All params specified:
+    fetch(`https://api.esv.org/v3/passage/text/?q=${book}+${verse}`, requestOptions)
+    .then(response => response.json()).then(result => {
+        ESVparser(result)
+    })
+}
 
 
 function fetchBible (book, chapter, verse, version) {
@@ -130,6 +171,7 @@ function fetchBible (book, chapter, verse, version) {
 
     if (version == "WEB"){ WEB_VersionRequest(book, chapter, verse) }
     if (version == "NLT"){ NLT_VersionRequest(book, chapter, verse) }
+    if (version == "ESV"){ ESV_VersionRequest(book, chapter, verse) }
 }
 
 function getQueryParams (returnParamsOnly = false, firstTime = false) {

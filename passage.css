@@ -234,6 +234,10 @@ versenumber.narrative {
     color: rgb(175, 175, 175);
 }
 
+span.footer {
+    color: gray;
+}
+
 .bookNav {
     margin-top: 10px;
     height: min-content;
