@@ -6,6 +6,10 @@
 // DOM Level
 
 
+if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+    document.body.classList.add('mobiledevice')
+}
+
 
 function hideMainContent(animate = true) {
     var wrap = document.querySelector('.biblecontainer')
