@@ -165,6 +165,7 @@ function ESV_VersionRequest (book, chapter, verse) {
 
 
 function fetchBible (book, chapter, verse, version) {
+    //return
     hideMainContent(false)
 
     if (!version) return WEB_VersionRequest(book, chapter, verse);
@@ -306,8 +307,8 @@ function parseAPIContent (main, version) {
 
 
 function helper_parseVerseNumbers(string) {
-    var result = string.replace(/(\()/g, '<versenumber>(');
-    result = result.replace(/(\))/g, ')</versenumber>');
+    var result = string.replace(/(\()/g, '&nbsp&nbsp<versenumber>');
+    result = result.replace(/(\))/g, '</versenumber>');
     result = result.replace(":", "")
 
     return result
@@ -318,16 +319,6 @@ function helper_parseNarratives(str) {
 
     verses.forEach(function(vers) {
         if (vers.innerHTML.length > 4) {
-            var reg = /\(([^)]+)\)/g;
-            vers.innerHTML = reg.exec(vers.innerHTML)[1]
-
-            var endsWithPunc = !!vers.innerHTML.match(/[.,:!?;]$/)
-            if (endsWithPunc == true) {
-                //console.log(endsWithPunc)
-            } else {
-                vers.innerHTML = vers.innerHTML + ':'
-            }
-
             vers.classList.add('narrative')
         }
     })

@@ -22,6 +22,86 @@ function showMainContent(animate = true) {
 }
 
 
+function toggleBibleControls () {
+    let controls = document.querySelector('.bibleControls')
+    let icon = document.querySelector('.bibleControlIcon')
+    let isHidden = controls.classList.contains('hidden') 
+    
+    if (isHidden == false) {
+        controls.classList.add('hidden')
+        icon.classList.remove('active')
+    }
+
+    if (isHidden == true) {
+        controls.classList.remove('hidden')
+        icon.classList.add('active')
+    }
+}
+
+function resetBibleControls () {
+    let rangeEls = document.querySelectorAll(`.bibleControl > input[type="range"]`)
+   
+    rangeEls.forEach(rangeEl => {
+        rangeEl.value = rangeEl.getAttribute("dvalue")
+        rangeEl.dispatchEvent(new Event('input'));
+    })
+}
+
+function assignRangeValues () {
+    if (localStorage.getItem('lineSpacing') || localStorage.getItem('fontSize')) {
+        let lineSpacingRange = document.querySelector('#lineSpacingRange');
+        let fontSizeRange = document.querySelector('#fontSizeRange');
+        
+        lineSpacingRange.value = localStorage.getItem('lineSpacing') || lineSpacingRange.getAttribute("dvalue")
+        fontSizeRange.value = localStorage.getItem('fontSize') || fontSizeRange.getAttribute("dvalue")  
+        
+        lineSpacingRange.dispatchEvent(new Event('input'));
+        fontSizeRange.dispatchEvent(new Event('input'));
+    }
+}
+
+function saveRangeValues () {
+    let lineSpacingRange = document.querySelector('#lineSpacingRange');
+    let fontSizeRange = document.querySelector('#fontSizeRange');
+    
+    localStorage.setItem('lineSpacing', lineSpacingRange.value)
+    localStorage.setItem('fontSize', fontSizeRange.value)
+}
+
+function assignBibleControlListeners() {
+    document.querySelector('.doneControl').onclick = toggleBibleControls
+    document.querySelector('.bibleControlIcon').onclick = toggleBibleControls
+    document.querySelector('.bibleControlIconStickyLabel').onclick = toggleBibleControls
+    document.querySelector('#restartRangeValueIcon').onclick = resetBibleControls
+
+    let lineSpacingRange = document.querySelector('#lineSpacingRange');
+
+    lineSpacingRange.addEventListener('input', function () {
+        let container = document.querySelector('bibletextcontainer')
+        let lineSpacingValue = `${this.value}px`
+        container.style.lineHeight = lineSpacingValue
+
+        this.parentElement.children[0].children[0].innerHTML = `${this.value}px`
+
+        saveRangeValues()
+    })
+
+    let fontSizeRange = document.querySelector('#fontSizeRange');
+
+    fontSizeRange.addEventListener('input', function () {
+        let container = document.querySelector('bibletextcontainer')
+        let fontSizeValue = `${this.value}px`
+        container.style.fontSize = fontSizeValue
+
+        this.parentElement.children[0].children[0].innerHTML = `${this.value}px`
+
+        saveRangeValues()
+    })
+
+    assignRangeValues()
+}
+assignBibleControlListeners()
+
 function focusBook(book, firstTime) {
     let sidebar = document.querySelector('.sidebar')
     let activeBookEl = document.querySelector('.bookName.active')

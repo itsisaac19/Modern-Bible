@@ -58,7 +58,7 @@ function NLTparser (HTML) {
 
             verseNumberEls.forEach(v => {
                 let parentOfV = v.parentElement;
-                let num = ` (${v.innerHTML}) `;
+                let num = `&nbsp&nbsp${v.innerHTML} `;
                 let newVerseNumber = document.createElement('versenumber');
                 
                 newVerseNumber.innerHTML = num;

@@ -77,6 +77,26 @@ class APIString {
                 <div class="prevChap"></div>
                 <div class="nextChap"></div>
             </div>
+
+            <div class="bibleControlIcon">
+                <span>Aa</span>
+            </div>
+
+            <div class="bibleControls hidden">
+                <div class="bibleControl">
+                    <span class="bibleControlLabel">Line Height - <span class="line_height_value range_value_label">50px</span></span>
+                    <input type="range" min="30" max="70" value="50" dvalue="50" class="slider" id="lineSpacingRange">
+                </div>
+                <div class="bibleControl">
+                    <span class="bibleControlLabel">Font Size - <span class="font_size_value range_value_label">20px</span></span>
+                    <input type="range" min="10" max="30" value="20" dvalue="20" class="slider" id="fontSizeRange">
+                </div>
+                <div class="resetButton">
+                    <span class="resetLabel">RESET</span>
+                    <span id="restartRangeValueIcon" class="material-icons">restart_alt</span>
+                </div>
+                <button class="doneControl">DONE</button>
+            </div>
         </div>
         <div class="sidebar ready hidden off-scrollbar">
             <div class="absoluteIcon hidden">
@@ -154,12 +174,18 @@ class APIString {
             </div>
         </div>
 
-        <div class="translation_changer">
-            <select class="selectTranslations" name="translations" id="transSelection">
-                <option value="WEB">WEB</option>
-                <option value="NLT">NLT</option>
-                <option value="ESV">ESV</option>
-            </select>
+        <div class="otherControls">
+            <button class="bibleControlIconStickyLabel">
+                <span>Aa</span>
+            </button>
+    
+            <div class="translation_changer">
+                <select class="selectTranslations" name="translations" id="transSelection">
+                    <option value="WEB">WEB</option>
+                    <option value="NLT">NLT</option>
+                    <option value="ESV">ESV</option>
+                </select>
+            </div>
         </div>
     </div>
 </body>

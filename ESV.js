@@ -8,8 +8,8 @@ function ESVparser (response) {
     passage = passage.replace(/\n/g, "<br>");
 
     function parse() {
-        let result = passage.replace(/(\[)/g, '<versenumber>(');
-        result = result.replace(/(\])/g, ')</versenumber>');
+        let result = passage.replace(/(\[)/g, '&nbsp&nbsp<versenumber>');
+        result = result.replace(/(\])/g, '</versenumber>');
         result = result.replace(":", "")
 
         result = result.substring(0, result.indexOf('Footnotes')) + ("<br><br>Footnotes", "<span class='footer'>Footnotes</span>" + footerNotes)
