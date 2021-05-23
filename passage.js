@@ -284,6 +284,7 @@ function parseAPIContent (main, version) {
         isOneVersePassage()
     }
 
+    
     ChapterNavigation(parseInt(chapter))
     showMainContent()
 
