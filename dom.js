@@ -76,7 +76,7 @@ function assignBibleControlListeners() {
     document.querySelector('.doneControl').onclick = toggleBibleControls
     document.querySelector('.bibleControlIcon').onclick = toggleBibleControls
     document.querySelector('.bibleControlIconStickyLabel').onclick = toggleBibleControls
-    document.querySelector('#restartRangeValueIcon').onclick = resetBibleControls
+    document.querySelector('.resetButton').onclick = resetBibleControls
 
     let lineSpacingRange = document.querySelector('#lineSpacingRange');
 

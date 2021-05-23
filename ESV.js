@@ -1,6 +1,9 @@
 function ESVparser (response) {
     var passage = response.passages[0];
-    console.log('Passage:', passage);
+
+    console.groupCollapsed('Passage:')
+    console.log(passage);
+    console.groupEnd()
 
     let footerNotes = passage.substring(passage.indexOf('Footnotes') + 9, passage.length)
     footerNotes = footerNotes.replace(/(\()/g, '<br>(')
@@ -12,7 +15,10 @@ function ESVparser (response) {
         result = result.replace(/(\])/g, '</versenumber>');
         result = result.replace(":", "")
 
-        result = result.substring(0, result.indexOf('Footnotes')) + ("<br><br>Footnotes", "<span class='footer'>Footnotes</span>" + footerNotes)
+        if (result.includes('Footnotes') == true) {
+            result = result.substring(0, result.indexOf('Footnotes')) + ("<br><br>Footnotes", "<span class='footer'>Footnotes</span>" + footerNotes)
+        }
+
         result = result.substring(result.indexOf('<br>'), result.length) 
 
         return result
@@ -33,6 +39,11 @@ function ESVparser (response) {
     var DOMbody = document.querySelector('.biblecontainer bibletextcontainer')
     DOMbody.innerHTML = finalPush;
 
+    if (parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value) == 1) {
+        isOneVersePassage()
+    }
+
+    ChapterNavigation(parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value))
     showMainContent()
 
     var fullChapter = true;

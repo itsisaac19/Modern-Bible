@@ -95,11 +95,15 @@ function NLTparser (HTML) {
     var DOMbody = document.querySelector('.biblecontainer bibletextcontainer')
     DOMbody.innerHTML = finalPush.innerHTML;
 
+    if (parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value) == 1) {
+        isOneVersePassage()
+    }
+
     function spaceOutVerses () {
         let verseNumbers = document.querySelectorAll('bibletextcontainer versenumber')
 
         verseNumbers.forEach(v => {
-            let rawNum = v.innerHTML.replace(/[{()}]/g, '');
+            let rawNum = v.innerHTML.replace(/&nbsp;/gi, '')
             if (parseInt(rawNum) % 5 == 0) {
                 v.innerHTML = `<br><br>${v.innerHTML}`
             }
@@ -107,6 +111,7 @@ function NLTparser (HTML) {
     }
     spaceOutVerses()
 
+    ChapterNavigation(parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value))
     showMainContent()
 
     var fullChapter = true;
@@ -120,7 +125,7 @@ function NLTparser (HTML) {
 
         var lastVerseNumber = document.querySelectorAll('bibletextcontainer versenumber')[document.querySelectorAll('bibletextcontainer versenumber').length - 1].innerHTML
         lastVerseNumber = lastVerseNumber.replace(/(\()/g, '').replace(/(\))/g, '').replaceAll("<br>", "");    
-        if (fullChapter == true) topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + verse + '-' + lastVerseNumber.trim()
+        if (fullChapter == true) topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + verse + '-' + lastVerseNumber.trim().replace(/&nbsp;/gi, '')
     }, 10)
 }
 

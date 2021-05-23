@@ -46,6 +46,7 @@ html, body {
 
     height: min-content;
     width: 67%;  
+    max-width: 900px;
 }
 .outerwrap .biblecontainer.pushed {
     padding-left: 120px;
@@ -219,10 +220,32 @@ bibletextcontainer {
     line-height: 56px;
 }
 
+bibletextcontainer > div.fullChapterTeaser {
+    cursor: pointer;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0px;
+
+    margin: 50px 0 0 0;
+
+    width: min-content;
+    white-space: nowrap;
+
+    color: rgb(157, 157, 157);
+
+    transition: color 0.2s ease;
+}
+bibletextcontainer > div.fullChapterTeaser:hover {
+    color: rgb(91, 91, 91);
+}
+bibletextcontainer > div.fullChapterTeaser::after {
+    content: '\2193 \a0\a0 Read full chapter \a0 \2193';
+}
+
 versenumber {
     color: #858585;
-    font-size: 16px;
-    letter-spacing: 2px;
+    font-size: 0.8em;
 }
 
 versenumber.narrative {

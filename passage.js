@@ -149,7 +149,7 @@ function ESV_VersionRequest (book, chapter, verse) {
 
     // Verse param unspecified:
     if (!verse) {
-        fetch(`https://api.esv.org/v3/passage/text/?q=${book}`, requestOptions)
+        fetch(`https://api.esv.org/v3/passage/text/?q=${book} ${chapter}`, requestOptions)
         .then(response => response.json()).then(result => {
             ESVparser(result)
         })
@@ -157,7 +157,7 @@ function ESV_VersionRequest (book, chapter, verse) {
     }
 
     // All params specified:
-    fetch(`https://api.esv.org/v3/passage/text/?q=${book}+${verse}`, requestOptions)
+    fetch(`https://api.esv.org/v3/passage/text/?q=${book}+${chapter}:${verse}`, requestOptions)
     .then(response => response.json()).then(result => {
         ESVparser(result)
     })
@@ -420,6 +420,18 @@ function pushCurrentParamsToGlobal () {
     GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value = getQueryParams(true).chapter
     GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = getQueryParams(true).verse
     GLOBAL_VAR_ARRAY.urlParamsObject.version.value = getQueryParams(true).version
+}
+
+function isOneVersePassage () {
+    let DOMbody = document.querySelector('.biblecontainer bibletextcontainer')
+    let fullChapterTeaser = document.createElement('div')
+    fullChapterTeaser.className = 'fullChapterTeaser'
+    fullChapterTeaser.onclick = function () {
+        GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = null
+        changeQueryParams()
+    }
+
+    DOMbody.appendChild(fullChapterTeaser)
 }
 
 function ChapterNavigation(currChap) {

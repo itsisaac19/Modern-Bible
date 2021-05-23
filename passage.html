@@ -16,6 +16,9 @@
     <link id="dark" rel="icon" href="icons8-open-book-50 (1).png" media="(prefers-color-scheme:light)" type="png">
 </head>
 <script>
+function c (content) {
+    console.log(content)
+}
 class APIString {
     constructor(txt) {
         this.txt = txt;
@@ -86,11 +89,11 @@ class APIString {
             <div class="bibleControls hidden">
                 <div class="bibleControl">
                     <span class="bibleControlLabel">Line Height - <span class="line_height_value range_value_label">50px</span></span>
-                    <input type="range" min="30" max="70" value="50" dvalue="50" class="slider" id="lineSpacingRange">
+                    <input type="range" min="30" max="70" value="37" dvalue="37" class="slider" id="lineSpacingRange">
                 </div>
                 <div class="bibleControl">
                     <span class="bibleControlLabel">Font Size - <span class="font_size_value range_value_label">20px</span></span>
-                    <input type="range" min="10" max="30" value="20" dvalue="20" class="slider" id="fontSizeRange">
+                    <input type="range" min="10" max="30" value="17" dvalue="17" class="slider" id="fontSizeRange">
                 </div>
                 <div class="resetButton">
                     <span class="resetLabel">RESET</span>
