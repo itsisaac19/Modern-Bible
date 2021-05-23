@@ -5,6 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>Home</title>
+
+    <link id="none" rel="icon" href="icons8-open-book-50-neutral.png" type="png">
+    <link id="light" rel="icon" href="icons8-open-book-50.png" media="(prefers-color-scheme:dark)" type="png">
+    <link id="dark" rel="icon" href="icons8-open-book-50 (1).png" media="(prefers-color-scheme:light)" type="png">
 </head>
 <style>
     body {
@@ -357,6 +361,25 @@ input:-internal-autofill-selected {
 </script></body>
 <script src="data.js"></script>
 <script>
+
+function faviconTheme() {
+    const none = document.querySelector('link#none')
+    const darkFavicon = document.querySelector('link#dark')
+    const lightFavicon = document.querySelector('link#light')
+
+    if (window.matchMedia('prefers-color-scheme:dark').matches) {
+        // It's a dark theme...'
+        darkFavicon.remove()
+    } else if (window.matchMedia('prefers-color-scheme:light').matches) {
+        // It's not a dark theme...
+        lightFavicon.remove()
+    } else {
+        darkFavicon.remove()
+        lightFavicon.remove()
+    }
+}
+faviconTheme()
+
 class APIString {
     constructor(txt) {
         this.txt = txt;
