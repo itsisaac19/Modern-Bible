@@ -280,6 +280,10 @@ function parseAPIContent (main, version) {
     body.innerHTML = helper_parseVerseNumbers(bodyText)
     helper_parseNarratives(bodyText)
 
+    if (parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value) == 1) {
+        isOneVersePassage()
+    }
+
     ChapterNavigation(parseInt(chapter))
     showMainContent()
 
