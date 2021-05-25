@@ -4,6 +4,29 @@
 // DOM Level
 // DOM Level
 // DOM Level
+Selector = (s,c) => (c ?? document).querySelector(s);
+SelectorAll = (s,c) => (c ?? document).querySelectorAll(s);
+
+function setMetaTags () {
+    const tags = document.head.querySelectorAll('meta')
+    var params = GLOBAL_VAR_ARRAY.urlParamsObject
+    c(tags)
+
+    function replaceNbsps(str) {
+        var re = new RegExp(String.fromCharCode(160), "g");
+        return str.replace(re, " ");
+    }
+
+    let title = `${params.book.value} ${Selector('biblechapterverse').innerHTML}`
+    let description = replaceNbsps(Selector('bibletextcontainer').textContent.substring(0, 146).replace())
+    c(description)
+
+    Selector('meta[name="title"]').setAttribute('content', title)
+    Selector('meta[name="description"]').setAttribute('content', `${description}`)
+
+    Selector('meta[property="og:title"]').setAttribute('content', title)
+    Selector('meta[property="og:description"]').setAttribute('content', `${description}`)
+}
 
 
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {

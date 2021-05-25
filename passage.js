@@ -163,6 +163,9 @@ function ESV_VersionRequest (book, chapter, verse) {
     })
 }
 
+function readyCallback () {
+    setMetaTags()
+}
 
 function fetchBible (book, chapter, verse, version) {
     //return
@@ -244,7 +247,7 @@ function parseAPIContent (main, version) {
     var verse;
     var book;
 
-    var refModified = main.reference.replaceAll(" ", "")
+    var refModified = main.reference.replace(/\s/g,'')
 
     books.forEach(b => {
         if (refModified.includes(b) == false) return;
@@ -307,7 +310,11 @@ function parseAPIContent (main, version) {
         var lastVerseNumber = document.querySelector('bibletextcontainer versenumber:last-of-type').innerHTML
         lastVerseNumber = lastVerseNumber.replace(/(\()/g, '').replace(/(\))/g, '');     
         if (fullChapter == true) topChapterVerse.innerHTML = chapter + ':' + verse + '-' + lastVerseNumber
+
+        readyCallback()
     }, 10)
+
+
 }
 
 
