@@ -7,13 +7,19 @@ function ESVparser (response) {
 
     let footerNotes = passage.substring(passage.indexOf('Footnotes') + 9, passage.length)
     footerNotes = footerNotes.replace(/(\()/g, '<br>(')
-    
-    passage = passage.replace(/\n/g, "<br>");
 
     function parse() {
-        let result = passage.replace(/(\[)/g, '&nbsp&nbsp<versenumber>');
+        let result = passage;
+        result = result.replace(/\n    \n    \n/g, "<br><br>").replace(/\n/g, "<br>")
+
+        // Verse Numbers
+        result = result.replace(/(\[)/g, '&nbsp&nbsp<versenumber>');
         result = result.replace(/(\])/g, '</versenumber>');
         result = result.replace(":", "")
+
+        // Superscripts
+        result = result.replace(/(\()/g, '<sup>[');
+        result = result.replace(/(\))/g, ']</sup>');
 
         if (result.includes('Footnotes') == true) {
             result = result.substring(0, result.indexOf('Footnotes')) + ("<br><br>Footnotes", "<span class='footer'>Footnotes</span>" + footerNotes)
@@ -24,7 +30,16 @@ function ESVparser (response) {
         return result
     }
 
-    let finalPush = parse()
+    var finalPush;
+
+    if (response.canonical.includes('Song of Solomon') == true) {
+        console.log(response)
+        finalPush = parse()
+    } else {
+        finalPush = parse()
+    }
+
+    
 
     let currentBook = GLOBAL_VAR_ARRAY.urlParamsObject.book.value
     // DOM Insert: Book
@@ -39,9 +54,23 @@ function ESVparser (response) {
     var DOMbody = document.querySelector('.biblecontainer bibletextcontainer')
     DOMbody.innerHTML = finalPush;
 
-    if (parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value) == 1) {
+    if (parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value)) {
         isOneVersePassage()
     }
+
+    function footnotesClicks () {
+        let superScriptEls = document.querySelectorAll('bibletextcontainer > sup') 
+        superScriptEls.forEach(el => {
+            el.onclick = function () {
+                let bdyHeight = document.querySelector('bibletextcontainer').scrollHeight
+                window.scroll({
+                    top: bdyHeight,
+                    behavior: 'smooth'
+                });
+            }
+        })
+    }
+    footnotesClicks()
 
     ChapterNavigation(parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value))
     showMainContent()
@@ -55,7 +84,9 @@ function ESVparser (response) {
     setTimeout(function() {
         window.scroll({top: 0, behavior: 'smooth'});
 
-
+        var firstVerseNumber = document.querySelector('bibletextcontainer versenumber:first-of-type').innerHTML.replace(/(\()/g, '').replace(/(\))/g, '').replaceAll("<br>", "").replace(/&nbsp;/gi, '');  
+        topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + firstVerseNumber
+        GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = parseInt(firstVerseNumber)
 
         var lastVerseNumber = document.querySelectorAll('bibletextcontainer versenumber')[document.querySelectorAll('bibletextcontainer versenumber').length - 1].innerHTML
         lastVerseNumber = lastVerseNumber.replace(/(\()/g, '').replace(/(\))/g, '').replaceAll("<br>", "");    

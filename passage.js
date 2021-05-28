@@ -27,7 +27,7 @@ function WEB_VersionRequest (book, chapter, verse) {
             if (response.ok) {
                 return response.json();
             } else {
-                throw new Error('Something went wrong');
+                displayMessage('Error fetching verses.')
             }
         })
         .then(data => {
@@ -61,6 +61,8 @@ function displayMessage (text, options) {
     let search = document.querySelector('.messageDisplaySearch')
     let versionSwitcher = document.querySelector('.messageDisplayVersion')
 
+    if (!options) return;
+
     if (options.switchVersion == true) {
         versionSwitcher.classList.add('shown')
     }
@@ -89,7 +91,6 @@ function clearMessage () {
 // EXAMPLE REQUEST: http://api.nlt.to/api/passages?ref=John+1:1-2&key=TEST
 
 function NLT_VersionRequest (book, chapter, verse) {
-    console.log("Fetching: ", book, chapter, verse)
 
     if (book.toLowerCase().includes('songofsolomon') == true) {
         console.warn('Support for Song of Solomon is not available in NLT')
@@ -105,33 +106,51 @@ function NLT_VersionRequest (book, chapter, verse) {
         book = num + ' ' + book.substring(1, book.length);
     }
 
+    var requestStr;
+
     // Verse param unspecified:
     if (!verse) {
-        fetch(`https://api.nlt.to/api/passages?ref=${book}+${chapter}&version=NLT&key=251715bb-d01d-4b99-8a83-64043b090660`).then(response => response.text()).then(data => {
+        requestStr = `https://api.nlt.to/api/passages?ref=${book}+${chapter}&version=NLT&key=251715bb-d01d-4b99-8a83-64043b090660`
+        fetch(`https://api.nlt.to/api/passages?ref=${book}+${chapter}&version=NLT&key=251715bb-d01d-4b99-8a83-64043b090660`).then(response => {
+            if (response.ok) {
+                return response.text();
+            } else {
+                displayMessage('Error fetching verses.')
+            }
+        }).then(data => {
             NLTparser(data)
         })
+        console.log("Fetching: " + ` @${requestStr}`, book, chapter)
         return;
     }
 
+    requestStr = `https://api.nlt.to/api/passages?ref=${book}+${chapter}:${verse}&version=NLT&key=251715bb-d01d-4b99-8a83-64043b090660`
+
     // All params specified:
-    fetch(`https://api.nlt.to/api/passages?ref=${book}+${chapter}:${verse}&version=NLT&key=251715bb-d01d-4b99-8a83-64043b090660`).then(response => response.text()).then(data => {
+    fetch(`https://api.nlt.to/api/passages?ref=${book}+${chapter}:${verse}&version=NLT&key=251715bb-d01d-4b99-8a83-64043b090660`).then(response => {
+        if (response.ok) {
+            return response.text();
+        } else {
+            displayMessage('Error fetching verses.')
+        }
+    }).then(data => {
         NLTparser(data)
     })
 
-
+    console.log("Fetching: " + ` @${requestStr}`, book, chapter, verse)
 }
 
 function ESV_VersionRequest (book, chapter, verse) {
     console.log("Fetching: ", book, chapter, verse)
 
-    if (book.toLowerCase().includes('songofsolomon') == true) {
-        console.warn('Support for Song of Solomon is not available in NLT')
-        return displayMessage('Song of Solomon is not available in NLT.', {
-            switchVersion: true,
-            redirectLink: false,
-            searchError: false
-        });
-    }
+    // if (book.toLowerCase().includes('songofsolomon') == true) {
+    //     console.warn('Support for Song of Solomon is not available in NLT')
+    //     return displayMessage('Song of Solomon is not available in NLT.', {
+    //         switchVersion: true,
+    //         redirectLink: false,
+    //         searchError: false
+    //     });
+    // }
 
     if (book && isNaN(book.charAt(0)) == false) {
         let num = book.charAt(0);
@@ -219,8 +238,6 @@ getQueryParams(false, true)
 function changeQueryParams () {
     paramArray = GLOBAL_VAR_ARRAY.urlParamsObject
 
-    console.log(paramArray)
-
     var newStateURL = "/passage.html?";
 
     for (var attr in paramArray) {
@@ -233,15 +250,15 @@ function changeQueryParams () {
         }
     }
     
-    console.log(newStateURL)
     window.history.pushState('page', 'title', newStateURL);
     getQueryParams()
 }
 
+window.addEventListener('popstate', function (event) {
+    getQueryParams();
+});
 
 function parseAPIContent (main, version) {
-    console.log("From " + main.translation_name, main)
-
     var fullChapter = false;
     var chapter;
     var verse;
@@ -283,7 +300,7 @@ function parseAPIContent (main, version) {
     body.innerHTML = helper_parseVerseNumbers(bodyText)
     helper_parseNarratives(bodyText)
 
-    if (parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value) == 1) {
+    if (parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value)) {
         isOneVersePassage()
     }
 
@@ -515,7 +532,7 @@ function ChapterNavigation(currChap) {
             }
         } 
     }
-    console.log("Prev Chapter: " +chapterBefore,"Next Chapter: " +chapterAfter, ", Total:", currentBook)
+    //console.log("Prev Chapter: " +chapterBefore,"Next Chapter: " +chapterAfter, ", Total:", currentBook)
 }
 
 function searchListeners() {
@@ -528,11 +545,22 @@ function searchListeners() {
         document.querySelector('.searchqueryChapter').value = chapValue
         document.querySelector('.searchqueryVerse').value = verseValue
 
-        if (!bookValue || !chapValue){
-            if (!bookValue) document.querySelector('.searchqueryBook').classList.add('unfilled')
-            if (!chapValue) document.querySelector('.searchqueryChapter').classList.add('unfilled')
+        if (!bookValue){
+            document.querySelector('.searchqueryBook').classList.add('unfilled')
             return;
         }
+
+        if (!(booksAndInfo[bookValue.txt])) {
+            document.querySelector('.searchqueryBook').classList.add('unfilled')
+            return;
+        }
+
+        if (chapValue < 1 || chapValue > booksAndInfo[bookValue.txt][0]) {
+            document.querySelector('.searchqueryChapter').classList.add('unfilled')
+            return;
+        }
+
+        document.querySelector('.searchBox > .material-icons.active').click()
 
         pushCurrentParamsToGlobal()
         GLOBAL_VAR_ARRAY.urlParamsObject.book.value = bookValue.parseForAPI()
@@ -569,7 +597,6 @@ function searchListeners() {
         if (e.key === 'Enter') {
             this.blur();
             document.querySelector('.gobutton').click();
-            document.querySelector('.searchBox > .material-icons.active').click()
         }
     })
 
@@ -582,7 +609,6 @@ function searchListeners() {
             if (!(this.value) || !(document.querySelector('.searchqueryChapter').value)) {
                 return;
             } 
-            document.querySelector('.searchBox > .material-icons.active').click()
         }
     })
 
@@ -594,7 +620,6 @@ function searchListeners() {
             if (!(this.value) || !(document.querySelector('.searchqueryBook').value)) {
                 return;
             } 
-            document.querySelector('.searchBox > .material-icons.active').click()
         }
     })
 

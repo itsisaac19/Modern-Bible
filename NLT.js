@@ -1,7 +1,7 @@
 function NLTparser (HTML) {
-    console.groupCollapsed("Raw");
-    console.log(HTML)
-    console.groupEnd();
+    //console.groupCollapsed("Raw");
+    //console.log(HTML)
+    //console.groupEnd();
 
     const h = {
         content: HTML,
@@ -17,7 +17,7 @@ function NLTparser (HTML) {
             let bWrap = document.createElement("body");
 
             bWrap.innerHTML = body;
-            console.log("obj:", bWrap);
+            //console.log("obj:", bWrap);
             
             let comments = bWrap.querySelectorAll('span.tn');
             let stars = bWrap.querySelectorAll('a.a-tn')
@@ -28,7 +28,7 @@ function NLTparser (HTML) {
                     cArray.push(comment)
                     comment.remove()
                 })
-                console.log('Removed comments:', cArray);
+                //console.log('Removed comments:', cArray);
             }
             if (stars) {
                 stars.forEach(star => {
@@ -75,7 +75,7 @@ function NLTparser (HTML) {
         let allText = v.querySelectorAll('p');
         allText.forEach(t => {
             if (t.classList.length == 0) return; 
-            if (t.classList[0].includes('poet') == false && t.classList[0].includes('body') == false && t.classList[0].includes('ext') == false) return console.log('Does not contain poet, body, or ext: ', t)
+            if (t.classList[0].includes('poet') == false && t.classList[0].includes('body') == false && t.classList[0].includes('ext') == false) return; //console.log('Does not contain poet, body, or ext: ', t)
             pushAllText.content += t.innerHTML;
         })
     })
@@ -95,7 +95,7 @@ function NLTparser (HTML) {
     var DOMbody = document.querySelector('.biblecontainer bibletextcontainer')
     DOMbody.innerHTML = finalPush.innerHTML;
 
-    if (parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value) == 1) {
+    if (parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value)) {
         isOneVersePassage()
     }
 
@@ -123,6 +123,10 @@ function NLTparser (HTML) {
     setTimeout(function() {
         window.scroll({top: 0, behavior: 'smooth'});
         
+        var firstVerseNumber = document.querySelector('bibletextcontainer versenumber:first-of-type').innerHTML.replace(/(\()/g, '').replace(/(\))/g, '').replaceAll("<br>", "").replace(/&nbsp;/gi, '');  
+        topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + firstVerseNumber
+        GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = parseInt(firstVerseNumber)
+
         var lastVerseNumber = document.querySelectorAll('bibletextcontainer versenumber')[document.querySelectorAll('bibletextcontainer versenumber').length - 1].innerHTML
         lastVerseNumber = lastVerseNumber.replace(/(\()/g, '').replace(/(\))/g, '').replaceAll("<br>", "");    
         if (fullChapter == true) topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + verse + '-' + lastVerseNumber.trim().replace(/&nbsp;/gi, '')
