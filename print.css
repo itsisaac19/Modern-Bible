@@ -1,0 +1,15 @@
+header, footer, aside, nav, form, iframe, .menu, .hero, .adslot {
+    display: none;
+}
+
+@page { size: auto;  margin: 0mm; }
+
+biblebook {
+    max-width: 84vw !important;
+}
+.controlswrapper {
+    display: none !important;
+}
+.bookNav {
+    display: none !important;
+}

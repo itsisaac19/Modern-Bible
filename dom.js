@@ -27,11 +27,6 @@ function setMetaTags () {
 }
 
 
-if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
-    document.body.classList.add('mobiledevice')
-}
-
-
 function hideMainContent(animate = true) {
     var wrap = document.querySelector('.biblecontainer')
     
@@ -64,7 +59,7 @@ function toggleBibleControls () {
 }
 
 function resetBibleControls () {
-    let rangeEls = document.querySelectorAll(`.bibleControl > input[type="range"]`)
+    let rangeEls = document.querySelectorAll(`.textControl > input[type="range"]`)
    
     rangeEls.forEach(rangeEl => {
         rangeEl.value = rangeEl.getAttribute("dvalue")
@@ -73,15 +68,24 @@ function resetBibleControls () {
 }
 
 function assignRangeValues () {
+    let lineSpacingRange = document.querySelector('#lineSpacingRange');
+    let fontSizeRange = document.querySelector('#fontSizeRange');
+    let reset = document.querySelector('.reset-text');
+
     if (localStorage.getItem('lineSpacing') || localStorage.getItem('fontSize')) {
-        let lineSpacingRange = document.querySelector('#lineSpacingRange');
-        let fontSizeRange = document.querySelector('#fontSizeRange');
         
         lineSpacingRange.value = localStorage.getItem('lineSpacing') || lineSpacingRange.getAttribute("dvalue")
         fontSizeRange.value = localStorage.getItem('fontSize') || fontSizeRange.getAttribute("dvalue")  
         
         lineSpacingRange.dispatchEvent(new Event('input'));
         fontSizeRange.dispatchEvent(new Event('input'));
+
+        reset.classList.add('valid')
+        reset.classList.remove('hidden')
+    }
+    if (lineSpacingRange.value == lineSpacingRange.getAttribute("dvalue") && fontSizeRange.value == fontSizeRange.getAttribute("dvalue")) {
+        reset.classList.remove('valid')
+        reset.classList.add('hidden')
     }
 }
 
@@ -91,13 +95,14 @@ function saveRangeValues () {
     
     localStorage.setItem('lineSpacing', lineSpacingRange.value)
     localStorage.setItem('fontSize', fontSizeRange.value)
+
+    let reset = document.querySelector('.reset-text');
+    reset.classList.add('valid')
+    reset.classList.remove('hidden')
 }
 
 function assignBibleControlListeners() {
-    document.querySelector('.doneControl').onclick = toggleBibleControls
-    document.querySelector('.bibleControlIcon').onclick = toggleBibleControls
-    document.querySelector('.bibleControlIconStickyLabel').onclick = toggleBibleControls
-    document.querySelector('.resetButton').onclick = resetBibleControls
+    //document.querySelector('.resetButton').onclick = resetBibleControls
 
     let lineSpacingRange = document.querySelector('#lineSpacingRange');
 
@@ -123,11 +128,19 @@ function assignBibleControlListeners() {
         saveRangeValues()
     })
 
+    let reset = document.querySelector('.reset-text');
+    reset.addEventListener('click', function () {
+        resetBibleControls()
+        this.classList.remove('valid')
+        this.classList.add('hidden')
+    })
+
     assignRangeValues()
 }
 assignBibleControlListeners()
 
 function focusBook(book, firstTime) {
+    return;
     let sidebar = document.querySelector('.sidebar')
     let activeBookEl = document.querySelector('.bookName.active')
 
@@ -139,107 +152,26 @@ function focusBook(book, firstTime) {
 
     if (activeBookEl) activeBookEl.classList.remove('active');
     if (bookEl && bookEl.classList.contains('active') == false) bookEl.classList.add('active');
-
-    // SCROLL
-    if (firstTime == true) {
-        setTimeout(() =>{
-            sidebar.classList.remove('ready')
-            document.querySelector('.bookName.active').scrollIntoView({block: "center", behavior: 'smooth'});
-            setTimeout(() =>{
-                sideBarScrollListeners()
-            }, 100)
-        }, 1000)
-    } else {
-        document.querySelector('.bookName.active').scrollIntoView({block: "center", behavior: 'smooth'});
-    }
 }
 
-
-document.querySelector('.absoluteIcon').onclick = expandSideBar
-
-function expandSideBar () {
-    var textWrap = document.querySelector('.outerwrap .biblecontainer');
-
-    if (this.parentElement.classList.contains('hidden')) {
-        // EXPANDED
-        this.parentElement.classList.remove('hidden')
-
-        this.children[0].classList.remove('material-icons')
-        this.classList.remove('hidden')
-        this.children[0].innerHTML = 'close'
-
-        textWrap.style.transition = '0.3s ease'
-        textWrap.classList.add('pushed')
-
-        helper_formatCollapsedSideBarHTML(true)
+function stickyControls () {
+    let wrapper = document.querySelector('.controlswrapper')
+    if (window.scrollY > 10) {
+        if (wrapper.classList.contains('sticky')) return;
+        wrapper.classList.add('sticky')
     } else {
-        // CLOSED
-        this.parentElement.classList.add('hidden')
-
-        this.children[0].classList.add('material-icons')
-        this.classList.add('hidden')
-        this.children[0].innerHTML = 'subject'
-
-        textWrap.classList.remove('pushed')
-        setTimeout(function(){textWrap.style.transition = null}, 300)
-
-        helper_formatCollapsedSideBarHTML()
-    }
-}
-
-
-function sideBarScrollListeners () {
-    document.querySelector('.sidebar').onscroll = function () {
-        passiveScrollBar(this)
-    
-        if (this.scrollTop && this.scrollTop > 10) {
-            if (!(document.querySelector('.absoluteIcon').classList.contains('sticky'))) {
-                document.querySelector('.absoluteIcon').classList.add('sticky')
-            }
-        } else {
-            if (document.querySelector('.absoluteIcon').classList.contains('sticky')) {
-                document.querySelector('.absoluteIcon').classList.remove('sticky') 
-            }
+        if (wrapper.classList.contains('sticky')) {
+            wrapper.classList.remove('sticky')
         }
     }
-    document.querySelector('.sidebar').onmouseenter = function () {
-        passiveScrollBar(this)
-    }
-    document.querySelector('.sidebar').onmouseleave = function () {
-        passiveScrollBar(this, true)
-    }
 }
 
-
-var scrollTimer;
-function passiveScrollBar (elm, reverse) {
-    if (!(elm.classList.contains("on-scrollbar"))) {
-        clearTimeout(scrollTimer)
-
-        elm.classList.add("on-scrollbar");
-        elm.classList.remove("off-scrollbar");
-
-        scrollTimer = setTimeout(function(){
-            passiveScrollBar(elm, true)
-        }, 1500)    
-    } else if (reverse == true) {
-        clearTimeout(scrollTimer)
-
-        elm.classList.remove("on-scrollbar");
-        elm.classList.add("off-scrollbar");
-    } else if (elm.classList.contains("on-scrollbar")) {
-        clearTimeout(scrollTimer)
-        scrollTimer = setTimeout(function(){
-            passiveScrollBar(elm, true)
-        }, 1000)    
-    }
-}
-
+window.onscroll = stickyControls
 
 // SEARCH 
 
 function addSearchListener() {
-    document.querySelector('.searchBox > .material-icons.ready').onclick = initSearch
+    document.querySelector('.searchWrapper > .material-icons').onclick = initSearch
 }
 addSearchListener()
 
@@ -261,21 +193,7 @@ function closeSearch() {
 }
 
 function initSearch () {
-    this.innerHTML = "close"
-    var thisTransfer = this
-    var box = this.parentElement;
-    var querysBox = box.children[0];
 
-    querysBox.style.display = "grid"
-
-    setTimeout(function() {
-        thisTransfer.classList.remove("ready")
-        thisTransfer.classList.add("active")
-    
-        querysBox.classList.add("shown")
-        document.querySelector('.searchBox > .material-icons.active').onclick = closeSearch
-
-    }, 10)
 }
 
 

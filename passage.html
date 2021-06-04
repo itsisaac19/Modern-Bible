@@ -19,13 +19,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link href="https://api.fontshare.com/css?f[]=satoshi@300,400,500,700,900,1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="passage.css">
-    <link rel="stylesheet" href="mobile.css">
+    <link rel="stylesheet" media="print" href="print.css">
 
     <link id="none" rel="icon" href="icons8-open-book-50-neutral.png" type="png">
     <link id="light" rel="icon" href="icons8-open-book-50.png" media="(prefers-color-scheme:dark)" type="png">
     <link id="dark" rel="icon" href="icons8-open-book-50 (1).png" media="(prefers-color-scheme:light)" type="png">
 </head>
 <script>
+function addCSS (fileName) {
+    var link = document.createElement( "link" );
+    link.href = fileName
+    link.rel = "stylesheet";
+
+    document.querySelector('head').appendChild(link);
+}
+function removeCSS (fileName) {
+    document.querySelector(`link[href="${fileName}"]`).remove()
+}
+
+if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
+    addCSS('mobile.css')
+}
+
 class APIString {
     constructor(txt) {
         this.txt = txt;
@@ -52,7 +67,7 @@ class APIString {
             <div class="messageDisplayVersion"></div>
         </div>
 
-        <div class="searchBox">
+        <div id="avoid" class="searchBox wait hidden">
 
             <div class="searchqueryswrap">
                 <input placeholder="Book" class="searchqueryBook" list="booksDataList"></input>
@@ -70,7 +85,6 @@ class APIString {
 
                 <div class="gobutton material-icons">search</div>
             </div>
-            <span class="material-icons ready">search</span>
         </div>
 
         <div class="biblecontainer">
@@ -88,114 +102,29 @@ class APIString {
                 <div class="prevChap"></div>
                 <div class="nextChap"></div>
             </div>
-
-            <div class="bibleControlIcon">
-                <span>Aa</span>
-            </div>
-
-            <div class="bibleControls hidden">
-                <div class="bibleControl">
-                    <span class="bibleControlLabel">Line Height - <span class="line_height_value range_value_label">50px</span></span>
-                    <input type="range" min="30" max="70" value="37" dvalue="37" class="slider" id="lineSpacingRange">
-                </div>
-                <div class="bibleControl">
-                    <span class="bibleControlLabel">Font Size - <span class="font_size_value range_value_label">20px</span></span>
-                    <input type="range" min="10" max="30" value="17" dvalue="17" class="slider" id="fontSizeRange">
-                </div>
-                <div class="resetButton">
-                    <span class="resetLabel">RESET</span>
-                    <span id="restartRangeValueIcon" class="material-icons">restart_alt</span>
-                </div>
-                <button class="doneControl">DONE</button>
-            </div>
-        </div>
-        <div class="sidebar ready hidden off-scrollbar">
-            <div class="absoluteIcon hidden">
-                <span class="material-icons">subject</span>
-            </div>
-            <div class="sidebarinner">
-                <span class="bookName Genesis">Ge</span>
-                <span class="bookName Exodus">Ex</span>
-                <span class="bookName Leviticus">Le</span>
-                <span class="bookName Numbers">Nu</span>
-                <span class="bookName Deuteronomy">De</span>
-                <span class="bookName Joshua">Jo</span>
-                <span class="bookName Judges">Ju</span>
-                <span class="bookName Ruth">Ru</span>
-                <span class="bookName 1Samuel">1 Sa</span>
-                <span class="bookName 2Samuel">2 Sa</span>
-                <span class="bookName 1Kings">1 Ki</span>
-                <span class="bookName 2Kings">2 Ki</span>
-                <span class="bookName 1Chronicles">1 Ch</span>
-                <span class="bookName 2Chronicles">2 Ch</span>
-                <span class="bookName Ezra">Ez</span>
-                <span class="bookName Nehemiah">Ne</span>
-                <span class="bookName Esther">Es</span>
-                <span class="bookName Job">Jo</span>
-                <span class="bookName Psalms">Ps</span>
-                <span class="bookName Proverbs">Pr</span>
-                <span class="bookName Ecclesiastes">Ec</span>
-                <span class="bookName SongofSolomon">So</span>
-                <span class="bookName Isaiah">Is</span>
-                <span class="bookName Jeremiah">Je</span>
-                <span class="bookName Lamentations">La</span>
-                <span class="bookName Ezekiel">Ez</span>
-                <span class="bookName Daniel">Da</span>
-                <span class="bookName Hosea">Ho</span>
-                <span class="bookName Joel">Jo</span>
-                <span class="bookName Amos">Am</span>
-                <span class="bookName Obadiah">Ob</span>
-                <span class="bookName Jonah">Jo</span>
-                <span class="bookName Micah">Mi</span>
-                <span class="bookName Nahum">Na</span>
-                <span class="bookName Habakkuk">Ha</span>
-                <span class="bookName Zephaniah">Ze</span>
-                <span class="bookName Haggai">Ha</span>
-                <span class="bookName Zechariah">Ze</span>
-                <span class="bookName Malachi">Ma</span>
-                <span class="newTestament"></span>
-                <hr>
-                <span class="bookName Matthew">Ma</span>
-                <span class="bookName Mark">Ma</span>
-                <span class="bookName Luke">Lu</span>
-                <span class="bookName John">Jo</span>
-                <span class="bookName Acts">Ac</span>
-                <span class="bookName Romans">Ro</span>
-                <span class="bookName 1Corinthians">1 Co</span>
-                <span class="bookName 2Corinthians">2 Co</span>
-                <span class="bookName Galatians">Ga</span>
-                <span class="bookName Ephesians">Ep</span>
-                <span class="bookName Philippians">Ph</span>
-                <span class="bookName Colossians">Co</span>
-                <span class="bookName 1Thessalonians">1 Th</span>
-                <span class="bookName 2Thessalonians">2 Th</span>
-                <span class="bookName 1Timothy">1 Ti</span>
-                <span class="bookName 2Timothy">2 Ti</span>
-                <span class="bookName Titus">Ti</span>
-                <span class="bookName Philemon">Ph</span>
-                <span class="bookName Hebrews">He</span>
-                <span class="bookName James">Ja</span>
-                <span class="bookName 1Peter">1 Pe</span>
-                <span class="bookName 2Peter">2 Pe</span>
-                <span class="bookName 1John">1 Jo</span>
-                <span class="bookName 2John">2 Jo</span>
-                <span class="bookName 3John">3 Jo</span>
-                <span class="bookName Jude">Ju</span>
-                <span class="bookName Revelation">Re</span>
-            </div>
         </div>
 
-        <div class="otherControls">
-            <button class="bibleControlIconStickyLabel">
-                <span>Aa</span>
-            </button>
-    
-            <div class="translation_changer">
+        <div class="controlswrapper">
+            <div class="versionControlWrapper">
                 <select class="selectTranslations" name="translations" id="transSelection">
                     <option value="WEB">WEB</option>
                     <option value="NLT">NLT</option>
                     <option value="ESV">ESV</option>
                 </select>
+            </div>
+            <div class="textControlsWrapper">
+                <div class="textControl">
+                    <span class="textControlLabel">Line Height - <span class="line_height_value range_value_label">50px</span></span>
+                    <input type="range" min="30" max="70" value="37" dvalue="37" class="slider" id="lineSpacingRange">
+                </div>
+                <div class="textControl">
+                    <span class="textControlLabel">Font Size - <span class="font_size_value range_value_label">20px</span></span>
+                    <input type="range" min="10" max="30" value="17" dvalue="17" class="slider" id="fontSizeRange">
+                </div>
+                <span class="reset-text">RESET</span>
+            </div>
+            <div class="searchWrapper">
+                <span class="material-icons">search</span>
             </div>
         </div>
     </div>

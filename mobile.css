@@ -1,21 +1,26 @@
-body.mobiledevice .bibleControls, body.mobiledevice .bibleControlIcon,body.mobiledevice .bibleControlIconStickyLabel {
-    display: none;
-}
-body.mobiledevice .otherControls {
-    background-color: white;
+.controlswrapper {
     left: 50%;
     transform: translateX(-50%);
-    top: 25px;
-    height: 40px;
-    width: 55px;
+    width: calc(100% - 80px);
+}
 
-    border-radius: 10px;
+.versionControlWrapper > select {
+    width:inherit;
+    text-indent: calc(((((100vw - 80px) / 2) - 45px)/2));
 }
-body.mobiledevice .translation_changer {
-    top: -2px;
-    right: -10px;
+
+.controlswrapper {
+    column-gap: 0;
 }
-body.mobiledevice .translation_changer select:focus {
-    outline: none;
-    box-shadow:none;
+
+.controlswrapper > div.textControlsWrapper {
+    display: none;
+}
+
+.controlswrapper > div.searchWrapper {
+    margin-left: 10px;
+    width: calc(((100vw - 80px) / 2) - 5px);
+}
+.controlswrapper > div.versionControlWrapper {
+    width: calc(((100vw - 80px) / 2) - 5px);
 }

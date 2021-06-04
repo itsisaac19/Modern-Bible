@@ -14,6 +14,10 @@ html, body {
     width:100%;
 }
 
+.blurred {
+    filter: blur(2px);
+}
+
 
 .outerwrap {
     position: absolute;
@@ -56,8 +60,18 @@ html, body {
     z-index: 100;
     user-select:none;
     position: fixed;
-    top: 30px;
-    right: 30px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    transition: opacity 0.3s, top 0.3s;
+}
+.searchBox.wait {
+    top: 49%;
+    opacity: 0;
+}
+.searchBox.hidden {
+    display: none;
 }
 .searchBox > span.material-icons {
     position: absolute;
@@ -90,29 +104,19 @@ html, body {
 }
 
 .searchqueryswrap {
-    display: none;
-    position: absolute;
-    opacity: 0;
-
-    right: 0px;
-
-    height: 49px;
+    height: 69px;
     width: min-content;
-
     padding-left: 5px;
-
     border-radius: 12px;
+    border: 1px solid #bababa;
     background-color: #f7f7f7;
-    box-shadow:  5px 5px 10px #e3e3e3,
-    -5px -5px 10px #ffffff;
-
+    box-shadow: 0px 8px 25px #00000063;
     transition: 0.3s ease;
-
+    display: grid;
     grid-template-columns: auto;
     grid-template-rows: 1fr;
-
     grid-auto-flow: column;
-}
+    }
 
 .searchqueryswrap.shown {
     width: min-content;
@@ -128,10 +132,12 @@ input::-webkit-calendar-picker-indicator {
     box-shadow: 0 0 0 2px rgb(255, 255, 255);
 }
 .searchqueryswrap > input{
+    -webkit-appearance: none;
+    appearance: none;
     margin: 8px 4px;
     border-radius: 10px;
     border: none;
-    background-color: #ececec;
+    background-color: #f7f7f7;
     text-indent: 10px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
@@ -158,22 +164,21 @@ input::-webkit-calendar-picker-indicator {
 }
 .searchqueryswrap > div.gobutton {
     cursor: pointer;
-    margin: 8px 60px 8px 10px;
-    padding: 0 10px;
-
+    margin: 8px 10px 8px 10px;
+    padding: 0 30px;
     width: min-content;
     color: #1e1e1e;
-
     border-radius: 9px;
-    background-color: #f7f7f7;
-    box-shadow:  4px 4px 8px #d2d2d2,
-    -4px -4px 8px #ffffff;
-
-    font-size: 15px;
-
+    background: linear-gradient(145deg, #f0f0f0, #ffffff);
+    box-shadow: 9px 9px 18px #efefef, -9px -9px 18px #ffffff;
+    font-size: 25px;
     display: grid;
     place-items: center;
-    transition: 0.3s ease;
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+.searchqueryswrap > div.gobutton:hover {
+    background: linear-gradient(145deg, #f0f0f0, #ffffff);
+    box-shadow: 9px 9px 18px #eaeaea, -9px -9px 18px #ffffff;
 }
 .searchqueryswrap > div.gobutton:active {
     transform: scale(0.9);
@@ -334,6 +339,153 @@ span.footer {
     display: block;
 }
 
+.controlswrapper {
+    position: fixed;
+    top: 30px;
+    left: 16%;
+
+    height: 70px;
+    width: min-content;
+    max-width: 900px;
+
+    padding: 0 13px;
+    border-radius: 10px;
+    
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: min-content min-content min-content;
+    grid-auto-flow: column;
+    column-gap: 15px;
+
+    box-shadow: 41px 41px 82px #dcdcdc, -41px -41px 82px #efefef;
+    background-color: #fafafa;
+
+    transition: background-color 0.4s ease, box-shadow 0.4s ease;
+}
+@media (min-width: 1370px) {
+    .controlswrapper {
+        left: 50%;
+        transform: translateX(-50%);
+    } 
+}
+
+.controlswrapper > div {
+    margin: 10px 0;
+    max-height: 50px;
+
+    border: none;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0);
+    box-shadow: 0px 0px 0px 1px #edecec;
+
+    color: rgb(87, 87, 87); 
+    display: grid;
+
+    transition: background-color 0.4s ease, box-shadow 0.4s ease;
+}
+.controlswrapper > div:hover {
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.043);
+    background-color: white;
+}
+
+.versionControlWrapper > select {
+    cursor: pointer;
+    margin: 0px;
+    width: 70px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    text-align: center;
+    text-align-last: center;
+    border-radius: inherit;
+
+    border: none;
+    background-color: transparent;
+    color: inherit;
+}
+
+.textControlsWrapper {
+    grid-auto-flow: column;
+    column-gap: 20px;
+}
+.textControl:last-child {
+    margin-right: 20px;
+}
+.textControlsWrapper > div {
+    display: grid;
+    place-items: center;
+    grid-auto-flow: column;
+
+    margin: 0px;   
+}
+.textControlLabel {
+    white-space: nowrap;
+    margin: 0 15px 0 20px;
+    color: rgb(87, 87, 87); 
+}
+.textControlLabel .range_value_label {
+    color: rgb(164, 164, 164);
+}
+
+.textControl > input {
+    -webkit-appearance: none;
+    appearance: none;
+    width: auto;
+    height: 10px;
+    border-radius: 10px;
+    margin: 4px 20px 0 5px;
+    background: #e8e8e8;
+}
+.textControl > input::-webkit-slider-thumb {
+    -webkit-appearance: none; 
+    appearance: none;
+    
+    width: 18px; 
+    height: 18px; 
+
+    border-radius: 10px;
+    background: #d8d8d8;
+
+    cursor: pointer; 
+
+    transition: transform 0.2s, background 0.2s;
+}
+.textControl > input::-webkit-slider-thumb:hover {
+    background: #bbbbbb;
+    transform: scale(1.3)
+}
+.reset-text {
+    opacity: 1;
+    margin: auto 20px auto 0;
+    color: #575757;
+    cursor: pointer;
+
+    padding: 5px 10px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 7px;
+    box-shadow: 0px 0px 0px 1px rgb(235, 235, 235);
+
+    transition: margin 0.2s ease, opacity 0.4s ease, color 0.2s ease,background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.reset-text:hover {
+    box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.125);
+}
+
+.searchWrapper {
+    z-index: 100;
+    cursor: pointer;
+    display: grid;
+    width: 50px;
+}
+
+.searchWrapper > span {
+    margin: auto;
+    color: inherit;
+}
+
 .bibleControlIcon {
     cursor: pointer;
 
@@ -432,6 +584,8 @@ span.footer {
 
     transition: transform 0.2s, background 0.2s;
 }
+
+
 
 .bibleControl > input::-webkit-slider-thumb:hover {
     background: #bbbbbb;
@@ -730,7 +884,7 @@ span.footer {
 
 @media (max-width: 900px) {
     .outerwrap .biblecontainer {
-        margin: 0px auto auto 27px;
+        margin: 0px auto auto auto;
         width: 85%;
     }
     .outerwrap .biblecontainer.pushed {
@@ -779,7 +933,7 @@ span.footer {
     .searchqueryswrap > input {
         text-indent: 7px;
         font-size: 13px;
-        width: 80px;
+        width: calc(100% - 20px);
     }
     .searchqueryswrap > div.gobutton {
         margin: 8px 20px 10px 8px;
@@ -792,9 +946,6 @@ span.footer {
     .searchqueryBook {
         width: 60px;
     }
-    .searchBox {
-        top: 20px;
-    }
     .searchBox > span.material-icons {
         padding: 9.5px;
         font-size: 21px;
@@ -804,13 +955,32 @@ span.footer {
         padding: 12px;
         font-size: 25px;
     }
-    .absoluteIcon.hidden.sticky, .absoluteIcon.hidden {
-        z-index: 1000;
-        visibility: visible;
-        top: 20px;
-        left: 15px;
-        background-color:rgb(247, 247, 247);
-        width: 40px;
-        border-radius: 12px;
+
+    /* TOP BAR */
+    .controlswrapper {
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% - 80px);
+    }
+    
+    .versionControlWrapper > select {
+        width:inherit;
+        text-indent: 0;
+    }
+    
+    .controlswrapper {
+        column-gap: 0;
+    }
+    
+    .controlswrapper > div.textControlsWrapper {
+        display: none;
+    }
+    
+    .controlswrapper > div.searchWrapper {
+        margin-left: 10px;
+        width: calc(((100vw - 80px) / 2) - 15px);
+    }
+    .controlswrapper > div.versionControlWrapper {
+        width: calc(((100vw - 80px) / 2) - 10px);
     }
 }

@@ -117,16 +117,15 @@ function NLTparser (HTML) {
     var fullChapter = true;
     let verse = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value || 1
 
-    if (GLOBAL_VAR_ARRAY.urlParamsObject.verse.value) fullChapter = false;
+    if (GLOBAL_VAR_ARRAY.urlParamsObject.verse.value) {
+        fullChapter = false;
+    } 
+    testValidity(GLOBAL_VAR_ARRAY.urlParamsObject.book.value, GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value, GLOBAL_VAR_ARRAY.urlParamsObject.verse.value)
 
     // DOM Timings: Scrolling back to top, and displaying last verse number for a full chapter
     setTimeout(function() {
         window.scroll({top: 0, behavior: 'smooth'});
         
-        var firstVerseNumber = document.querySelector('bibletextcontainer versenumber:first-of-type').innerHTML.replace(/(\()/g, '').replace(/(\))/g, '').replaceAll("<br>", "").replace(/&nbsp;/gi, '');  
-        topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + firstVerseNumber
-        GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = parseInt(firstVerseNumber)
-
         var lastVerseNumber = document.querySelectorAll('bibletextcontainer versenumber')[document.querySelectorAll('bibletextcontainer versenumber').length - 1].innerHTML
         lastVerseNumber = lastVerseNumber.replace(/(\()/g, '').replace(/(\))/g, '').replaceAll("<br>", "");    
         if (fullChapter == true) topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + verse + '-' + lastVerseNumber.trim().replace(/&nbsp;/gi, '')
