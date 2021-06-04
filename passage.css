@@ -346,7 +346,6 @@ span.footer {
 
     height: 70px;
     width: min-content;
-    max-width: 900px;
 
     padding: 0 13px;
     border-radius: 10px;
@@ -881,7 +880,6 @@ span.footer {
 .translation_changer select::-ms-expand {
     display: none;
 }
-
 @media (max-width: 900px) {
     .outerwrap .biblecontainer {
         margin: 0px auto auto auto;
