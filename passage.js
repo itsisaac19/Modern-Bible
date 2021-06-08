@@ -572,6 +572,23 @@ function ChapterNavigation(currChap) {
     console.log("Prev Chapter: " +chapterBefore,"Next Chapter: " +chapterAfter, ", Book:", currentBook)
 }
 
+function hideSearchBox () {
+    if (document.querySelector('.searchBox').classList.contains('hidden') == true) {
+        return
+    }
+    document.querySelector('.searchBox').classList.add('wait')
+    let allOtherEls = document.querySelectorAll(`.outerwrap > div:not([id="avoid"])`);
+    allOtherEls.forEach(el => {
+        el.classList.remove('blurred')
+    })
+
+    wrapperTimeout = setTimeout(() => {
+        document.querySelector('.searchBox').classList.add('hidden')
+    }, 300)  
+}
+
+var outClickHideSearch;
+
 function searchListeners() {
     var wrapperTimeout;
     document.querySelector('.searchWrapper').onclick = function () {
@@ -580,6 +597,11 @@ function searchListeners() {
             document.querySelector('.searchBox').classList.remove('hidden')
             setTimeout(() => {
                 document.querySelector('.searchBox').classList.remove('wait')
+                outClickHideSearch = document.querySelector('.searchBox').addEventListener('outclick', function (e) {
+                    hideSearchBox()
+                    console.log('outclidede')
+                    document.querySelector('.searchBox').removeEventListener('outclick', outClickHideSearch)
+                })                
             })  
             allOtherEls.forEach(el => {
                 el.classList.add('blurred')

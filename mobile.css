@@ -24,3 +24,29 @@
 .controlswrapper > div.versionControlWrapper {
     width: calc(((100vw - 80px) / 2) - 5px);
 }
+
+.mobile-sticky {
+    top: 0;
+    width: 100%;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: 0px 2px 45px #00000024;
+}
+
+.controlswrapper.mobile-sticky > div.versionControlWrapper {
+    margin: 0px 0px 0 0px;
+    width: 50vw;
+    max-height: 100%;
+    border-radius: 0;
+    box-shadow: 1px 0px 0px #e4e4e4;
+}   
+.controlswrapper.mobile-sticky > div.versionControlWrapper > select {
+    text-indent: calc(((50vw - 20px) / 2) - 15px);
+    transition: inherit;
+}
+.controlswrapper.mobile-sticky > div.searchWrapper {
+    margin: 0;
+    width: 50vw;
+    max-height: 100%;
+    box-shadow: none;
+}           

@@ -156,15 +156,29 @@ function focusBook(book, firstTime) {
 
 function stickyControls () {
     let wrapper = document.querySelector('.controlswrapper')
-    if (window.scrollY > 10) {
-        if (wrapper.classList.contains('sticky')) return;
-        wrapper.classList.add('sticky')
+    let wrapperChildren = wrapper.querySelectorAll('div')
+
+    if (isMobile == false) return;
+    wrapper.style.transition = 'top 0.3s ease-out, padding 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease-out, width 0.3s ease-out, text-indent 0.3s ease'
+    wrapperChildren.forEach(child => {
+        child.style.transition = 'width 0.3s ease-out'
+    })
+    
+    if (window.scrollY > 0) {
+        if (wrapper.classList.contains('mobile-sticky') == true) return;
+        wrapper.classList.add('mobile-sticky')
     } else {
-        if (wrapper.classList.contains('sticky')) {
-            wrapper.classList.remove('sticky')
+        if (wrapper.classList.contains('mobile-sticky')) {
+            wrapper.classList.remove('mobile-sticky')
         }
     }
-}
+}    
+
+$('.selectTranslations').on('focus', function(e) {
+    var savedScrollTop = $(document).scrollTop(); // save scroll position
+    $(document).scrollTop(savedScrollTop ); // restore it
+    //alert(savedScrollTop)
+});
 
 window.onscroll = stickyControls
 
