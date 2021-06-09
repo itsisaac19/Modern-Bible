@@ -129,6 +129,10 @@ function NLTparser (HTML) {
         var lastVerseNumber = cleanText(document.querySelectorAll('bibletextcontainer versenumber')[document.querySelectorAll('bibletextcontainer versenumber').length - 1].innerHTML)   
         if (fullChapter == true) topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + verse + '-' + lastVerseNumber;
 
+        if (fullChapter == true) { 
+            return readyCallback()
+        }
+
         if (!(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value)) {
             GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = verse + '-' + lastVerseNumber
         }
