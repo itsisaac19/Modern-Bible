@@ -126,9 +126,16 @@ function NLTparser (HTML) {
     setTimeout(function() {
         window.scroll({top: 0, behavior: 'smooth'});
         
-        var lastVerseNumber = document.querySelectorAll('bibletextcontainer versenumber')[document.querySelectorAll('bibletextcontainer versenumber').length - 1].innerHTML
-        lastVerseNumber = lastVerseNumber.replace(/(\()/g, '').replace(/(\))/g, '').replaceAll("<br>", "");    
-        if (fullChapter == true) topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + verse + '-' + lastVerseNumber.trim().replace(/&nbsp;/gi, '')
+        var lastVerseNumber = cleanText(document.querySelectorAll('bibletextcontainer versenumber')[document.querySelectorAll('bibletextcontainer versenumber').length - 1].innerHTML)   
+        if (fullChapter == true) topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + verse + '-' + lastVerseNumber;
+
+        if (!(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value)) {
+            GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = verse + '-' + lastVerseNumber
+        }
+
+        if (GLOBAL_VAR_ARRAY.urlParamsObject.verse.value.includes('-') == false) {
+            GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = verse + '-' + lastVerseNumber
+        }
         
         readyCallback()
     }, 10)

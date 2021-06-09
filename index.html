@@ -25,8 +25,6 @@
     <meta property="twitter:image" content="https://modernbible.life/ModernBiblePassageImage.png">
 
     <link id="none" rel="icon" href="icons8-open-book-50-neutral.png" type="png">
-    <link id="light" rel="icon" href="icons8-open-book-50.png" media="(prefers-color-scheme:dark)" type="png">
-    <link id="dark" rel="icon" href="icons8-open-book-50 (1).png" media="(prefers-color-scheme:light)" type="png">
 </head>
 <style>
     body {
@@ -302,101 +300,9 @@ input:-internal-autofill-selected {
         </div>
         <div class="spacer"></div>
     </div>
-<!-- Code injected by live-server -->
-<script type="text/javascript">
-	// <![CDATA[  <-- For SVG support
-	if ('WebSocket' in window) {
-		(function () {
-			function refreshCSS() {
-				var sheets = [].slice.call(document.getElementsByTagName("link"));
-				var head = document.getElementsByTagName("head")[0];
-				for (var i = 0; i < sheets.length; ++i) {
-					var elem = sheets[i];
-					var parent = elem.parentElement || head;
-					parent.removeChild(elem);
-					var rel = elem.rel;
-					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-					}
-					parent.appendChild(elem);
-				}
-			}
-			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-			var address = protocol + window.location.host + window.location.pathname + '/ws';
-			var socket = new WebSocket(address);
-			socket.onmessage = function (msg) {
-				if (msg.data == 'reload') window.location.reload();
-				else if (msg.data == 'refreshcss') refreshCSS();
-			};
-			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-				console.log('Live reload enabled.');
-				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-			}
-		})();
-	}
-	else {
-		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-	}
-	// ]]>
-</script><!-- Code injected by live-server -->
-<script type="text/javascript">
-	// <![CDATA[  <-- For SVG support
-	if ('WebSocket' in window) {
-		(function () {
-			function refreshCSS() {
-				var sheets = [].slice.call(document.getElementsByTagName("link"));
-				var head = document.getElementsByTagName("head")[0];
-				for (var i = 0; i < sheets.length; ++i) {
-					var elem = sheets[i];
-					var parent = elem.parentElement || head;
-					parent.removeChild(elem);
-					var rel = elem.rel;
-					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-					}
-					parent.appendChild(elem);
-				}
-			}
-			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-			var address = protocol + window.location.host + window.location.pathname + '/ws';
-			var socket = new WebSocket(address);
-			socket.onmessage = function (msg) {
-				if (msg.data == 'reload') window.location.reload();
-				else if (msg.data == 'refreshcss') refreshCSS();
-			};
-			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
-				console.log('Live reload enabled.');
-				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
-			}
-		})();
-	}
-	else {
-		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
-	}
-	// ]]>
-</script></body>
+</body>
 <script src="data.js"></script>
 <script>
-
-function faviconTheme() {
-    const none = document.querySelector('link#none')
-    const darkFavicon = document.querySelector('link#dark')
-    const lightFavicon = document.querySelector('link#light')
-
-    if (window.matchMedia('prefers-color-scheme:dark').matches) {
-        // It's a dark theme...'
-        darkFavicon.remove()
-    } else if (window.matchMedia('prefers-color-scheme:light').matches) {
-        // It's not a dark theme...
-        lightFavicon.remove()
-    } else {
-        darkFavicon.remove()
-        lightFavicon.remove()
-    }
-}
-faviconTheme()
 
 class APIString {
     constructor(txt) {
@@ -419,10 +325,10 @@ function dummy (book, chapter, verse) {
     console.log("Fetching: ", book, chapter, verse)
 
     if (chapter && verse) {
-        window.location.href = "passage.html?book=" + book + "&chapter=" + chapter + "&verse=" + verse + '&version=WEB'
+        window.location.href = "passage.html?book=" + book + "&chapter=" + chapter + "&verse=" + verse + '&version=ESV'
     }
     if (book && chapter && !(verse)) {
-        window.location.href = "passage.html?book=" + book + "&chapter=" + chapter + '&version=WEB'
+        window.location.href = "passage.html?book=" + book + "&chapter=" + chapter + '&version=ESV'
     }
 }
 

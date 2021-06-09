@@ -25,7 +25,7 @@
     <link id="dark" rel="icon" href="icons8-open-book-50 (1).png" media="(prefers-color-scheme:light)" type="png">
 </head>
 <script>
-var isMobile;
+var isMobile = false;
 
 function addCSS (fileName) {
     var link = document.createElement( "link" );
@@ -100,9 +100,10 @@ class APIString {
 
             </bibletextcontainer>
             <div class="bookNav">
-                <hr>
-                <div class="prevChap"></div>
-                <div class="nextChap"></div>
+                <div class="line horizontal"></div>
+                <div class="line vertical"></div>
+                <div class="prevChap chap"></div>
+                <div class="nextChap chap"></div>
             </div>
         </div>
 
@@ -127,6 +128,9 @@ class APIString {
             </div>
             <div class="searchWrapper">
                 <span class="material-icons">search</span>
+            </div>
+            <div class="passageHinterWrapper">
+                <span class="passageHinter"></span>
             </div>
         </div>
     </div>

@@ -158,18 +158,34 @@ function stickyControls () {
     let wrapper = document.querySelector('.controlswrapper')
     let wrapperChildren = wrapper.querySelectorAll('div')
 
-    if (isMobile == false) return;
-    wrapper.style.transition = 'top 0.3s ease-out, padding 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease-out, width 0.3s ease-out, text-indent 0.3s ease'
-    wrapperChildren.forEach(child => {
-        child.style.transition = 'width 0.3s ease-out'
-    })
-    
-    if (window.scrollY > 0) {
-        if (wrapper.classList.contains('mobile-sticky') == true) return;
-        wrapper.classList.add('mobile-sticky')
+    if (isMobile == true) {
+        wrapper.classList.add('stickyTransitions')
+        wrapperChildren.forEach(child => {
+            child.classList.add('stickyTransitions')
+            child.classList.add('modstickyTransitions')
+        })
+        
+        if (window.scrollY > 0) {
+            if (wrapper.classList.contains('mobile-sticky') == true) return;
+            wrapper.classList.add('mobile-sticky')
+        } else {
+            if (wrapper.classList.contains('mobile-sticky')) {
+                wrapper.classList.remove('mobile-sticky')
+            }
+        }
     } else {
-        if (wrapper.classList.contains('mobile-sticky')) {
-            wrapper.classList.remove('mobile-sticky')
+        wrapper.classList.add('stickyTransitions')
+        wrapperChildren.forEach(child => {
+            child.classList.add('stickyTransitions')
+        })
+        
+        if (window.scrollY > 0) {
+            if (wrapper.classList.contains('reg-sticky') == true) return;
+            wrapper.classList.add('reg-sticky')
+        } else {
+            if (wrapper.classList.contains('reg-sticky')) {
+                wrapper.classList.remove('reg-sticky')
+            }
         }
     }
 }    
@@ -211,7 +227,20 @@ function initSearch () {
 }
 
 
+function cleanText(txt) {
+    var clean = txt;
 
+    // Trim
+    clean = clean.trim()
+
+    // Line Breaks
+    clean = clean.replaceAll("<br>", "")
+
+    // &nbsp;
+    clean = clean.replace(/&nbsp;/gi, '')
+
+    return clean;
+}
 
 
 

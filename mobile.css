@@ -6,7 +6,7 @@
 
 .versionControlWrapper > select {
     width:inherit;
-    text-indent: calc(((((100vw - 80px) / 2) - 45px)/2));
+    text-indent: calc(((((100vw - 80px) / 2) - 34px)/2));
 }
 
 .controlswrapper {
@@ -17,9 +17,20 @@
     display: none;
 }
 
+.controlswrapper > div.passageHinterWrapper {
+    display: grid;
+    margin-right: 10px;
+    width: calc(((100vw - 80px) / 2) - 5px);
+    grid-area: 1/1/1/1;
+    font-size: 13.333px;
+}
+
 .controlswrapper > div.searchWrapper {
+    display: none;
     margin-left: 10px;
     width: calc(((100vw - 80px) / 2) - 5px);
+    box-shadow: 1px 0px 0px #e4e4e4;
+    grid-area: 1/1/1/1;
 }
 .controlswrapper > div.versionControlWrapper {
     width: calc(((100vw - 80px) / 2) - 5px);
@@ -38,15 +49,23 @@
     width: 50vw;
     max-height: 100%;
     border-radius: 0;
-    box-shadow: 1px 0px 0px #e4e4e4;
+    box-shadow: none;
 }   
 .controlswrapper.mobile-sticky > div.versionControlWrapper > select {
-    text-indent: calc(((50vw - 20px) / 2) - 15px);
+    text-indent: calc(((50vw - 20px) / 2) - 9px);
     transition: inherit;
 }
-.controlswrapper.mobile-sticky > div.searchWrapper {
+.controlswrapper.mobile-sticky > div.passageHinterWrapper {
     margin: 0;
     width: 50vw;
     max-height: 100%;
-    box-shadow: none;
+    border-radius: 0;
+    box-shadow: 1px 0px 0px #e4e4e4;
 }           
+
+.controlswrapper.stickyTransitions {
+    transition: top 0.3s ease-out 0s, padding 0.3s ease 0s, box-shadow 0.3s ease 0s, border-radius 0.3s ease-out 0s, width 0.3s ease-out 0s, text-indent 0s !important;
+}
+.modstickyTransitions {
+    transition: width 0.3s ease-out !important;
+}
