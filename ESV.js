@@ -96,7 +96,7 @@ function ESVparser (response) {
             GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = verse + '-' + lastVerseNumber
         }
 
-        if (GLOBAL_VAR_ARRAY.urlParamsObject.verse.value.includes('-') == false) {
+        if (GLOBAL_VAR_ARRAY.urlParamsObject.verse.value.includes('-') == false && fullChapter == true) {
             GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = verse + '-' + lastVerseNumber
         }
         

@@ -245,14 +245,12 @@ function cleanText(txt) {
 
 
 function placeDataLists(firstTime = true) {
-    if (!document.querySelector('span.bookName.active') && firstTime === true) return;
-
-    var currentBook = document.querySelector('span.bookName.active').classList[1].replace("&", " ")
+    var currentBook = GLOBAL_VAR_ARRAY.urlParamsObject.book.value
     // BOOKS
     var booksList = document.querySelector('#booksDataList');
     booksList.innerHTML = "";
 
-    books.forEach(function(book) {
+    books.forEach((book) => {
         var optionEl = document.createElement('option');
         optionEl.innerHTML = book;
 
@@ -285,7 +283,6 @@ function chapterListBasedOffBook(book) {
     }
 }
 
-setTimeout(placeDataLists, 500)
 
 
 

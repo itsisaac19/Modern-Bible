@@ -185,12 +185,16 @@ function ESV_VersionRequest (book, chapter, verse) {
 function setPassageHinter () {
     let p = GLOBAL_VAR_ARRAY.urlParamsObject
     let hinterEl = document.querySelector('.passageHinter')
-    hinterEl.innerHTML = `${p.book.value} ${p.chapter.value}:${p.verse.value}`
+
+    let chapterVerse = document.querySelector('biblechapterverse').textContent
+    let lastVerse = chapterVerse.substring(chapterVerse.indexOf(':')+1, chapterVerse.length)
+    hinterEl.innerHTML = `${p.book.value} ${p.chapter.value}:${p.verse.value || lastVerse}`
 }
 
 function readyCallback () {
     setMetaTags()
     setPassageHinter()
+    placeDataLists()
 }
 
 function fetchBible (book, chapter, verse, version) {
@@ -346,7 +350,7 @@ function parseAPIContent (main, version) {
             GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = verse + '-' + lastVerseNumber
         }
 
-        if (GLOBAL_VAR_ARRAY.urlParamsObject.verse.value.includes('-') == false) {
+        if (GLOBAL_VAR_ARRAY.urlParamsObject.verse.value.includes('-') == false && fullChapter == true) {
             GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = verse + '-' + lastVerseNumber
         }
 
@@ -536,12 +540,11 @@ function ChapterNavigation(currChap) {
 
         GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value = this.dataset.bibleChapter
         changeQueryParams('changing chapter')
-        console.log(this.dataset.bibleChapter)
+        //console.log(this.dataset.bibleChapter)
     }
 
     var currentBook = booksAndInfo[GLOBAL_VAR_ARRAY.urlParamsObject.book.value]
-    var currBookName = currentBook
-    var bookIndex = books.indexOf(currBookName)
+    var bookIndex = books.indexOf(GLOBAL_VAR_ARRAY.urlParamsObject.book.value)
 
     var prevWrap = document.querySelector('.prevChap')
     prevWrap.innerHTML = ''
@@ -563,7 +566,6 @@ function ChapterNavigation(currChap) {
     } else {
         prevWrap.dataset.bibleBook = bookBefore
         delete prevWrap.dataset.bibleChapter 
-
         if (bookBefore) {
             prevWrap.innerHTML = `&larr; ${bookBefore}`
             prevWrap.onclick = chapterNavHandler

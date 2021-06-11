@@ -3,6 +3,9 @@
     transform: translateX(-50%);
     width: calc(100% - 80px);
 }
+.controlswrapper.mobile-sticky {
+    height: 55px;
+}
 
 .versionControlWrapper > select {
     width:inherit;
@@ -64,7 +67,7 @@
 }           
 
 .controlswrapper.stickyTransitions {
-    transition: top 0.3s ease-out 0s, padding 0.3s ease 0s, box-shadow 0.3s ease 0s, border-radius 0.3s ease-out 0s, width 0.3s ease-out 0s, text-indent 0s !important;
+    transition: top 0.2s ease-out 0s, height 0.3s ease, padding 0.3s ease 0s, box-shadow 0.3s ease 0s, border-radius 0.3s ease-out 0s, width 0.3s ease-out 0s, text-indent 0s !important;
 }
 .modstickyTransitions {
     transition: width 0.3s ease-out !important;
