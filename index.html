@@ -381,12 +381,13 @@ document.querySelector('.gobutton').onclick = function () {
     document.querySelector('.searchqueryChapter').value = chap
     document.querySelector('.searchqueryVerse').value = verse
 
-    if (!(book) || (!chap)){
+    if (!(book)){
         if ((!booksAndInfo[book])) document.querySelector('.searchqueryBook').style.boxShadow = '0 0 0 2px #d49b9b';
         if (!(book)) document.querySelector('.searchqueryBook').style.boxShadow = '0 0 0 2px #d49b9b';
-        if (!(chap)) document.querySelector('.searchqueryChapter').style.boxShadow = '0 0 0 2px #d49b9b';
         return;
     }
+
+    if (!(chap)) chap = 1;
 
     dummy(book.parseForAPI(), chap, verse)
 }
