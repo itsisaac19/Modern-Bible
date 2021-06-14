@@ -39,22 +39,25 @@ function ESVparser (response) {
         finalPush = parse()
     }
 
-    
 
     let currentBook = GLOBAL_VAR_ARRAY.urlParamsObject.book.value
+    let fullChapter = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value ? false : true;
+    let chapter = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value;
+    let verse = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value || 1;
+
     // DOM Insert: Book
     var topBook = document.querySelector('.biblecontainer biblepassageinfo biblebook')
     topBook.innerHTML = `${currentBook.toUpperCase()}&nbsp`.repeat(Math.ceil(40 / (currentBook.length + 1)))
 
     // DOM Insert: Chapter and verse 
     var topChapterVerse = document.querySelector('.biblecontainer biblepassageinfo bibleChapterVerse')
-    topChapterVerse.innerHTML = `${GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value}:${GLOBAL_VAR_ARRAY.urlParamsObject.verse.value}`
+    topChapterVerse.innerHTML = `${chapter}:${verse}`
 
     // DOM Insert: Text content
     var DOMbody = document.querySelector('.biblecontainer bibletextcontainer')
     DOMbody.innerHTML = finalPush;
 
-    if (parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value)) {
+    if (parseInt(verse)) {
         isOneVersePassage()
     }
 
@@ -72,32 +75,28 @@ function ESVparser (response) {
     }
     footnotesClicks()
 
-    ChapterNavigation(parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value))
+    ChapterNavigation(parseInt(chapter))
     showMainContent()
 
-    var fullChapter = true;
-    let verse = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value || 1
-
-    if (GLOBAL_VAR_ARRAY.urlParamsObject.verse.value) fullChapter = false;
-    testValidity(GLOBAL_VAR_ARRAY.urlParamsObject.book.value, GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value, GLOBAL_VAR_ARRAY.urlParamsObject.verse.value)
+    testValidity(currentBook, chapter, verse)
 
     // DOM Timings: Scrolling back to top, and displaying last verse number for a full chapter
     setTimeout(function() {
         window.scroll({top: 0, behavior: 'smooth'});
 
         var lastVerseNumber = cleanText(document.querySelectorAll('bibletextcontainer versenumber')[document.querySelectorAll('bibletextcontainer versenumber').length - 1].innerHTML)   
-        if (fullChapter == true) topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + verse + '-' + lastVerseNumber;
+        if (fullChapter == true) topChapterVerse.innerHTML = chapter + ':' + verse + '-' + lastVerseNumber;
 
         if (fullChapter == true) { 
             return readyCallback()
         }
 
-        if (!(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value)) {
-            GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = verse + '-' + lastVerseNumber
+        if (!(verse)) {
+            verse = verse + '-' + lastVerseNumber
         }
 
-        if (GLOBAL_VAR_ARRAY.urlParamsObject.verse.value.includes('-') == false && fullChapter == true) {
-            GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = verse + '-' + lastVerseNumber
+        if (verse.includes('-') == false && fullChapter == true) {
+            verse = verse + '-' + lastVerseNumber
         }
         
         readyCallback()

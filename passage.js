@@ -31,7 +31,7 @@ function WEB_VersionRequest (book, chapter, verse) {
             }
         })
         .then(data => {
-            parseAPIContent(data)
+            WEBparser(data)
         })
         console.log("Fetching: " + ` @${requestStr}`, book, chapter, verse)
     }
@@ -46,49 +46,12 @@ function WEB_VersionRequest (book, chapter, verse) {
             }
         })
         .then(data => {
-            parseAPIContent(data)
+            WEBparser(data)
         })
         console.log("Fetching: " + ` @${requestStr}`, book, chapter)
     }
 
 }
-
-function displayMessage (text, options) {
-    let DOMel = document.querySelector('.messageDisplayContent');
-    DOMel.innerHTML = text;
-
-    let link = document.querySelector('.messageDisplayLink')
-    let search = document.querySelector('.messageDisplaySearch')
-    let versionSwitcher = document.querySelector('.messageDisplayVersion')
-
-    if (!options) return;
-
-    if (options.switchVersion == true) {
-        versionSwitcher.classList.add('shown')
-    }
-
-    if (options.searchError == true) {
-        search.classList.add('shown')
-    }
-
-    if (options.redirectLink == true) {
-        link.style.classList.add('shown');
-        link.innerHTML = options.redirectLink;
-    }
-}
-function clearMessage () {
-    let DOMel = document.querySelector('.messageDisplayContent');
-    DOMel.innerHTML = null;
-    let link = document.querySelector('.messageDisplayLink')
-    link.innerHTML = null;
-    let search = document.querySelector('.messageDisplaySearch')
-    search.innerHTML = null;
-    let versionSwitcher = document.querySelector('.messageDisplayVersion')
-    versionSwitcher.innerHTML = null;
-}
-
-// API KEY: 251715bb-d01d-4b99-8a83-64043b090660
-// EXAMPLE REQUEST: http://api.nlt.to/api/passages?ref=John+1:1-2&key=TEST
 
 function NLT_VersionRequest (book, chapter, verse) {
 
@@ -141,21 +104,6 @@ function NLT_VersionRequest (book, chapter, verse) {
 }
 
 function ESV_VersionRequest (book, chapter, verse) {
-    console.log("Fetching: ", book, chapter, verse)
-
-    // if (book.toLowerCase().includes('songofsolomon') == true) {
-    //     console.warn('Support for Song of Solomon is not available in NLT')
-    //     return displayMessage('Song of Solomon is not available in NLT.', {
-    //         switchVersion: true,
-    //         redirectLink: false,
-    //         searchError: false
-    //     });
-    // }
-
-    if (book && isNaN(book.charAt(0)) == false) {
-        let num = book.charAt(0);
-        book = num + ' ' + book.substring(1, book.length);
-    }
 
     var ESVHeaders = new Headers();
     ESVHeaders.append("Authorization", "Token 21e8c9c7473c40e539c611b6b89b431e3e84514a");
@@ -168,7 +116,7 @@ function ESV_VersionRequest (book, chapter, verse) {
 
     // Verse param unspecified:
     if (!verse) {
-        fetch(`https://api.esv.org/v3/passage/text/?q=${book} ${chapter}`, requestOptions)
+        fetch(`https://api.esv.org/v3/passage/text/?q=${book}+${chapter}`, requestOptions)
         .then(response => response.json()).then(result => {
             ESVparser(result)
         })
@@ -180,6 +128,40 @@ function ESV_VersionRequest (book, chapter, verse) {
     .then(response => response.json()).then(result => {
         ESVparser(result)
     })
+}
+
+function displayMessage (text, options) {
+    let DOMel = document.querySelector('.messageDisplayContent');
+    DOMel.innerHTML = text;
+
+    let link = document.querySelector('.messageDisplayLink')
+    let search = document.querySelector('.messageDisplaySearch')
+    let versionSwitcher = document.querySelector('.messageDisplayVersion')
+
+    if (!options) return;
+
+    if (options.switchVersion == true) {
+        versionSwitcher.classList.add('shown')
+    }
+
+    if (options.searchError == true) {
+        search.classList.add('shown')
+    }
+
+    if (options.redirectLink == true) {
+        link.style.classList.add('shown');
+        link.innerHTML = options.redirectLink;
+    }
+}
+function clearMessage () {
+    let DOMel = document.querySelector('.messageDisplayContent');
+    DOMel.innerHTML = null;
+    let link = document.querySelector('.messageDisplayLink')
+    link.innerHTML = null;
+    let search = document.querySelector('.messageDisplaySearch')
+    search.innerHTML = null;
+    let versionSwitcher = document.querySelector('.messageDisplayVersion')
+    versionSwitcher.innerHTML = null;
 }
 
 function setPassageHinter () {
@@ -198,8 +180,11 @@ function readyCallback () {
 }
 
 function fetchBible (book, chapter, verse, version) {
-    //return
     hideMainContent(false)
+
+    if (book && isNum(book.charAt(0)) == true) {
+        book = `${book.charAt(0)} ${book.substring(1, book.length)}`;
+    }
 
     if (!version) return WEB_VersionRequest(book, chapter, verse);
 
@@ -208,39 +193,21 @@ function fetchBible (book, chapter, verse, version) {
     if (version == "ESV"){ ESV_VersionRequest(book, chapter, verse) }
 }
 
-function getQueryParams (returnParamsOnly = false, firstTime = false) {
+function getQueryParams (returnParamsOnly = false) {
     var urlParams = new URLSearchParams(window.location.search);
-
-    if (!urlParams) {
-        document.getElementsByClassName('bookName')[0].click()
-    }
 
     let paramArray = {
         "version": urlParams.get('version') || "ESV", 
-        "book": urlParams.get('book'), 
-        "chapter": urlParams.get('chapter'), 
+        "book": urlParams.get('book') || 'Genesis', 
+        "chapter": urlParams.get('chapter') || '1', 
         "verse": urlParams.get('verse') || undefined
     }
     if (returnParamsOnly == true) { return paramArray }
 
-    if (!(booksAndInfo[paramArray.book])) {
-        console.warn('No such book:', paramArray.book)
-        displayMessage('No books match: ' + "'"+ paramArray.book + "'", {
-            searchError: true 
-        })
-        hideMainContent()
-        focusBook('Genesis', true)
-        return;
-    } 
-
     document.querySelector('.selectTranslations').value = paramArray.version
-
-    console.log("QUERY PARAMS: ", paramArray)
-    clearMessage()
-
-    focusBook(paramArray.book, firstTime)
     fetchBible(paramArray.book, paramArray.chapter, paramArray.verse, paramArray.version)
 
+    console.log("QUERY PARAMS: ", paramArray)
     pushCurrentParamsToGlobal()
 }
 getQueryParams(false, true)
@@ -269,42 +236,19 @@ function changeQueryParams (origin, fetch=true) {
     }
 }
 
-window.addEventListener('popstate', function (event) {
+window.addEventListener('popstate', () => {
     getQueryParams();
 });
 
-function parseAPIContent (main, version) {
-    var fullChapter = false;
-    var chapter;
-    var verse;
-    var book;
+function WEBparser (main) {
+    let fullChapter = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value ? false : true;
+    let chapter = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value;
+    let verse = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value || 1;
 
-    var refModified = main.reference.replace(/\s/g,'')
-
-    books.forEach(b => {
-        if (refModified.includes(b) == false) return;
-        if (isNaN(refModified.charAt(0)) == false && ( isNaN(b.charAt(0)) == true )) return console.log('Book does not start with number, but book fetched does.')
-
-        book = `${b.toUpperCase()}&nbsp`.repeat(Math.ceil(40 / (b.length + 1)))
-        
-        var chapterVerse = refModified.replace(b, "")
-
-        if (chapterVerse.includes(":") == true) {
-            chapter = chapterVerse.substring(0, chapterVerse.indexOf(":"))
-            verse = chapterVerse.substring((chapterVerse.indexOf(":") + 1), chapterVerse.length)
-        } else {
-            fullChapter = true;
-            chapter = chapterVerse
-            verse = "1"
-        }
-    })
-
-    var bodyText = main.text
-    var translation = main.translation_name
-
+    let currentBook = GLOBAL_VAR_ARRAY.urlParamsObject.book.value
     // DOM Insert: Book
     var topBook = document.querySelector('.biblecontainer biblepassageinfo biblebook')
-    topBook.innerHTML = book
+    topBook.innerHTML = `${currentBook.toUpperCase()}&nbsp`.repeat(Math.ceil(40 / (currentBook.length + 1)))
 
     // DOM Insert: Chapter and verse 
     var topChapterVerse = document.querySelector('.biblecontainer biblepassageinfo bibleChapterVerse')
@@ -312,14 +256,13 @@ function parseAPIContent (main, version) {
 
     // DOM Insert: Text content
     var body = document.querySelector('.biblecontainer bibletextcontainer')
-    body.innerHTML = helper_parseVerseNumbers(bodyText)
-    helper_parseNarratives(bodyText)
+    body.innerHTML = helper_parseVerseNumbers(main.text)
+    helper_parseNarratives(main.text)
 
     if (parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value)) {
         isOneVersePassage()
     }
 
-    
     ChapterNavigation(parseInt(chapter))
     showMainContent()
 
@@ -655,10 +598,6 @@ function searchListeners() {
         var bookValue = new APIString(document.querySelector('.searchqueryBook').value.trim().replace(/[.,\/#!$%\^&\*;:{}=\_`~()]/g,"").replace(/\s{2,}/g," "))
         var chapValue = document.querySelector('.searchqueryChapter').value.trim().replace(/[.,\/#!$%\^&\*;:{}=\_`~()]/g,"").replace(/\s{2,}/g," ");
         var verseValue = document.querySelector('.searchqueryVerse').value.trim().replace(/[.,\/#!$%\^&\*;:{}=\_`~()]/g,"").replace(/\s{2,}/g," ");
-    
-        document.querySelector('.searchqueryBook').value = bookValue.parseForAPI()
-        document.querySelector('.searchqueryChapter').value = chapValue
-        document.querySelector('.searchqueryVerse').value = verseValue
 
         if (!bookValue){
             document.querySelector('.searchqueryBook').classList.add('unfilled')
@@ -670,22 +609,22 @@ function searchListeners() {
             return;
         }
 
-        if (chapValue < 1 || chapValue > booksAndInfo[bookValue.txt][0]) {
-            document.querySelector('.searchqueryChapter').classList.add('unfilled')
-            return;
+        if (chapValue < 1) {
+            chapValue = 1
         }
+        if (chapValue > booksAndInfo[bookValue.txt][0]) {
+            chapValue = booksAndInfo[bookValue.txt][0]
+        }
+
+        document.querySelector('.searchqueryBook').value = bookValue.parseForAPI()
+        document.querySelector('.searchqueryChapter').value = chapValue
+        document.querySelector('.searchqueryVerse').value = verseValue
 
         document.querySelector('.searchBox').classList.add('wait')
         setTimeout(() => {
             document.querySelector('.searchBox').classList.add('hidden')
         }, 300)
 
-        let allOtherEls = document.querySelectorAll(`.outerwrap > div:not([id="avoid"])`);
-        allOtherEls.forEach(el => {
-            el.classList.remove('blurred')
-        })
-
-        pushCurrentParamsToGlobal()
         GLOBAL_VAR_ARRAY.urlParamsObject.book.value = bookValue.parseForAPI()
         GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value = chapValue
         GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = verseValue
