@@ -273,19 +273,24 @@ versenumber {
 }
 
 versenumber.narrative {
+    position: relative;
+    display: block;
+    margin: 30px;
+
     letter-spacing: unset;
     font-size: unset;
 
-    font-style: italic;
+    color: rgb(125, 125, 125);
     font-weight: 400;
-
-    color: unset;
 }
 versenumber.narrative::before {
-    content: '(';
-}
-versenumber.narrative::after {
-    content: ')';
+    content: '';
+    position: absolute;
+    left: -30px;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background-color: rgb(179 179 179);
 }
 
 span.footer {

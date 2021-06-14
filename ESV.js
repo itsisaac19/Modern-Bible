@@ -8,6 +8,19 @@ function ESVparser (response) {
     let footerNotes = passage.substring(passage.indexOf('Footnotes') + 9, passage.length)
     footerNotes = footerNotes.replace(/(\()/g, '<br>(')
 
+    // Narratives
+    const parseNarratives = (DOMbody) => {
+        DOMbody.querySelectorAll('versenumber').forEach((versenumber) => {
+            if (versenumber.textContent.length > 6) {
+                versenumber.classList.add('narrative')
+            } 
+            if (versenumber.parentElement.tagName.toLowerCase() === 'sup') {
+                let savedNum = versenumber.textContent;
+                versenumber.parentElement.innerHTML = `[${savedNum}]`
+            }
+        })
+    }
+
     function parse() {
         let result = passage;
         result = result.replace(/\n    \n    \n/g, "<br><br>").replace(/\n/g, "<br>")
@@ -18,8 +31,12 @@ function ESVparser (response) {
         result = result.replace(":", "")
 
         // Superscripts
-        result = result.replace(/(\()/g, '<sup>[');
-        result = result.replace(/(\))/g, ']</sup>');
+        result = result.replace(/(\(\d{1,2}\))/gm, `<sup>$1</sup>`)
+
+        // Narratives
+        //console.log(result.match(/(\()/g), result)
+        result = result.replace(/(\()/g, '&nbsp&nbsp<versenumber>');
+        result = result.replace(/(\))/g, '</versenumber>');
 
         if (result.includes('Footnotes') == true) {
             result = result.substring(0, result.indexOf('Footnotes')) + ("<br><br>Footnotes", "<span class='footer'>Footnotes</span>" + footerNotes)
@@ -73,6 +90,7 @@ function ESVparser (response) {
             }
         })
     }
+    parseNarratives(DOMbody)
     footnotesClicks()
 
     ChapterNavigation(parseInt(chapter))
