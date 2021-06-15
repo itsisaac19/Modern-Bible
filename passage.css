@@ -220,6 +220,7 @@ biblechapterverse br {
 }
 
 bibletextcontainer {
+    margin-bottom: 150px;
     margin-top: 200px;
 
     display: block;
