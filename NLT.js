@@ -1,7 +1,12 @@
 function NLTparser (HTML) {
-    //console.groupCollapsed("Raw");
-    //console.log(HTML)
-    //console.groupEnd();
+    //Log
+    console.groupCollapsed('NLT Request');
+    console.log(`Query: ${GLOBAL_VAR_ARRAY.urlParamsObject.book.value} ${GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value}:${GLOBAL_VAR_ARRAY.urlParamsObject.verse.value}`);
+
+    console.groupCollapsed('Passage');
+    console.log(HTML);
+    console.groupEnd();
+    console.groupEnd();
 
     const h = {
         content: HTML,
@@ -65,7 +70,7 @@ function NLTparser (HTML) {
                 parentOfV.replaceChild(newVerseNumber, v)
             })
 
-            console.log('Formatted Verse Numbers (Final Push):', HTML)
+            //console.log('Formatted Verse Numbers (Final Push):', HTML)
 
             return HTML;
         }
@@ -95,7 +100,7 @@ function NLTparser (HTML) {
     var DOMbody = document.querySelector('.biblecontainer bibletextcontainer')
     DOMbody.innerHTML = finalPush.innerHTML;
 
-    if (parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value)) {
+    if (GLOBAL_VAR_ARRAY.urlParamsObject.verse.value) {
         isOneVersePassage()
     }
 

@@ -1,9 +1,14 @@
 function ESVparser (response) {
     var passage = response.passages[0];
 
-    console.groupCollapsed('Passage:')
+    //Log
+    console.groupCollapsed('ESV Request');
+    console.log(`Query: ${response.canonical}`);
+
+    console.groupCollapsed('Passage');
     console.log(passage);
-    console.groupEnd()
+    console.groupEnd();
+    console.groupEnd();
 
     let footerNotes = passage.substring(passage.indexOf('Footnotes') + 9, passage.length)
     footerNotes = footerNotes.replace(/(\()/g, '<br>(')
@@ -25,10 +30,12 @@ function ESVparser (response) {
         let result = passage;
         result = result.replace(/\n    \n    \n/g, "<br><br>").replace(/\n/g, "<br>")
 
+        // ESV text
+        result = result.replace('(ESV)', '<br><br>English Standard Version • ESV')
+
         // Verse Numbers
         result = result.replace(/(\[)/g, '&nbsp&nbsp<versenumber>');
         result = result.replace(/(\])/g, '</versenumber>');
-        result = result.replace(":", "")
 
         // Superscripts
         result = result.replace(/(\(\d{1,2}\))/gm, `<sup>$1</sup>`)
@@ -74,7 +81,7 @@ function ESVparser (response) {
     var DOMbody = document.querySelector('.biblecontainer bibletextcontainer')
     DOMbody.innerHTML = finalPush;
 
-    if (parseInt(verse)) {
+    if (GLOBAL_VAR_ARRAY.urlParamsObject.verse.value) {
         isOneVersePassage()
     }
 
@@ -119,7 +126,6 @@ function ESVparser (response) {
         
         readyCallback()
     }, 10)
-
 
 }
 

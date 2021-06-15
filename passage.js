@@ -33,7 +33,6 @@ function WEB_VersionRequest (book, chapter, verse) {
         .then(data => {
             WEBparser(data)
         })
-        console.log("Fetching: " + ` @${requestStr}`, book, chapter, verse)
     }
     if (book && chapter && !(verse)) {
         let requestStr = 'https://bible-api.com/'+ book +':'+ chapter +'?verse_numbers=true'
@@ -48,7 +47,6 @@ function WEB_VersionRequest (book, chapter, verse) {
         .then(data => {
             WEBparser(data)
         })
-        console.log("Fetching: " + ` @${requestStr}`, book, chapter)
     }
 
 }
@@ -83,7 +81,6 @@ function NLT_VersionRequest (book, chapter, verse) {
         }).then(data => {
             NLTparser(data)
         })
-        console.log("Fetching: " + ` @${requestStr}`, book, chapter)
         return;
     }
 
@@ -99,8 +96,6 @@ function NLT_VersionRequest (book, chapter, verse) {
     }).then(data => {
         NLTparser(data)
     })
-
-    console.log("Fetching: " + ` @${requestStr}`, book, chapter, verse)
 }
 
 function ESV_VersionRequest (book, chapter, verse) {
@@ -183,7 +178,7 @@ function fetchBible (book, chapter, verse, version) {
     hideMainContent(false)
 
     if (book && isNum(book.charAt(0)) == true) {
-        book = `${book.charAt(0)} ${book.substring(1, book.length)}`;
+        book = `${book.charAt(0)}${book.substring(1, book.length)}`;
     }
 
     if (!version) return WEB_VersionRequest(book, chapter, verse);
@@ -193,7 +188,7 @@ function fetchBible (book, chapter, verse, version) {
     if (version == "ESV"){ ESV_VersionRequest(book, chapter, verse) }
 }
 
-function getQueryParams (returnParamsOnly = false) {
+function getQueryParams (returnParamsOnly = false, firstTime = false) {
     var urlParams = new URLSearchParams(window.location.search);
 
     let paramArray = {
@@ -207,7 +202,7 @@ function getQueryParams (returnParamsOnly = false) {
     document.querySelector('.selectTranslations').value = paramArray.version
     fetchBible(paramArray.book, paramArray.chapter, paramArray.verse, paramArray.version)
 
-    console.log("QUERY PARAMS: ", paramArray)
+    if (firstTime == true) {console.log("QUERY PARAMS: ", paramArray)}
     pushCurrentParamsToGlobal()
 }
 getQueryParams(false, true)
@@ -246,6 +241,16 @@ function WEBparser (main) {
     let verse = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value || 1;
 
     let currentBook = GLOBAL_VAR_ARRAY.urlParamsObject.book.value
+
+    //Log
+    console.groupCollapsed('WEB Request');
+    console.log(`Query: ${currentBook} ${chapter}:${verse}`);
+
+    console.groupCollapsed('Passage');
+    console.log(main.text);
+    console.groupEnd();
+    console.groupEnd();
+
     // DOM Insert: Book
     var topBook = document.querySelector('.biblecontainer biblepassageinfo biblebook')
     topBook.innerHTML = `${currentBook.toUpperCase()}&nbsp`.repeat(Math.ceil(40 / (currentBook.length + 1)))
@@ -259,7 +264,7 @@ function WEBparser (main) {
     body.innerHTML = helper_parseVerseNumbers(main.text)
     helper_parseNarratives(main.text)
 
-    if (parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value)) {
+    if (GLOBAL_VAR_ARRAY.urlParamsObject.verse.value) {
         isOneVersePassage()
     }
 
@@ -448,8 +453,6 @@ async function testValidity (book, chapter, verse) {
     }).catch((error) => {
         console.log(error)
     });
-
-    return console.log("Passage", "["+book, chapter, verse+"]", "Valid="+result);
 }
 
 function isOneVersePassage () {
@@ -458,7 +461,7 @@ function isOneVersePassage () {
     fullChapterTeaser.className = 'fullChapterTeaser'
     fullChapterTeaser.onclick = function () {
         GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = undefined
-        console.log(GLOBAL_VAR_ARRAY)
+        console.log('FULL CHAPTER TEASER ACTIVE')
         changeQueryParams('fullChapterTeaser')
     }
 
@@ -532,7 +535,6 @@ function ChapterNavigation(currChap) {
             }
         } 
     }
-    console.log("Prev Chapter: " +chapterBefore,"Next Chapter: " +chapterAfter, ", Book:", currentBook)
 }
 
 function hideSearchBox (searchBox) {
@@ -687,7 +689,6 @@ function searchListeners() {
 
     document.querySelector('.selectTranslations').addEventListener('change', function () {
         GLOBAL_VAR_ARRAY.urlParamsObject.version.value = this.value
-        console.log(GLOBAL_VAR_ARRAY.urlParamsObject)
         changeQueryParams('changing version')
     })
 
