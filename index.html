@@ -24,7 +24,16 @@
     <meta property="twitter:description" content="Modern Bible life brings you clean fast bible content. No ads, free forever.">
     <meta property="twitter:image" content="https://modernbible.life/ModernBiblePassageImage.png">
 
-    <link id="none" rel="icon" href="icons8-open-book-50-neutral.png" type="png">
+    <link id="none" rel="icon" href="content/light/abbrv.png" type="png">
+
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "url": "https://modernbible.life",
+          "logo": "https://modernbible.life/content/light/onboard.svg"
+        }
+    </script>
 </head>
 <style>
     body {
@@ -62,8 +71,9 @@
 
     .mainwrapper > .hero-wrapper {
         position: absolute;
-        top: 34%;
-        left: 10%;   
+        top: 24%;
+        left: 50%;
+        transform: translateX(-50%);
     }
     .hero-wrapper > h1.hero {
         font-weight: 600;
@@ -73,7 +83,7 @@
         margin-block-end: 0;
     }
     .hero-wrapper > p {
-        margin-top: 25px;
+        margin-top: 35px;
         font-weight: 400;
         color: rgb(43, 43, 43);
     }
@@ -111,12 +121,11 @@
 
     .searchbarwrapper {
         position: absolute;
-        top: calc(34% + 170px);
-        left: 10%;
-
-        height: 70px;
+        top: calc(34% + 240px);
+        left: 50%;
+        transform: translateX(-50%);
+        height: 130px;
         width: 50%;
-
         border-radius: 12px;
         box-shadow: 0 0 15px rgba(0, 0, 0, 0);
         display: grid;
@@ -140,17 +149,15 @@
 
     border-radius: 12px;
     background: #ebebeb;
-    box-shadow:  20px 20px 60px #c8c8c8,
-             -20px -20px 60px #ffffff;
 
     transition: 0.3s ease;
 
     display:grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
     column-gap: 10px;
 
-    grid-auto-flow: column;
+    grid-auto-flow: row;
 }
 
 input::-webkit-calendar-picker-indicator {
@@ -188,6 +195,7 @@ input:-internal-autofill-selected {
     margin-right: 0px;
 }
 .searchqueryswrap > div.gobutton {
+    grid-column: span 3;
     cursor: pointer;
     margin: 10px 0;
 
@@ -199,6 +207,8 @@ input:-internal-autofill-selected {
     display: grid;
     place-items: center;
     transition: 0.3s ease;
+
+    box-shadow: 0px 0px 0px 1px #dfdfdf;
 }
 .searchqueryswrap > div.gobutton:hover {
     box-shadow: 18px 18px 35px #d8d8d8, -18px -18px 35px #fffffffc;
@@ -209,7 +219,8 @@ input:-internal-autofill-selected {
 
 @media (max-width: 568px) {
     .searchqueryswrap > div.gobutton {
-        box-shadow: 18px 18px 35px #d8d8d8, -18px -18px 35px #fffffffc;
+        box-shadow: 0px 0px 0px 1px #dfdfdf;
+        grid-column: unset;
     }
     #searchqueryVerse{
         margin-right: 0px;
@@ -225,7 +236,7 @@ input:-internal-autofill-selected {
         font-size: 20px;
     }
     .searchbarwrapper {
-        top: calc(34% + 100px);
+        top: calc(34% + 140px);
         width: 70%;
         height: 230px;
         left: 50%;
@@ -260,6 +271,12 @@ input:-internal-autofill-selected {
         font-size: 40px;
     }
 }
+.hero-svg {
+    border-radius: 17px;
+    background: #ebebeb;
+    box-shadow:  37px 37px 73px #dbdbdb,
+             -37px -37px 73px #fbfbfb;
+}
 </style>
 <body>
     <div class="mainwrapper">
@@ -276,8 +293,16 @@ input:-internal-autofill-selected {
         </div> -->
 
         <div class="hero-wrapper">
-            <h1 class="hero">Modern Bible</h1>
-            <p class="hero-desc">Bringing you clean, fast, and intuitive bible content.</p>
+            <svg class="hero-svg" xmlns="http://www.w3.org/2000/svg" width="367" height="230" viewBox="0 0 367 230">
+                <g id="Group_8" data-name="Group 8" transform="translate(-172 -682)">
+                  <text id="Modern_Bible" data-name="Modern Bible" transform="translate(256 853)" fill="#888" font-size="35" font-family="SFProDisplay-Medium, SF Pro Display" font-weight="500"><tspan x="0" y="0">Modern </tspan><tspan y="0" fill="#414141">Bible</tspan></text>
+                  <g id="Group_3" data-name="Group 3" transform="translate(-194.169 460.092)">
+                    <path id="Path_1" data-name="Path 1" d="M661.542,109.651H625.206a36.288,36.288,0,0,0,2.168-16.269,22.117,22.117,0,0,0-2.168-7.3c-5.354-10.561,0-20.614,0-20.614h36.336a23.09,23.09,0,0,0,0,20.614C667.061,96.887,661.542,109.651,661.542,109.651Z" transform="translate(-93.742 227.257)" fill="#f4f4f4" stroke="#656565" stroke-width="1"/>
+                    <path id="Path_4" data-name="Path 4" d="M625.206,109.651a36.288,36.288,0,0,0,2.168-16.269,22.117,22.117,0,0,0-2.168-7.3c-5.354-10.561,0-20.614,0-20.614" transform="translate(-61.584 227.257)" fill="#f4f4f4" stroke="#656565" stroke-width="1"/>
+                    <path id="Path_2" data-name="Path 2" d="M625.206,109.651a36.288,36.288,0,0,0,2.168-16.269,22.117,22.117,0,0,0-2.168-7.3c-5.354-10.561,0-20.614,0-20.614" transform="translate(-90.178 227.257)" fill="#f4f4f4" stroke="#656565" stroke-width="1"/>
+                  </g>
+                </g>
+              </svg>              
         </div>
 
         <div class="searchbarwrapper">
@@ -300,7 +325,8 @@ input:-internal-autofill-selected {
         </div>
         <div class="spacer"></div>
     </div>
-</body>
+
+
 <script src="data.js"></script>
 <script>
 
