@@ -10,19 +10,25 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://modernbible.life">
+    <meta property="og:url" content="https://modernbible.life/content/light/onboard.svg">
     <meta property="og:title" content="">
     <meta property="og:description" content="">
-    <meta property="og:image" content="https://modernbible.life/MetaImage.png">
+    <meta property="og:image" content="https://modernbible.life/content/light/onboard.svg">
 
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
-    <link href="https://api.fontshare.com/css?f[]=satoshi@300,400,500,700,900,1&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="passage.css">
     <link rel="stylesheet" media="print" href="print.css">
 
-    <link id="none" rel="icon" href="icons8-open-book-50-neutral.png" type="png">
-    <link id="light" rel="icon" href="icons8-open-book-50.png" media="(prefers-color-scheme:dark)" type="png">
-    <link id="dark" rel="icon" href="icons8-open-book-50 (1).png" media="(prefers-color-scheme:light)" type="png">
+    <link id="none" rel="icon" href="content/light/abbrv.png" type="png">
+
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "url": "https://modernbible.life",
+          "logo": "https://modernbible.life/content/light/onboard.svg"
+        }
+    </script>
 </head>
 <script>
 var isMobile = false;
@@ -126,18 +132,15 @@ class APIString {
                 </div>
                 <span class="reset-text">RESET</span>
             </div>
-            <div class="searchWrapper">
-                <span class="material-icons">search</span>
-            </div>
             <div class="passageHinterWrapper">
                 <span class="passageHinter"></span>
+            </div>
+            <div class="searchWrapper">
+                <span class="material-icons">search</span>
             </div>
         </div>
     </div>
 </body>
-<script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.6.7/firebase-database.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/outclick@0.1.0/src/index.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
 

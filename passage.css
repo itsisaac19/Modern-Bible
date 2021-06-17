@@ -368,23 +368,18 @@ span.footer {
     top: 30px;
     left: 50%;
     transform: translateX(-50%);
-
     height: 70px;
-    width: calc(100vw - (100vw - 900px));
-
-    padding: 0 13px;
+    /* width: 900px; */
+    padding: 0 13px; 
     border-radius: 10px;
-    
     display: grid;
     grid-template-rows: 1fr;
     grid-template-columns: min-content min-content min-content;
     grid-auto-flow: column;
     column-gap: 15px;
-
     box-shadow: 41px 41px 82px #dcdcdc, -41px -41px 82px #efefef;
     background-color: #fafafa;
-
-    transition: background-color 0.4s ease, box-shadow 0.4s ease;
+    transition: top 0.5s ease-out, padding 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease-out, width 0.3s ease-out, text-indent 0.3s ease !important;
 }
 
 @media (min-width: 768px) {
@@ -393,8 +388,8 @@ span.footer {
 
 .controlswrapper.reg-sticky {
     top: 0px;
-    width: 100vw;
-    grid-template-columns: 1fr 3fr 1fr;
+    padding: 0px 0px;
+    grid-template-columns: auto auto auto;
     column-gap: 0px;
     height: 55px;
 }
@@ -406,14 +401,23 @@ span.footer {
     box-shadow: none;
 }
 
-.controlswrapper.reg-sticky > div:not(:last-child):not(:nth-child(3)) {
+.controlswrapper.reg-sticky > div:not(:last-child):not(:nth-child(4)) {
     box-shadow: 1px 0px 0px #e4e4e4;
 }
 
-.controlswrapper.reg-sticky > div.searchWrapper {
-    width: calc((100vw - 80px) / 5);
-    max-width: 100%;
+.controlswrapper.reg-sticky > div.versionControlWrapper {
+    width: calc(44.44444vw / 3);
 }
+.controlswrapper.reg-sticky > div.textControlsWrapper {
+    width: calc(100vw/1.8);
+}
+.passageHinterWrapper {
+    width: calc(44.44444vw / 3);
+}
+.controlswrapper.reg-sticky > div.searchWrapper {
+    width: calc(44.44444vw / 3);
+}
+
 .controlswrapper.reg-sticky > div.versionControlWrapper > select{
     width: 100%;
     text-indent: 0;
@@ -438,7 +442,7 @@ span.footer {
     color: rgb(87, 87, 87); 
     display: grid;
 
-    transition: background-color 0.4s ease, box-shadow 0.4s ease;
+    transition: top 0.3s ease-out, padding 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease-out, width 0.4s ease-out, text-indent 0.3s ease !important;
 }
 .controlswrapper > div:hover {
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.043);
@@ -446,7 +450,9 @@ span.footer {
 }
 
 .controlswrapper > div.passageHinterWrapper {
-    display: none;
+    cursor: pointer;
+    padding: 0px;
+    display: grid;
     place-items: center;
     white-space: nowrap;
 }
@@ -454,16 +460,22 @@ span.footer {
     white-space: nowrap;
 }
 
+.versionControlWrapper {
+    width: 50px;
+}
+
 .versionControlWrapper > select {
     cursor: pointer;
     margin: 0px;
-    width: 70px;
+    width: 100%;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     text-align: center;
     text-align-last: center;
     border-radius: inherit;
+
+    font-size: 14px;
 
     border: none;
     background-color: transparent;
@@ -472,9 +484,11 @@ span.footer {
 
 .textControlsWrapper {
     grid-auto-flow: column;
-    column-gap: 20px;
+    column-gap: 0px;
+    font-size: 14px;
+    width: 700px;
 }
-.textControl:last-child {
+#fontSizeRange {
     margin-right: 20px;
 }
 .textControlsWrapper > div {
@@ -492,6 +506,9 @@ span.footer {
 .textControlLabel .range_value_label {
     color: rgb(164, 164, 164);
 }
+.controlswrapper.reg-sticky > div.textControlsWrapper .textControl > input {
+    margin: 4px 0px 0 5px;
+}
 
 .textControl > input {
     -webkit-appearance: none;
@@ -499,7 +516,7 @@ span.footer {
     width: auto;
     height: 10px;
     border-radius: 10px;
-    margin: 4px 20px 0 5px;
+    margin: 4px 10px 0 5px;
     background: #e8e8e8;
 }
 .textControl > input::-webkit-slider-thumb {
@@ -539,13 +556,12 @@ span.footer {
 .reset-text:hover {
     box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.125);
 }
-
 .searchWrapper {
     z-index: 100;
     cursor: pointer;
     display: grid;
     width: 50px;
-    max-width: 50px;
+    max-width: 100%;
 }
 
 .searchWrapper > span {
@@ -557,12 +573,7 @@ span.footer {
     transition: top 0.2s ease-out, padding 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease-out, width 0.3s ease-out, text-indent 0.3s ease !important;
 }
 
-.controlswrapper.stickyTransitions {
-    transition: top 0.3s ease-out, padding 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease-out, width 0.3s ease-out, text-indent 0.3s ease !important;
-}
-.controlswrapper > div.searchWrapper.stickyTransitions {
-    transition: top 0.3s ease-out, padding 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease-out, width 0.2s ease-out, text-indent 0.3s ease !important;
-}
+
 
 .bibleControlIcon {
     cursor: pointer;
@@ -1054,18 +1065,37 @@ span.footer {
     
     .controlswrapper {
         column-gap: 0;
+        grid-template-columns: auto auto;
+        width: unset;
+        transition: top 0.3s ease-out, padding 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease-out, width 0.6s ease-out, text-indent 0.3s ease !important;
     }
     
     .controlswrapper > div.textControlsWrapper {
         display: none;
     }
-    
+    .controlswrapper.reg-sticky {
+        width: unset;
+    }
+    .controlswrapper.reg-sticky > div.versionControlWrapper {
+        width: 50vw;
+    }
+    .controlswrapper.reg-sticky > div.passageHinterWrapper {
+        width: 50vw;
+    }
+    .controlswrapper > div.passageHinterWrapper {
+        margin-left: 10px;
+        width: calc(((100vw - 80px) / 2) - 15px);
+        max-width: unset;
+        transition: top 0.3s ease-out, padding 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease-out, width 0.2s ease-out, text-indent 0.3s ease !important;
+    }
     .controlswrapper > div.searchWrapper {
+        display: none;
         margin-left: 10px;
         width: calc(((100vw - 80px) / 2) - 15px);
         max-width: unset;
     }
     .controlswrapper > div.versionControlWrapper {
         width: calc(((100vw - 80px) / 2) - 10px);
+        transition: top 0.3s ease-out, padding 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease-out, width 0.2s ease-out, text-indent 0.3s ease !important;
     }
 }

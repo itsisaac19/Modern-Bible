@@ -154,49 +154,21 @@ function focusBook(book, firstTime) {
     if (bookEl && bookEl.classList.contains('active') == false) bookEl.classList.add('active');
 }
 
-function stickyControls () {
+window.onscroll = () => {
     let wrapper = document.querySelector('.controlswrapper')
-    let wrapperChildren = wrapper.querySelectorAll('div')
-
-    if (isMobile == true) {
-        wrapper.classList.add('stickyTransitions')
-        wrapperChildren.forEach(child => {
-            child.classList.add('stickyTransitions')
-            child.classList.add('modstickyTransitions')
-        })
+    let stickyClass = isMobile ? 'mobile-sticky' : 'reg-sticky';
         
-        if (window.scrollY > 0) {
-            if (wrapper.classList.contains('mobile-sticky') == true) return;
-            wrapper.classList.add('mobile-sticky')
-        } else {
-            if (wrapper.classList.contains('mobile-sticky')) {
-                wrapper.classList.remove('mobile-sticky')
-            }
-        }
+    if (window.scrollY > 0) {
+        if (wrapper.classList.contains(stickyClass)) return;
+        wrapper.classList.add(stickyClass)
     } else {
-        wrapper.classList.add('stickyTransitions')
-        wrapperChildren.forEach(child => {
-            child.classList.add('stickyTransitions')
-        })
-        
-        if (window.scrollY > 0) {
-            if (wrapper.classList.contains('reg-sticky') == true) return;
-            wrapper.classList.add('reg-sticky')
-        } else {
-            if (wrapper.classList.contains('reg-sticky')) {
-                wrapper.classList.remove('reg-sticky')
-            }
+        if (wrapper.classList.contains(stickyClass)) {
+            wrapper.classList.remove(stickyClass)
         }
     }
 }    
 
-$('.selectTranslations').on('focus', function(e) {
-    var savedScrollTop = $(document).scrollTop(); // save scroll position
-    $(document).scrollTop(savedScrollTop ); // restore it
-    //alert(savedScrollTop)
-});
 
-window.onscroll = stickyControls
 
 // SEARCH 
 
@@ -244,8 +216,9 @@ function cleanText(txt) {
 
 
 
-function placeDataLists(firstTime = true) {
+function placeDataLists() {
     var currentBook = GLOBAL_VAR_ARRAY.urlParamsObject.book.value
+
     // BOOKS
     var booksList = document.querySelector('#booksDataList');
     booksList.innerHTML = "";
@@ -283,24 +256,3 @@ function chapterListBasedOffBook(book) {
     }
 }
 
-
-
-
-
-function faviconTheme() {
-    const none = document.querySelector('link#none')
-    const darkFavicon = document.querySelector('link#dark')
-    const lightFavicon = document.querySelector('link#light')
-
-    if (window.matchMedia('prefers-color-scheme:dark').matches) {
-        // It's a dark theme...'
-        darkFavicon.remove()
-    } else if (window.matchMedia('prefers-color-scheme:light').matches) {
-        // It's not a dark theme...
-        lightFavicon.remove()
-    } else {
-        darkFavicon.remove()
-        lightFavicon.remove()
-    }
-}
-faviconTheme()

@@ -15,14 +15,14 @@
     <meta property="og:url" content="https://modernbible.life/">
     <meta property="og:title" content="Modern Bible">
     <meta property="og:description" content="Modern Bible life brings you clean fast bible content. No ads, free forever.">
-    <meta property="og:image" content="https://modernbible.life/ModernBiblePassageImage.png">
+    <meta property="og:image" content="https://modernbible.life/content/light/onboard.svg">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://modernbible.life/">
     <meta property="twitter:title" content="Modern Bible">
     <meta property="twitter:description" content="Modern Bible life brings you clean fast bible content. No ads, free forever.">
-    <meta property="twitter:image" content="https://modernbible.life/ModernBiblePassageImage.png">
+    <meta property="twitter:image" content="https://modernbible.life/content/light/onboard.svg">
 
     <link id="none" rel="icon" href="content/light/abbrv.png" type="png">
 
@@ -50,25 +50,6 @@
         width: 100%;
         height: 100%;
     }
-    .waves {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        color: #969696;
-    }
-    .waves > svg {
-        position: absolute;
-    }
-    .waves > svg:first-child {
-        bottom: 12vw;
-    }
-    .waves > svg:not(:first-child):not(:last-child) {
-        bottom: 6vw;
-    }
-    .waves > svg:last-child {
-        bottom: 0px;
-    }
-
     .mainwrapper > .hero-wrapper {
         position: absolute;
         top: 24%;
@@ -217,7 +198,10 @@ input:-internal-autofill-selected {
     transform: scale(0.9);
 }
 
-@media (max-width: 568px) {
+@media (max-width: 968px) {
+    .hero-svg {
+        width: 100%;
+    }
     .searchqueryswrap > div.gobutton {
         box-shadow: 0px 0px 0px 1px #dfdfdf;
         grid-column: unset;
@@ -280,22 +264,10 @@ input:-internal-autofill-selected {
 </style>
 <body>
     <div class="mainwrapper">
-        <!--
-        <div class="waves">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#7a7a7a" fill-opacity="1" d="M0,128L120,149.3C240,171,480,213,720,197.3C960,181,1200,107,1320,69.3L1440,32L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"></path></svg>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#969696" fill-opacity="1" d="M0,128L120,149.3C240,171,480,213,720,197.3C960,181,1200,107,1320,69.3L1440,32L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"></path></svg>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#afafaf" fill-opacity="1" d="M0,128L120,149.3C240,171,480,213,720,197.3C960,181,1200,107,1320,69.3L1440,32L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"></path></svg>
-        </div>
--->
-        <!-- <div class="dailyverse">
-            <p>VERSE OF THE DAY •  <span class="ref">Ezekiel 36:25</span></p>
-            <h1 class="hero">I will sprinkle clean water on you, and you will be clean. I will cleanse you from all your filthiness, and from all your idols.</h1>
-        </div> -->
-
         <div class="hero-wrapper">
             <svg class="hero-svg" xmlns="http://www.w3.org/2000/svg" width="367" height="230" viewBox="0 0 367 230">
                 <g id="Group_8" data-name="Group 8" transform="translate(-172 -682)">
-                  <text id="Modern_Bible" data-name="Modern Bible" transform="translate(256 853)" fill="#888" font-size="35" font-family="SFProDisplay-Medium, SF Pro Display" font-weight="500"><tspan x="0" y="0">Modern </tspan><tspan y="0" fill="#414141">Bible</tspan></text>
+                  <text id="Modern_Bible" data-name="Modern Bible" transform="translate(256 853)" fill="#888" font-size="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif" font-weight="500"><tspan x="0" y="0">Modern </tspan><tspan y="0" fill="#414141">Bible</tspan></text>
                   <g id="Group_3" data-name="Group 3" transform="translate(-194.169 460.092)">
                     <path id="Path_1" data-name="Path 1" d="M661.542,109.651H625.206a36.288,36.288,0,0,0,2.168-16.269,22.117,22.117,0,0,0-2.168-7.3c-5.354-10.561,0-20.614,0-20.614h36.336a23.09,23.09,0,0,0,0,20.614C667.061,96.887,661.542,109.651,661.542,109.651Z" transform="translate(-93.742 227.257)" fill="#f4f4f4" stroke="#656565" stroke-width="1"/>
                     <path id="Path_4" data-name="Path 4" d="M625.206,109.651a36.288,36.288,0,0,0,2.168-16.269,22.117,22.117,0,0,0-2.168-7.3c-5.354-10.561,0-20.614,0-20.614" transform="translate(-61.584 227.257)" fill="#f4f4f4" stroke="#656565" stroke-width="1"/>
