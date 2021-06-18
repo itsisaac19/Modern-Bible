@@ -27,13 +27,13 @@ function setMetaTags () {
 }
 
 
-function hideMainContent(animate = true) {
+function hideMainContent() {
     var wrap = document.querySelector('.biblecontainer')
     
     wrap.style.transition = '0.3s ease'
     wrap.style.opacity = '0'
 }
-function showMainContent(animate = true) {
+function showMainContent() {
     var wrap = document.querySelector('.biblecontainer')
 
     wrap.style.opacity = '1'
@@ -41,6 +41,21 @@ function showMainContent(animate = true) {
     setTimeout(function() {wrap.style.transition = null}, 300)
 }
 
+document.body.onscroll = () => {
+    let wrapper = document.querySelector('.controlswrapper')
+    let stickyClass = isMobile ? 'mobile-sticky' : 'reg-sticky';
+    
+    hideSearchBox()
+    
+    if (window.scrollY > 0) {
+        if (wrapper.classList.contains(stickyClass)) return;
+        wrapper.classList.add(stickyClass)
+    } else {
+        if (wrapper.classList.contains(stickyClass)) {
+            wrapper.classList.remove(stickyClass)
+        }
+    }
+}
 
 function toggleBibleControls () {
     let controls = document.querySelector('.bibleControls')
@@ -102,8 +117,6 @@ function saveRangeValues () {
 }
 
 function assignBibleControlListeners() {
-    //document.querySelector('.resetButton').onclick = resetBibleControls
-
     let lineSpacingRange = document.querySelector('#lineSpacingRange');
 
     lineSpacingRange.addEventListener('input', function () {
@@ -138,82 +151,6 @@ function assignBibleControlListeners() {
     assignRangeValues()
 }
 assignBibleControlListeners()
-
-function focusBook(book, firstTime) {
-    return;
-    let sidebar = document.querySelector('.sidebar')
-    let activeBookEl = document.querySelector('.bookName.active')
-
-    if (activeBookEl && activeBookEl.classList.contains(book)) {
-        return console.log("Same book:", activeBookEl)
-    }
-
-    let bookEl = document.querySelector(`.bookName[class='bookName ${book}']`)
-
-    if (activeBookEl) activeBookEl.classList.remove('active');
-    if (bookEl && bookEl.classList.contains('active') == false) bookEl.classList.add('active');
-}
-
-window.onscroll = () => {
-    let wrapper = document.querySelector('.controlswrapper')
-    let stickyClass = isMobile ? 'mobile-sticky' : 'reg-sticky';
-        
-    if (window.scrollY > 0) {
-        if (wrapper.classList.contains(stickyClass)) return;
-        wrapper.classList.add(stickyClass)
-    } else {
-        if (wrapper.classList.contains(stickyClass)) {
-            wrapper.classList.remove(stickyClass)
-        }
-    }
-}    
-
-
-
-// SEARCH 
-
-function addSearchListener() {
-    document.querySelector('.searchWrapper > .material-icons').onclick = initSearch
-}
-addSearchListener()
-
-function closeSearch() {
-    this.innerHTML = "search"
-    var box = this.parentElement;
-    var querysBox = box.children[0];
-
-    this.classList.remove("active")
-    this.classList.add("ready")
-
-    querysBox.classList.remove("shown")
-
-    document.querySelector('.searchBox > .material-icons.ready').onclick = initSearch
-
-    setTimeout(function() {
-        querysBox.style.display = null
-    }, 300)
-}
-
-function initSearch () {
-
-}
-
-
-function cleanText(txt) {
-    var clean = txt;
-
-    // Trim
-    clean = clean.trim()
-
-    // Line Breaks
-    clean = clean.replaceAll("<br>", "")
-
-    // &nbsp;
-    clean = clean.replace(/&nbsp;/gi, '')
-
-    return clean;
-}
-
 
 
 function placeDataLists() {
