@@ -1,4 +1,4 @@
-function ESVparser (response) {
+function ESVparser (response, scrollBack = true) {
     var passage = response.passages[0];
 
     //Log
@@ -82,7 +82,7 @@ function ESVparser (response) {
     DOMbody.innerHTML = finalPush;
 
     if (GLOBAL_VAR_ARRAY.urlParamsObject.verse.value) {
-        isOneVersePassage()
+        isOneVersePassage(parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value))
     }
 
     function footnotesClicks () {
@@ -107,7 +107,9 @@ function ESVparser (response) {
 
     // DOM Timings: Scrolling back to top, and displaying last verse number for a full chapter
     setTimeout(function() {
-        window.scroll({top: 0, behavior: 'smooth'});
+        if (scrollBack == true) {
+            window.scroll({top: 0, behavior: 'smooth'});
+        }
 
         var lastVerseNumber = cleanText(document.querySelectorAll('bibletextcontainer versenumber')[document.querySelectorAll('bibletextcontainer versenumber').length - 1].innerHTML)   
         if (fullChapter == true) topChapterVerse.innerHTML = chapter + ':' + verse + '-' + lastVerseNumber;

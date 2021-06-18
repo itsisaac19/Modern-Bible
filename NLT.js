@@ -1,4 +1,4 @@
-function NLTparser (HTML) {
+function NLTparser (HTML, scrollBack = true) {
     //Log
     console.groupCollapsed('NLT Request');
     console.log(`Query: ${GLOBAL_VAR_ARRAY.urlParamsObject.book.value} ${GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value}:${GLOBAL_VAR_ARRAY.urlParamsObject.verse.value}`);
@@ -101,7 +101,7 @@ function NLTparser (HTML) {
     DOMbody.innerHTML = finalPush.innerHTML;
 
     if (GLOBAL_VAR_ARRAY.urlParamsObject.verse.value) {
-        isOneVersePassage()
+        isOneVersePassage(parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value))
     }
 
     function spaceOutVerses () {
@@ -129,7 +129,9 @@ function NLTparser (HTML) {
 
     // DOM Timings: Scrolling back to top, and displaying last verse number for a full chapter
     setTimeout(function() {
-        window.scroll({top: 0, behavior: 'smooth'});
+        if (scrollBack == true) {
+            window.scroll({top: 0, behavior: 'smooth'});
+        }
         
         var lastVerseNumber = cleanText(document.querySelectorAll('bibletextcontainer versenumber')[document.querySelectorAll('bibletextcontainer versenumber').length - 1].innerHTML)   
         if (fullChapter == true) topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + verse + '-' + lastVerseNumber;
