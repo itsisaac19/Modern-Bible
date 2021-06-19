@@ -44,13 +44,18 @@ function showMainContent() {
 document.body.onscroll = () => {
     let wrapper = document.querySelector('.controlswrapper')
     let stickyClass = isMobile ? 'mobile-sticky' : 'reg-sticky';
-    
-    hideSearchBox()
+    let searchBox = document.querySelector('.searchBox')
     
     if (window.scrollY > 0) {
+        searchBox.classList.add('sticky')
+        searchBox.classList.remove('normal')
+
         if (wrapper.classList.contains(stickyClass)) return;
         wrapper.classList.add(stickyClass)
     } else {
+        searchBox.classList.remove('sticky')
+        searchBox.classList.add('normal')
+
         if (wrapper.classList.contains(stickyClass)) {
             wrapper.classList.remove(stickyClass)
         }
