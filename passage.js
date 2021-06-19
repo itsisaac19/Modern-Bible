@@ -459,13 +459,27 @@ async function testValidity (book, chapter, verse) {
 }
 
 function isOneVersePassage (verseNumber) {
-    let middle = parseInt(masterArray[GLOBAL_VAR_ARRAY.urlParamsObject.book.value].chapters[GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value]) / 2
-    if (verseNumber <= middle) {
-        hintDirection = 'hintDown'
+    var middle = parseInt(masterArray[GLOBAL_VAR_ARRAY.urlParamsObject.book.value].chapters[GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value]) / 2
+    var startsWith = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value;
+
+    if (GLOBAL_VAR_ARRAY.urlParamsObject.verse.value.includes('-')) {
+        startsWith = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value.substring(0, GLOBAL_VAR_ARRAY.urlParamsObject.verse.value.indexOf('-'))
+        verseNumber = parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value.substring(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value.indexOf('-')+1, GLOBAL_VAR_ARRAY.urlParamsObject.verse.value.length));
     }
-    if (verseNumber > middle) {
-        hintDirection = 'hintUp'
+
+    if (middle) {
+        if (verseNumber <= middle) {
+            hintDirection = 'hintDown'
+        }
+        if (verseNumber > middle && startsWith > 1) {
+            hintDirection = 'hintUp'
+        } else {
+            hintDirection = 'hintDown'
+        }
+    } else {
+        hintDirection = 'hintDown';
     }
+
 
     let DOMbody = document.querySelector('.biblecontainer bibletextcontainer')
     let fullChapterTeaser = document.createElement('div')
@@ -554,6 +568,35 @@ function ChapterNavigation(currChap) {
     }
 }
 
+function showSearchBox () {
+    let searchBox = document.querySelector('.searchBox')
+    if (searchBox.classList.contains('hidden')) {
+        if (window.scrollY > 0) {
+            searchBox.classList.add('sticky')
+            searchBox.classList.remove('normal')
+        } else {
+            searchBox.classList.add('normal')
+            searchBox.classList.remove('sticky')
+        }
+
+        console.log('showSearchBox triggered')
+
+        searchBox.classList.remove('hidden')
+        setTimeout(() => {
+            searchBox.classList.remove('wait')
+            searchBox.onoutclick = () => {
+                hideSearchBox()
+                console.log('OUTCLICK @showSearchBox')
+            }             
+        }) 
+    } else {
+        hideSearchBox()
+        searchBox.onoutclick = () => {
+            
+        }  
+    }
+}
+
 function hideSearchBox () {
     if (document.querySelector('.searchBox').classList.contains('hidden') == true) {
         return
@@ -570,64 +613,15 @@ function hideSearchBox () {
 }
 
 function searchListeners() {
-    let searchBox = document.querySelector('.searchBox')
 
-    document.querySelector('.searchWrapper').onclick = function () {
-        if (searchBox.classList.contains('hidden')) {
-            if (window.scrollY > 0) {
-                searchBox.classList.add('sticky')
-                searchBox.classList.remove('normal')
-            } else {
-                searchBox.classList.add('normal')
-                searchBox.classList.remove('sticky')
-            }
-    
-            console.log('searchWrapper triggered')
-    
-            searchBox.classList.remove('hidden')
-            setTimeout(() => {
-                searchBox.classList.remove('wait')
-                searchBox.onoutclick = () => {
-                    hideSearchBox()
-                    console.log('OUTCLICK @searchWrapper')
-                }             
-            }) 
-        } else {
-            hideSearchBox()
-            searchBox.onoutclick = () => {
-                
-            }  
-        }
-    }
+    document.querySelector('.searchWrapper').onclick = showSearchBox
 
-    document.querySelector('.passageHinterWrapper').onclick = function () {
-        if (searchBox.classList.contains('hidden')) {
-            if (window.scrollY > 0) {
-                searchBox.classList.add('sticky')
-                searchBox.classList.remove('normal')
-            } else {
-                searchBox.classList.add('normal')
-                searchBox.classList.remove('sticky')
-            }
-    
-            console.log('searchWrapper triggered')
-    
-            searchBox.classList.remove('hidden')
-            setTimeout(() => {
-                searchBox.classList.remove('wait')           
-            }) 
-        } else {
-            hideSearchBox()
-            searchBox.onoutclick = () => {
-                
-            }  
-        }   
-    }
+    document.querySelector('.passageHinterWrapper').onclick = showSearchBox
 
     document.querySelector('.gobutton').onclick = function () {
         var bookValue = new APIString(document.querySelector('.searchqueryBook').value.trim().replace(/[.,\/#!$%\^&\*;:{}=\_`~()]/g,"").replace(/\s{2,}/g," "))
         var chapValue = document.querySelector('.searchqueryChapter').value.trim().replace(/[.,\/#!$%\^&\*;:{}=\_`~()]/g,"").replace(/\s{2,}/g," ");
-        var verseValue = document.querySelector('.searchqueryVerse').value.trim().replace(/[.,\/#!$%\^&\*;:{}=\_`~()]/g,"").replace(/\s{2,}/g," ");
+        var verseValue = document.querySelector('.searchqueryVerse').value.trim()
 
         if (!bookValue){
             document.querySelector('.searchqueryBook').classList.add('unfilled')
@@ -647,12 +641,39 @@ function searchListeners() {
         }
 
         // Validate verse number
-        if (verseValue < 1) {
-            verseValue = 1
+        if (verseValue.includes('-')) {
+            let firstVerse = parseInt(verseValue.substring(0, verseValue.indexOf('-')));
+            let lastVerse = parseInt(verseValue.substring(verseValue.indexOf('-')+1, verseValue.length));
+
+            console.log(firstVerse, lastVerse)
+
+            if (firstVerse == lastVerse || firstVerse > lastVerse) {
+                verseValue = firstVerse;
+            } else {
+
+                if (firstVerse < 1) {
+                    firstVerse = 1
+                }
+                if (masterArray[bookValue.parseForAPI()].chapters[parseInt(chapValue)]) {
+                    if (lastVerse > masterArray[bookValue.parseForAPI()].chapters[parseInt(chapValue)]) {
+                        lastVerse = masterArray[bookValue.parseForAPI()].chapters[parseInt(chapValue)]
+                    }
+                }
+                verseValue = `${firstVerse}-${lastVerse}`
+            }
+        } else {
+            console.log(verseValue)
+            if (verseValue < 1) {
+                verseValue = 1
+            }
+            if (masterArray[bookValue.parseForAPI()].chapters[parseInt(chapValue)]) {
+                if (verseValue > masterArray[bookValue.parseForAPI()].chapters[parseInt(chapValue)]) {
+                    verseValue = masterArray[bookValue.parseForAPI()].chapters[parseInt(chapValue)]
+                }
+            }
         }
-        if (verseValue > masterArray[bookValue.parseForAPI()].chapters[parseInt(chapValue)]) {
-            verseValue = masterArray[bookValue.parseForAPI()].chapters[parseInt(chapValue)]
-        }
+
+
 
         document.querySelector('.searchqueryBook').value = bookValue.parseForAPI()
         document.querySelector('.searchqueryChapter').value = chapValue
