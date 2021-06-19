@@ -19,14 +19,7 @@ var books = [
 ];
 
 var booksAndInfo = {
-    'Genesis': {
-        chapterCount: 50,
-        chapters: {
-            1: {
-                verses: 31 
-            }
-        }
-    },
+    'Genesis':  [50],
     'Exodus': [40],
     'Leviticus': [27],
     'Numbers': [36],

@@ -517,7 +517,6 @@ function ChapterNavigation(currChap) {
 
         GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value = this.dataset.bibleChapter
         changeQueryParams('changing chapter')
-        //console.log(this.dataset.bibleChapter)
     }
 
     var currentBook = booksAndInfo[GLOBAL_VAR_ARRAY.urlParamsObject.book.value]
@@ -588,7 +587,7 @@ function showSearchBox () {
                 hideSearchBox()
                 console.log('OUTCLICK @showSearchBox')
             }             
-        }) 
+        }, 100) 
     } else {
         hideSearchBox()
         searchBox.onoutclick = () => {
@@ -606,6 +605,8 @@ function hideSearchBox () {
     wrapperTimeout = setTimeout(() => {
         document.querySelector('.searchBox').classList.add('hidden')
     }, 300)  
+
+    console.log('removing outclick')
 
     document.querySelector('.searchBox').onoutclick = () => {
         
@@ -679,10 +680,7 @@ function searchListeners() {
         document.querySelector('.searchqueryChapter').value = chapValue
         document.querySelector('.searchqueryVerse').value = verseValue
 
-        document.querySelector('.searchBox').classList.add('wait')
-        setTimeout(() => {
-            document.querySelector('.searchBox').classList.add('hidden')
-        }, 300)
+        hideSearchBox()
 
         GLOBAL_VAR_ARRAY.urlParamsObject.book.value = bookValue.parseForAPI()
         GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value = chapValue
