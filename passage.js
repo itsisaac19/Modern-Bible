@@ -662,8 +662,7 @@ function searchListeners() {
                 }
                 verseValue = `${firstVerse}-${lastVerse}`
             }
-        } else {
-            console.log(verseValue)
+        } else if (verseValue) {
             if (verseValue < 1) {
                 verseValue = 1
             }
