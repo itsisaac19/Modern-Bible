@@ -19,36 +19,13 @@ var GLOBAL_VAR_ARRAY = {
     }
 }
 
-function WEB_VersionRequest (book, chapter, verse) {
-    if (chapter && verse) {
-        let requestStr = 'https://bible-api.com/'+ book +'+'+ chapter + ':' + verse +'?verse_numbers=true'
-        fetch('https://bible-api.com/'+ book +'+'+ chapter + ':' + verse +'?verse_numbers=true')
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                displayMessage('Error fetching verses.')
-            }
-        })
-        .then(data => {
-            WEBparser(data)
-        })
-    }
-    if (book && chapter && !(verse)) {
-        let requestStr = 'https://bible-api.com/'+ book +':'+ chapter +'?verse_numbers=true'
-        fetch('https://bible-api.com/'+ book +':'+ chapter +'?verse_numbers=true')
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Something went wrong');
-            }
-        })
-        .then(data => {
-            WEBparser(data)
-        })
-    }
+async function WEB_VersionRequest (book, chapter, verse) {
+    chapter = chapter.includes("-") ? WEBChapters(parseInt(chapter.substring(chapter.indexOf("-") + 1))) : chapter
+    let requestStr = verse ? `https://bible-api.com/${book}+${chapter}:${verse}?verse_numbers=true`: `https://bible-api.com/${book}+${chapter}?verse_numbers=true`
 
+    let response = await fetch(requestStr).catch(error => {console.log(error)});
+    let data = await response.json();
+    WEBparser(data, undefined, requestStr)
 }
 
 function NLT_VersionRequest (book, chapter, verse) {
@@ -165,7 +142,7 @@ function setPassageHinter () {
 
     let chapterVerse = document.querySelector('biblechapterverse').textContent
     let lastVerse = chapterVerse.substring(chapterVerse.indexOf(':')+1, chapterVerse.length)
-    hinterEl.innerHTML = `${p.book.value} ${p.chapter.value}:${p.verse.value || lastVerse}`
+    hinterEl.innerHTML = p.chapter.value.includes('-') ? `${p.book.value} • Chapters ${p.chapter.value}` : `${p.book.value} ${p.chapter.value}:${p.verse.value || lastVerse}`
 }
 
 function readyCallback () {
@@ -237,8 +214,9 @@ window.addEventListener('popstate', () => {
 
 function WEBparser (main, scrollBack = true) {
     let fullChapter = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value ? false : true;
-    let chapter = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value;
-    let verse = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value || 1;
+    let chapter = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value.includes('-') ? GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value : parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value);
+    let isMultipleChapters = chapter.length ? chapter.includes('-') : false;
+    let verse = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value;
 
     let currentBook = GLOBAL_VAR_ARRAY.urlParamsObject.book.value
 
@@ -257,7 +235,7 @@ function WEBparser (main, scrollBack = true) {
 
     // DOM Insert: Chapter and verse 
     var topChapterVerse = document.querySelector('.biblecontainer biblepassageinfo bibleChapterVerse')
-    topChapterVerse.innerHTML = `${chapter}:${verse}`
+    topChapterVerse.innerHTML = isMultipleChapters ? `Chapters ${chapter}` : `${chapter}:${verse || 1}` 
 
     // DOM Insert: Text content
     var body = document.querySelector('.biblecontainer bibletextcontainer')
@@ -268,7 +246,7 @@ function WEBparser (main, scrollBack = true) {
         isOneVersePassage(parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value))
     }
 
-    ChapterNavigation(parseInt(chapter))
+    ChapterNavigation(chapter)
     showMainContent()
 
     function spaceOutVerses () {
@@ -277,7 +255,9 @@ function WEBparser (main, scrollBack = true) {
         verseNumbers.forEach(v => {
             let rawNum = v.innerHTML.replace(/[{()}]/g, '');
             if (parseInt(rawNum) % 5 == 0) {
-                v.innerHTML = `<br><br>${v.innerHTML}`
+                let spacerBlocks = document.createElement('div');
+                spacerBlocks.innerHTML = '<br>'
+                document.querySelector('bibletextcontainer').insertBefore(spacerBlocks, v)
             }
         })
     }
@@ -290,18 +270,23 @@ function WEBparser (main, scrollBack = true) {
         }
         
         var lastVerseNumber = cleanText(document.querySelectorAll('bibletextcontainer versenumber')[document.querySelectorAll('bibletextcontainer versenumber').length - 1].innerHTML)   
-        if (fullChapter == true) topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + verse + '-' + lastVerseNumber;
+        if (fullChapter == true && isMultipleChapters == false) topChapterVerse.innerHTML = chapter + ':' + (verse || 1) + '-' + lastVerseNumber;
 
-        if (fullChapter == true) { 
+        if (fullChapter == true && isMultipleChapters == false) { 
             return readyCallback()
         }
 
-        if (!(GLOBAL_VAR_ARRAY.urlParamsObject.verse.value)) {
-            GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = verse + '-' + lastVerseNumber
+        if (!(verse)) {
+            verse = verse + '-' + lastVerseNumber
         }
 
-        if (GLOBAL_VAR_ARRAY.urlParamsObject.verse.value.includes('-') == false && fullChapter == true) {
-            GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = verse + '-' + lastVerseNumber
+        if (verse.length && verse.includes('-') == false && fullChapter == true) {
+            verse = verse + '-' + lastVerseNumber
+        }
+
+        
+        if (isMultipleChapters == true) { 
+            insertChapterSpacers(chapter)
         }
 
         readyCallback()
@@ -313,6 +298,7 @@ function WEBparser (main, scrollBack = true) {
 
 function helper_parseVerseNumbers(string) {
     var result = string.replace(/(\()/g, '&nbsp&nbsp<versenumber>');
+    result = result.replace(/(\),)/g, ',</versenumber>');
     result = result.replace(/(\))/g, '</versenumber>');
     result = result.replace(":", "")
 
@@ -430,6 +416,8 @@ function pushCurrentParamsToGlobal () {
 
 async function testValidity (book, chapter, verse) {
     var isFullChapter = true;
+    var isMultipleChapters = chapter.includes('-');
+
     var requestStr = book +'+'+ chapter + ':' + verse
 
     if(verse) {isFullChapter = false} else {
@@ -454,7 +442,7 @@ async function testValidity (book, chapter, verse) {
             return false;
         }
     }).catch((error) => {
-        console.log(error)
+        console.warn('Validity error', error)
     });
 }
 
@@ -487,7 +475,6 @@ function isOneVersePassage (verseNumber) {
     fullChapterTeaser.classList.add(hintDirection)
     fullChapterTeaser.onclick = function () {
         GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = undefined
-        console.log('FULL CHAPTER TEASER ACTIVE')
         changeQueryParams('fullChapterTeaser')
     }
 
@@ -502,18 +489,14 @@ function isOneVersePassage (verseNumber) {
 function ChapterNavigation(currChap) {
 
     function chapterNavHandler() {
-        pushCurrentParamsToGlobal()
+        const dataSets = this.dataset;
         GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = null
 
-        if (this.dataset.bibleBook) {
-            if (this.dataset.bibleBook != GLOBAL_VAR_ARRAY.urlParamsObject.book.value) {
-                GLOBAL_VAR_ARRAY.urlParamsObject.book.value = this.dataset.bibleBook
-                changeQueryParams('changing bible book')
-    
-                return;
-            }
+        if (dataSets.bibleBook && dataSets.bibleBook != GLOBAL_VAR_ARRAY.urlParamsObject.book.value) {
+            GLOBAL_VAR_ARRAY.urlParamsObject.book.value = this.dataset.bibleBook
+            changeQueryParams('changing bible book')
+            return;
         }
-
 
         GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value = this.dataset.bibleChapter
         changeQueryParams('changing chapter')
@@ -523,12 +506,21 @@ function ChapterNavigation(currChap) {
     var bookIndex = books.indexOf(GLOBAL_VAR_ARRAY.urlParamsObject.book.value)
 
     var prevWrap = document.querySelector('.prevChap')
-    prevWrap.innerHTML = ''
     var nextWrap = document.querySelector('.nextChap')
-    nextWrap.innerHTML = ''
 
     var chapterBefore = currChap - 1
     var chapterAfter = currChap + 1
+
+    // if currChap is a range: 
+    let chapterRange = new rangeParser(currChap);
+
+    if (currChap.length && chapterRange.isRange()) {
+        let range = chapterRange.parse()
+        chapterBefore = range.start - 1;
+        chapterAfter = range.end + 1;
+    }
+
+    console.log(`Chapter before ${chapterBefore}, chapter after ${chapterAfter}`)
 
     var bookBefore = books[bookIndex - 1]
     var bookAfter = books[bookIndex + 1]
@@ -578,15 +570,11 @@ function showSearchBox () {
             searchBox.classList.remove('sticky')
         }
 
-        console.log('showSearchBox triggered')
-
         searchBox.classList.remove('hidden')
         setTimeout(() => {
             searchBox.classList.remove('wait')
             searchBox.onoutclick = () => {
-                hideSearchBox()
-                console.log('OUTCLICK @showSearchBox')
-            }             
+                hideSearchBox()            }             
         }, 100) 
     } else {
         hideSearchBox()
@@ -606,8 +594,6 @@ function hideSearchBox () {
         document.querySelector('.searchBox').classList.add('hidden')
     }, 300)  
 
-    console.log('removing outclick')
-
     document.querySelector('.searchBox').onoutclick = () => {
         
     }    
@@ -620,76 +606,31 @@ function searchListeners() {
     document.querySelector('.passageHinterWrapper').onclick = showSearchBox
 
     document.querySelector('.gobutton').onclick = function () {
-        var bookValue = new APIString(document.querySelector('.searchqueryBook').value.trim().replace(/[.,\/#!$%\^&\*;:{}=\_`~()]/g,"").replace(/\s{2,}/g," "))
-        var chapValue = document.querySelector('.searchqueryChapter').value.trim().replace(/[.,\/#!$%\^&\*;:{}=\_`~()]/g,"").replace(/\s{2,}/g," ");
-        var verseValue = document.querySelector('.searchqueryVerse').value.trim()
+        var book = domSelect('.searchqueryBook').value ? validBook(new APIValue(domSelect('.searchqueryBook').value).parseString()) : 'Genesis';
+        var chapter = domSelect('.searchqueryChapter').value ? validChapter(new APIValue(domSelect('.searchqueryChapter').value).parseNumber(), book) : 1;
+        var verse = domSelect('.searchqueryVerse').value ? validVerse(new APIValue(domSelect('.searchqueryVerse').value).parseNumber(true), book, chapter) : '';
 
-        if (!bookValue){
-            document.querySelector('.searchqueryBook').classList.add('unfilled')
-            return;
-        }
-
-        if (!(booksAndInfo[bookValue.txt])) {
-            document.querySelector('.searchqueryBook').classList.add('unfilled')
-            return;
-        }
-
-        if (chapValue < 1) {
-            chapValue = 1
-        }
-        if (chapValue > booksAndInfo[bookValue.txt][0]) {
-            chapValue = booksAndInfo[bookValue.txt][0]
-        }
-
-        // Validate verse number
-        if (verseValue.includes('-')) {
-            let firstVerse = parseInt(verseValue.substring(0, verseValue.indexOf('-')));
-            let lastVerse = parseInt(verseValue.substring(verseValue.indexOf('-')+1, verseValue.length));
-
-            console.log(firstVerse, lastVerse)
-
-            if (firstVerse == lastVerse || firstVerse > lastVerse) {
-                verseValue = firstVerse;
-            } else {
-
-                if (firstVerse < 1) {
-                    firstVerse = 1
-                }
-                if (masterArray[bookValue.parseForAPI()].chapters[parseInt(chapValue)]) {
-                    if (lastVerse > masterArray[bookValue.parseForAPI()].chapters[parseInt(chapValue)]) {
-                        lastVerse = masterArray[bookValue.parseForAPI()].chapters[parseInt(chapValue)]
-                    }
-                }
-                verseValue = `${firstVerse}-${lastVerse}`
-            }
-        } else if (verseValue) {
-            if (verseValue < 1) {
-                verseValue = 1
-            }
-            if (masterArray[bookValue.parseForAPI()].chapters[parseInt(chapValue)]) {
-                if (verseValue > masterArray[bookValue.parseForAPI()].chapters[parseInt(chapValue)]) {
-                    verseValue = masterArray[bookValue.parseForAPI()].chapters[parseInt(chapValue)]
-                }
-            }
+        let chapterRange = new rangeParser(chapter).parse()
+        if (chapterRange.length > 5) {
+            chapter = `${chapterRange.start}-${chapterRange.start + 4}`
         }
 
 
+        console.log(book, chapter, verse)
 
-        document.querySelector('.searchqueryBook').value = bookValue.parseForAPI()
-        document.querySelector('.searchqueryChapter').value = chapValue
-        document.querySelector('.searchqueryVerse').value = verseValue
-
+        document.querySelector('.searchqueryBook').value = book;
+        document.querySelector('.searchqueryChapter').value = chapter;
+        document.querySelector('.searchqueryVerse').value = verse;
         hideSearchBox()
 
-        GLOBAL_VAR_ARRAY.urlParamsObject.book.value = bookValue.parseForAPI()
-        GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value = chapValue
-        GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = verseValue
+        GLOBAL_VAR_ARRAY.urlParamsObject.book.value = book;
+        GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value = chapter;
+        GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = verse;
+
         changeQueryParams('changing from search')
     }
     
-    document.querySelector('.searchqueryBook').addEventListener('input', function() {
-        this.classList.remove('unfilled')
-    
+    document.querySelector('.searchqueryBook').addEventListener('input', () => {
         if (books.includes(this.value)) {
             chapterListBasedOffBook(this.value)
         }
@@ -699,45 +640,30 @@ function searchListeners() {
 
         booksList.innerHTML = "";
     
-        books.forEach(function(book) {
-            var optionEl = document.createElement('option');
-            optionEl.innerHTML = book;
-    
-            booksList.appendChild(optionEl)
+        books.forEach((book) => {
+                var optionEl = document.createElement('option');
+                optionEl.innerHTML = book;
+
+                booksList.appendChild(optionEl);
         })
     })
-    document.querySelector('.searchqueryChapter').addEventListener('input', function() {
-        this.classList.remove('unfilled')
+    document.querySelector('.searchqueryChapter').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            //this.blur();
+            document.querySelector('.gobutton').click();
+        }
     })
-    document.querySelector('.searchqueryVerse').addEventListener('keypress', function(e) {
-        this.classList.remove('unfilled')
-    
+    document.querySelector('.searchqueryVerse').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             this.blur();
             document.querySelector('.gobutton').click();
         }
     })
 
-    document.querySelector('.searchqueryBook').addEventListener('keypress', function(e) {
+    document.querySelector('.searchqueryBook').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             this.blur();
             document.querySelector('.gobutton').click();
-
-
-            if (!(this.value) || !(document.querySelector('.searchqueryChapter').value)) {
-                return;
-            } 
-        }
-    })
-
-    document.querySelector('.searchqueryChapter').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            this.blur();
-            document.querySelector('.gobutton').click();
-
-            if (!(this.value) || !(document.querySelector('.searchqueryBook').value)) {
-                return;
-            } 
         }
     })
 

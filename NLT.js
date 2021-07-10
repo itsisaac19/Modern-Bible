@@ -147,6 +147,10 @@ function NLTparser (HTML, scrollBack = true) {
         if (GLOBAL_VAR_ARRAY.urlParamsObject.verse.value.includes('-') == false && fullChapter == true) {
             GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = verse + '-' + lastVerseNumber
         }
+
+        if (isMultipleChapters == true) { 
+            insertChapterSpacers(chapter)
+        }
         
         readyCallback()
     }, 10)

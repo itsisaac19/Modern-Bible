@@ -30,6 +30,7 @@
         }
     </script>
 </head>
+<script src="//unpkg.com/string-similarity/umd/string-similarity.min.js"></script>
 <script>
 var isMobile = false;
 
@@ -47,23 +48,6 @@ function removeCSS (fileName) {
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent)) {
     addCSS('mobile.css')
     isMobile = true
-}
-
-class APIString {
-    constructor(txt) {
-        this.txt = txt;
-    }
-    parseForAPI() {
-        let str = this.txt.trim().replace(/\s/g,'')
-        
-        if (str.toLowerCase() == 'songofsolomon') {
-            return 'SongofSolomon';
-        } else if (isNaN(str.charAt(0)) == false) { // If the first character IS A NUMBER
-            return str.charAt(0) + str.charAt(1).toUpperCase() + str.substr(2).toLowerCase()
-        } else {
-            return str.charAt(0).toUpperCase() + str.substr(1).toLowerCase()
-        }
-    }
 }
 </script>
 <body>
@@ -83,7 +67,7 @@ class APIString {
 
                 </datalist>
 
-                <input type="number" placeholder="Chapter" class="searchqueryChapter" list="chapterDataList"></input>
+                <input placeholder="Chapter" class="searchqueryChapter" list="chapterDataList"></input>
                 <datalist id="chapterDataList">
                 </datalist>
 
@@ -144,9 +128,9 @@ class APIString {
 <script src="https://cdn.jsdelivr.net/npm/outclick@0.1.0/src/index.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
 
+<script src="data.js"></script>
 <script src="helper.js"></script>
 <script src="dom.js"></script>
-<script src="data.js"></script>
 
 <script src="NLT.js"></script>
 <script src="ESV.js"></script>

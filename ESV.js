@@ -43,7 +43,9 @@ function ESVparser (response, scrollBack = true) {
         // Narratives
         //console.log(result.match(/(\()/g), result)
         result = result.replace(/(\()/g, '&nbsp&nbsp<versenumber>');
+        result = result.replace(/(\),)/g, ',</versenumber>');
         result = result.replace(/(\))/g, '</versenumber>');
+
 
         if (result.includes('Footnotes') == true) {
             result = result.substring(0, result.indexOf('Footnotes')) + ("<br><br>Footnotes", "<span class='footer'>Footnotes</span>" + footerNotes)
@@ -65,8 +67,11 @@ function ESVparser (response, scrollBack = true) {
 
 
     let currentBook = GLOBAL_VAR_ARRAY.urlParamsObject.book.value
-    let fullChapter = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value ? false : true;
+
     let chapter = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value;
+    let fullChapter = chapter ? false : true;
+    let isMultipleChapters = new rangeParser(chapter).isRange();
+
     let verse = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value || 1;
 
     // DOM Insert: Book
@@ -75,7 +80,7 @@ function ESVparser (response, scrollBack = true) {
 
     // DOM Insert: Chapter and verse 
     var topChapterVerse = document.querySelector('.biblecontainer biblepassageinfo bibleChapterVerse')
-    topChapterVerse.innerHTML = `${chapter}:${verse}`
+    topChapterVerse.innerHTML = isMultipleChapters ? `Chapters ${chapter}` : `${chapter}:${verse}` 
 
     // DOM Insert: Text content
     var DOMbody = document.querySelector('.biblecontainer bibletextcontainer')
@@ -86,7 +91,7 @@ function ESVparser (response, scrollBack = true) {
     }
 
     function footnotesClicks () {
-        let superScriptEls = document.querySelectorAll('bibletextcontainer > sup') 
+        let superScriptEls = document.querySelectorAll('bibletextcontainer sup') 
         superScriptEls.forEach(el => {
             el.onclick = function () {
                 let bdyHeight = document.querySelector('bibletextcontainer').scrollHeight
@@ -103,7 +108,7 @@ function ESVparser (response, scrollBack = true) {
     ChapterNavigation(parseInt(chapter))
     showMainContent()
 
-    testValidity(currentBook, chapter, verse)
+    testValidity(currentBook, chapter, GLOBAL_VAR_ARRAY.urlParamsObject.verse.value)
 
     // DOM Timings: Scrolling back to top, and displaying last verse number for a full chapter
     setTimeout(function() {
@@ -112,7 +117,7 @@ function ESVparser (response, scrollBack = true) {
         }
 
         var lastVerseNumber = cleanText(document.querySelectorAll('bibletextcontainer versenumber')[document.querySelectorAll('bibletextcontainer versenumber').length - 1].innerHTML)   
-        if (fullChapter == true) topChapterVerse.innerHTML = chapter + ':' + verse + '-' + lastVerseNumber;
+        if (fullChapter == true && isMultipleChapters == false) topChapterVerse.innerHTML = chapter + ':' + verse + '-' + lastVerseNumber;
 
         if (fullChapter == true) { 
             return readyCallback()
@@ -122,8 +127,13 @@ function ESVparser (response, scrollBack = true) {
             verse = verse + '-' + lastVerseNumber
         }
 
-        if (verse.includes('-') == false && fullChapter == true) {
+        if (verse.length && verse.includes('-') == false && fullChapter == true) {
             verse = verse + '-' + lastVerseNumber
+        }
+
+
+        if (isMultipleChapters == true) { 
+            insertChapterSpacers(chapter)
         }
         
         readyCallback()

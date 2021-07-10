@@ -262,7 +262,7 @@ bibletextcontainer > div.fullChapterTeaser.hintUp::after {
     content: '\2191 \a0\a0 Read full chapter \a0 \2191';
 }
 
-bibletextcontainer > sup {
+bibletextcontainer sup {
     margin: 0px 6px 0px 6px;
     cursor: pointer;
 
@@ -270,7 +270,7 @@ bibletextcontainer > sup {
     color: #1e1e1e;
 }
 
-bibletextcontainer > sup:hover {
+bibletextcontainer sup:hover {
     text-decoration: underline;
     color: #1e1e1e;
 }
@@ -300,6 +300,19 @@ versenumber.narrative::before {
     width: 4px;
     background-color: rgb(179 179 179);
 }
+versenumber.narrative + div {
+    display: none;
+}
+
+p.chapterSpacer {
+    margin: 70px auto 30px 0;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+p.chapterSpacer + br, p.chapterSpacer + br + br {
+    display: none !important; 
+}
 
 span.footer {
     color: gray;
@@ -310,7 +323,7 @@ span.footer {
     bottom: 0;
     margin-top: 0px;
     height: 65px;
-    background: rgb(251 251 251);
+    background: rgb(247, 247, 247);
     left: 50%;
     transform: translateX(-50%);
     width: 100vw;
@@ -347,6 +360,10 @@ span.footer {
     display: grid;
     white-space: nowrap;
     width: 100%;
+    transition: background 0.3s ease;
+}
+.chap:hover {
+    background: white;
 }
 .prevChap {
     margin: 0;

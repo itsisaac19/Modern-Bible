@@ -7,6 +7,8 @@
 Selector = (s,c) => (c ?? document).querySelector(s);
 SelectorAll = (s,c) => (c ?? document).querySelectorAll(s);
 
+const domSelect = (s,c) => (c ?? document).querySelector(s);
+
 function setMetaTags () {
     const tags = document.head.querySelectorAll('meta')
     var params = GLOBAL_VAR_ARRAY.urlParamsObject
