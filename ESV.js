@@ -43,7 +43,7 @@ function ESVparser (response, scrollBack = true) {
         // Narratives
         //console.log(result.match(/(\()/g), result)
         result = result.replace(/(\()/g, '&nbsp&nbsp<versenumber>');
-        result = result.replace(/(\),)/g, ',</versenumber>');
+        result = result.replace(/(\)[.!?;'",\\-]{1,})/g, ',</versenumber>');
         result = result.replace(/(\))/g, '</versenumber>');
 
 

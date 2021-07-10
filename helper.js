@@ -83,6 +83,13 @@ const validBook = (book) => {
 }
 
 const validChapter = (chapter, book) => {
+    let range = new rangeParser(chapter);
+    if (chapter.length && range.isRange()) {
+        let start = range.parse().start;
+        let end = range.parse().end;
+        return `${start}-${end > booksAndInfo[book][0] ? booksAndInfo[book][0] : end}`
+    }
+
     return chapter > booksAndInfo[book][0] ? booksAndInfo[book][0] : chapter;
 }
 

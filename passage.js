@@ -298,7 +298,7 @@ function WEBparser (main, scrollBack = true) {
 
 function helper_parseVerseNumbers(string) {
     var result = string.replace(/(\()/g, '&nbsp&nbsp<versenumber>');
-    result = result.replace(/(\),)/g, ',</versenumber>');
+    result = result.replace(/(\)[.!?;'",\\-]{1,})/g, ',</versenumber>');
     result = result.replace(/(\))/g, '</versenumber>');
     result = result.replace(":", "")
 
@@ -610,8 +610,8 @@ function searchListeners() {
         var chapter = domSelect('.searchqueryChapter').value ? validChapter(new APIValue(domSelect('.searchqueryChapter').value).parseNumber(), book) : 1;
         var verse = domSelect('.searchqueryVerse').value ? validVerse(new APIValue(domSelect('.searchqueryVerse').value).parseNumber(true), book, chapter) : '';
 
-        let chapterRange = new rangeParser(chapter).parse()
-        if (chapterRange.length > 5) {
+        let chapterRange = new rangeParser(chapter)
+        if (chapter.length && chapterRange.parse().length > 5) {
             chapter = `${chapterRange.start}-${chapterRange.start + 4}`
         }
 
