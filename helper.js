@@ -93,8 +93,23 @@ const validSearchQuery = (book, chapter, verse) => {
     return [book, chapter, verse || ''];
 }
 
+
+const waysToSpellPslams = [
+    'psalm',
+    'psalms',
+
+    'Psalm',
+    'Psalms',
+
+    'pslam',
+    'pslams',
+
+    'Pslam',
+    'Pslams',
+]
+
 const validBook = (book) => {
-    if (book.toLowerCase() == 'psalm' || book.toLowerCase() == 'psalms') return 'Psalms';
+    if (waysToSpellPslams.includes(book)) return 'Psalms';
     
     let result = new Fuse(books, {
         includeScore: true,
