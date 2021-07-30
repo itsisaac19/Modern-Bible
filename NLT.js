@@ -63,14 +63,14 @@ function NLTparser (HTML, scrollBack = true) {
 
             verseNumberEls.forEach(v => {
                 let parentOfV = v.parentElement;
-                let num = `&nbsp&nbsp${v.innerHTML} `;
+                let num = `&nbsp;&nbsp;${v.innerHTML} `;
                 let newVerseNumber = document.createElement('versenumber');
                 
                 newVerseNumber.innerHTML = num;
                 parentOfV.replaceChild(newVerseNumber, v)
             })
 
-            //console.log('Formatted Verse Numbers (Final Push):', HTML)
+            console.log('Formatted Verse Numbers (Final Push):', HTML)
 
             return HTML;
         }
@@ -85,6 +85,18 @@ function NLTparser (HTML, scrollBack = true) {
         })
     })
 
+    let verse = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value || 1
+    let chapter = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value;
+    let fullChapter = new rangeParser(verse).isRange() ? false : true;
+    let isMultipleChapters = new rangeParser(chapter).isRange();
+    
+    document.querySelector('biblechapterverse').classList.remove('multi-chapter')
+    document.querySelector('.js-toc').classList.add('wait')
+    if (isMultipleChapters) {
+        document.querySelector('biblechapterverse').classList.add('multi-chapter')
+        document.querySelector('.js-toc').classList.remove('wait')
+    }
+
     let finalPush = pushAllText.formatVerseNumbers();
 
     let currentBook = GLOBAL_VAR_ARRAY.urlParamsObject.book.value
@@ -94,7 +106,7 @@ function NLTparser (HTML, scrollBack = true) {
 
     // DOM Insert: Chapter and verse 
     var topChapterVerse = document.querySelector('.biblecontainer biblepassageinfo bibleChapterVerse')
-    topChapterVerse.innerHTML = `${GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value}:${GLOBAL_VAR_ARRAY.urlParamsObject.verse.value}`
+    topChapterVerse.innerHTML = isMultipleChapters ? `Chapters ${chapter}` : `${chapter}:${verse}` 
 
     // DOM Insert: Text content
     var DOMbody = document.querySelector('.biblecontainer bibletextcontainer')
@@ -119,13 +131,14 @@ function NLTparser (HTML, scrollBack = true) {
     ChapterNavigation(parseInt(GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value))
     showMainContent()
 
-    var fullChapter = true;
-    let verse = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value || 1
 
     if (GLOBAL_VAR_ARRAY.urlParamsObject.verse.value) {
         fullChapter = false;
     } 
-    testValidity(GLOBAL_VAR_ARRAY.urlParamsObject.book.value, GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value, GLOBAL_VAR_ARRAY.urlParamsObject.verse.value)
+    
+    if (isMultipleChapters != true) {
+        testValidity(GLOBAL_VAR_ARRAY.urlParamsObject.book.value, GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value, GLOBAL_VAR_ARRAY.urlParamsObject.verse.value)
+    }
 
     // DOM Timings: Scrolling back to top, and displaying last verse number for a full chapter
     setTimeout(function() {
@@ -134,9 +147,9 @@ function NLTparser (HTML, scrollBack = true) {
         }
         
         var lastVerseNumber = cleanText(document.querySelectorAll('bibletextcontainer versenumber')[document.querySelectorAll('bibletextcontainer versenumber').length - 1].innerHTML)   
-        if (fullChapter == true) topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + verse + '-' + lastVerseNumber;
+        if (fullChapter == true && isMultipleChapters == false) topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + verse + '-' + lastVerseNumber;
 
-        if (fullChapter == true) { 
+        if (fullChapter == true && isMultipleChapters == false) { 
             return readyCallback()
         }
 
@@ -149,6 +162,7 @@ function NLTparser (HTML, scrollBack = true) {
         }
 
         if (isMultipleChapters == true) { 
+            console.log(`chapter:${chapter}`)
             insertChapterSpacers(chapter)
         }
         

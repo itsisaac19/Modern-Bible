@@ -14,6 +14,92 @@ html, body {
     width:100%;
 }
 
+/* LOADER */
+
+.loader-wrapper {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    display: none;
+    transition: all 0.2s ease-in-out;
+}
+.loader-wrapper.show {
+    display: block;
+}
+.loader-wrapper.active {
+    opacity: 1;
+}
+
+.lds-grid {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+  .lds-grid div {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #b7b7b7;
+    animation: lds-grid 1.2s linear infinite;
+  }
+  .lds-grid div:nth-child(1) {
+    top: 8px;
+    left: 8px;
+    animation-delay: 0s;
+  }
+  .lds-grid div:nth-child(2) {
+    top: 8px;
+    left: 32px;
+    animation-delay: -0.4s;
+  }
+  .lds-grid div:nth-child(3) {
+    top: 8px;
+    left: 56px;
+    animation-delay: -0.8s;
+  }
+  .lds-grid div:nth-child(4) {
+    top: 32px;
+    left: 8px;
+    animation-delay: -0.4s;
+  }
+  .lds-grid div:nth-child(5) {
+    top: 32px;
+    left: 32px;
+    animation-delay: -0.8s;
+  }
+  .lds-grid div:nth-child(6) {
+    top: 32px;
+    left: 56px;
+    animation-delay: -1.2s;
+  }
+  .lds-grid div:nth-child(7) {
+    top: 56px;
+    left: 8px;
+    animation-delay: -0.8s;
+  }
+  .lds-grid div:nth-child(8) {
+    top: 56px;
+    left: 32px;
+    animation-delay: -1.2s;
+  }
+  .lds-grid div:nth-child(9) {
+    top: 56px;
+    left: 56px;
+    animation-delay: -1.6s;
+  }
+  @keyframes lds-grid {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+  
 
 .outerwrap {
     position: absolute;
@@ -218,6 +304,14 @@ biblechapterverse {
 
     white-space: nowrap;
     z-index: -1;
+}
+biblechapterverse.multi-chapter {
+    text-shadow: 0px 2px 10px #b5b5b57d;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #8c8c8c;
+    font-size: 25px;
 }
 biblechapterverse br {
     display: none !important;
@@ -439,6 +533,39 @@ span.footer {
 }
 .controlswrapper.reg-sticky > div.searchWrapper {
     width: calc(44.44444vw / 3);
+}
+
+.js-toc.wait {
+    display: none;
+}
+.js-toc {
+    position: fixed;
+    top: 50vh;
+    left: 50px;
+    transform: translateY(-50%);
+
+    line-height: 2em;
+    font-size: 20px;
+
+    padding: 20px;
+    border-radius: 10px;
+}
+.js-toc li {
+    list-style: none;
+}
+.is-active-link::before {
+    background: #242424;
+}
+.js-toc a.toc-link::before {
+    margin-left: 10px;
+    height: 40px;
+}
+.js-toc a.toc-link {
+    color: #717171;
+    text-decoration: none;
+}
+.js-toc a.toc-link.is-active-link {
+    color: #323232;
 }
 
 .controlswrapper.reg-sticky > div.versionControlWrapper > select{
@@ -801,6 +928,13 @@ span.footer {
 }
 
 @media (max-width: 1200px) {
+    .js-toc {
+        left: 30px;
+        top: calc(100vh - 155px);
+
+        background: white;
+        box-shadow: 0px 10px 20px #00000026;
+    }
     .outerwrap .biblecontainer {
         margin: 0px auto auto auto;
         width: 85%;

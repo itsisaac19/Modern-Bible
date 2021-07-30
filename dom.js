@@ -34,13 +34,22 @@ function hideMainContent() {
     
     wrap.style.transition = '0.3s ease'
     wrap.style.opacity = '0'
+
+    document.querySelector('.loader-wrapper').classList.add('show'); 
+    setTimeout(() => {
+        document.querySelector('.loader-wrapper').classList.add('active');
+    }, 10)
 }
 function showMainContent() {
     var wrap = document.querySelector('.biblecontainer')
-
     wrap.style.opacity = '1'
 
-    setTimeout(function() {wrap.style.transition = null}, 300)
+    document.querySelector('.loader-wrapper').classList.remove('active');
+
+    setTimeout(() => {
+        wrap.style.transition = null
+        document.querySelector('.loader-wrapper').classList.remove('show'); 
+    }, 200)
 }
 
 document.body.onscroll = () => {

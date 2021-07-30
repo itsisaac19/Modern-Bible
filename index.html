@@ -298,8 +298,9 @@ input:-internal-autofill-selected {
         <div class="spacer"></div>
     </div>
 
-
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6"></script>
 <script src="data.js"></script>
+<script src="helper.js"></script>
 <script>
 
 class APIString {
@@ -370,13 +371,16 @@ function chapterListBasedOffBook(book) {
 
 setTimeout(placeDataLists, 500)
 
+const domSelect = (s,c) => (c ?? document).querySelector(s);
 document.querySelector('.gobutton').onclick = function () {
-    var book = new APIString(document.querySelector('.searchqueryBook').value.trim().replace(/\s/g, "")) 
-    var chap = document.querySelector('.searchqueryChapter').value.trim().replace(/\s/g, "");
-    var verse = document.querySelector('.searchqueryVerse').value.trim().replace(/\s/g, "");
+    var book = domSelect('.searchqueryBook').value || 'Genesis';
+    var chapter = domSelect('.searchqueryChapter').value || 1;
+    var verse = domSelect('.searchqueryVerse').value || '';
 
-    document.querySelector('.searchqueryBook').value = book.parseForAPI()
-    document.querySelector('.searchqueryChapter').value = chap
+    [book, chapter, verse] = validSearchQuery(book, chapter, verse);
+
+    document.querySelector('.searchqueryBook').value = book
+    document.querySelector('.searchqueryChapter').value = chapter
     document.querySelector('.searchqueryVerse').value = verse
 
     if (!(book)){
@@ -385,9 +389,7 @@ document.querySelector('.gobutton').onclick = function () {
         return;
     }
 
-    if (!(chap)) chap = 1;
-
-    dummy(book.parseForAPI(), chap, verse)
+    dummy(book, chapter, verse)
 }
 
 document.querySelector('.searchqueryBook').addEventListener('input', function() {

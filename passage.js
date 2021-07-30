@@ -209,6 +209,9 @@ function changeQueryParams (origin, fetch=true) {
 }
 
 window.addEventListener('popstate', () => {
+    if (window.location.hash) {
+        return;
+    }
     getQueryParams();
 });
 
@@ -219,6 +222,13 @@ function WEBparser (main, scrollBack = true) {
     let verse = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value;
 
     let currentBook = GLOBAL_VAR_ARRAY.urlParamsObject.book.value
+
+    document.querySelector('biblechapterverse').classList.remove('multi-chapter')
+    document.querySelector('.js-toc').classList.add('wait')
+    if (isMultipleChapters) {
+        document.querySelector('biblechapterverse').classList.add('multi-chapter')
+        document.querySelector('.js-toc').classList.remove('wait')
+    }
 
     //Log
     console.groupCollapsed('WEB Request');
@@ -626,6 +636,8 @@ function searchListeners() {
         if (chapter.length && chapterRange.parse().length > 5) {
             chapter = `${chapterRange.start}-${chapterRange.start + 4}`
         }
+
+        verse = chapterRange.isRange() ? '' : verse;
 
         console.log(book, chapter, verse)
 

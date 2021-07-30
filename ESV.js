@@ -75,6 +75,13 @@ function ESVparser (response, scrollBack = true) {
     let fullChapter = new rangeParser(verse).isRange() ? false : true;
     let isMultipleChapters = new rangeParser(chapter).isRange();
 
+    document.querySelector('biblechapterverse').classList.remove('multi-chapter')
+    document.querySelector('.js-toc').classList.add('wait')
+    if (isMultipleChapters) {
+        document.querySelector('biblechapterverse').classList.add('multi-chapter')
+        document.querySelector('.js-toc').classList.remove('wait')
+    }
+
     function hasVerseRange () {
         return response.canonical.replace(GLOBAL_VAR_ARRAY.urlParamsObject.book.value, '').includes('-') ? false : true;
     }
@@ -115,8 +122,9 @@ function ESVparser (response, scrollBack = true) {
     ChapterNavigation(parseInt(chapter))
     showMainContent()
 
-    testValidity(currentBook, chapter, GLOBAL_VAR_ARRAY.urlParamsObject.verse.value)
-
+    if (isMultipleChapters != true) {
+        testValidity(currentBook, chapter, GLOBAL_VAR_ARRAY.urlParamsObject.verse.value)
+    }
     // DOM Timings: Scrolling back to top, and displaying last verse number for a full chapter
     setTimeout(function() {
         if (scrollBack == true) {
@@ -126,7 +134,7 @@ function ESVparser (response, scrollBack = true) {
         var lastVerseNumber = cleanText(document.querySelectorAll('bibletextcontainer versenumber')[document.querySelectorAll('bibletextcontainer versenumber').length - 1].innerHTML)   
         if (fullChapter == true && isMultipleChapters == false) topChapterVerse.innerHTML = chapter + ':1-' + lastVerseNumber;
 
-        if (fullChapter == true) { 
+        if (fullChapter == true && isMultipleChapters == false) { 
             return readyCallback()
         }
 
@@ -140,6 +148,7 @@ function ESVparser (response, scrollBack = true) {
 
 
         if (isMultipleChapters == true) { 
+            console.log('inserting chapter spacers')
             insertChapterSpacers(chapter)
         }
         

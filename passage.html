@@ -15,6 +15,7 @@
     <meta property="og:description" content="">
     <meta property="og:image" content="https://modernbible.life/content/light/onboard.svg">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.11.1/tocbot.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="passage.css">
     <link rel="stylesheet" media="print" href="print.css">
@@ -97,6 +98,10 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phon
             </div>
         </div>
 
+        <div class="js-toc">
+
+        </div>
+
         <div class="controlswrapper">
             <div class="versionControlWrapper">
                 <select class="selectTranslations" name="translations" id="transSelection">
@@ -124,7 +129,22 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phon
             </div>
         </div>
     </div>
+
+    <div class="loader-wrapper">
+        <div class="lds-grid">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.11.1/tocbot.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6"></script>
 <script src="https://cdn.jsdelivr.net/npm/outclick@0.1.0/src/index.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>

@@ -158,31 +158,43 @@ const chapterSpacer = (num) => {
     // create a p element that has the text of num and a class of 'chapterSpacer' and return it
     let p = document.createElement('p');
     p.className = 'chapterSpacer';
+    p.id = `chapter-${num}`;
     p.innerHTML = `${GLOBAL_VAR_ARRAY.urlParamsObject.book.value} ${num}`;
     return p;
 }
 
-
 const insertChapterSpacers = (chapter) => {
-    var chapterCount = parseInt(chapter.substring(chapter.indexOf('-') + 1)) + 1;
+    // Get the end chapter in the range 
+    var chapterCount = (new rangeParser(chapter).parse().end + 1);
+    var chapterStart = new rangeParser(chapter).parse().start;
+
+    // Initalize the occurrence variable
     var occurrenceLookingFor = 1;
 
-    for (var i = 2; i < chapterCount; i++) {
+    // Loop through the number of chapters
+    for (var i = chapterStart+1; i < chapterCount; i++) {
+        // Initalize the occurences tracked so far variable
         var occurrencesSoFar = 0;
 
         // a some loop over all elements with the tag of versenumber
         [...document.querySelectorAll('versenumber')].some((v) => {
             let verseIndex = [...document.querySelectorAll('bibletextcontainer versenumber')].indexOf(v);
             let previousVerseNode = document.querySelectorAll('bibletextcontainer versenumber')[verseIndex - 1];
-            let previousVerseNumber = previousVerseNode ? parseInt(previousVerseNode.innerHTML) : 0;
+            let previousVerseNumber = previousVerseNode ? parseInt(previousVerseNode.innerHTML.replace(/&nbsp;/gi, '')) : 0;
 
-            let currentVersenumber = parseInt(v.innerHTML);
+            let currentVersenumber = parseInt(v.innerHTML.replace(/&nbsp;/gi, ''));
 
+            // If the current verse number is less than the verse number before it:
             if (currentVersenumber < previousVerseNumber) {
+                // Flag that we have found a new occurrence
                 occurrencesSoFar++;
 
+                // If the number of occurrences we have found is the same as the number of occurrences we are looking for
                 if (occurrencesSoFar == occurrenceLookingFor) {
+                    // Insert a spacer element
                     previousVerseNode.nextSibling.after(chapterSpacer(i))
+                    
+                    // Set the occurrence looking for to the next occurrence
                     occurrenceLookingFor++;
                     return true;
                 } 
@@ -190,6 +202,25 @@ const insertChapterSpacers = (chapter) => {
             } 
         })
     }
+
+    document.querySelector('bibletextcontainer').prepend(chapterSpacer(chapterStart));
+
+    tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.js-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: 'bibletextcontainer',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'p',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: false,
+
+        scrollSmooth: true,
+        scrollSmoothDuration: 620,
+
+        headingsOffset: 100,
+        scrollSmoothOffset: -100
+    });
 }
 
 
