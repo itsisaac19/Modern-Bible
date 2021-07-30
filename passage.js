@@ -429,17 +429,20 @@ async function testValidity (book, chapter, verse) {
         if (response.ok) {
             return true;
         } else {
+            console.log('error in validity', response);
+
             var firstVerseNumber = document.querySelector('bibletextcontainer versenumber:first-of-type').innerHTML.replace(/(\()/g, '').replace(/(\))/g, '').replaceAll("<br>", "").replace(/&nbsp;/gi, '');  
             var topChapterVerse = document.querySelector('.biblecontainer biblepassageinfo bibleChapterVerse')
             
-            if (isFullChapter == false) {
+            if (isFullChapter == true) return false;
+
+            if (GLOBAL_VAR_ARRAY.urlParamsObject.version.value == 'ESV') {
+                //topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + '1-' + document.querySelectorAll('versenumber')[document.querySelectorAll('versenumber').length - 1].innerHTML;
+            } else {
                 topChapterVerse.innerHTML = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value + ':' + firstVerseNumber
                 GLOBAL_VAR_ARRAY.urlParamsObject.verse.value = parseInt(firstVerseNumber)
                 setPassageHinter();
-            }
-
-            //changeQueryParams('validity test', false)
-            return false;
+            }            
         }
     }).catch((error) => {
         console.warn('Validity error', error)
@@ -559,6 +562,11 @@ function ChapterNavigation(currChap) {
     }
 }
 
+let MouseDrag = false;
+
+document.addEventListener('mousedown', () => MouseDrag = false);
+document.addEventListener('mousemove', () => MouseDrag = true);
+
 function showSearchBox () {
     let searchBox = document.querySelector('.searchBox')
     if (searchBox.classList.contains('hidden')) {
@@ -574,7 +582,9 @@ function showSearchBox () {
         setTimeout(() => {
             searchBox.classList.remove('wait')
             searchBox.onoutclick = () => {
-                hideSearchBox()            }             
+                if (MouseDrag) return;
+                hideSearchBox()            
+            }             
         }, 100) 
     } else {
         hideSearchBox()
@@ -606,15 +616,16 @@ function searchListeners() {
     document.querySelector('.passageHinterWrapper').onclick = showSearchBox
 
     document.querySelector('.gobutton').onclick = function () {
-        var book = domSelect('.searchqueryBook').value ? validBook(new APIValue(domSelect('.searchqueryBook').value).parseString()) : 'Genesis';
-        var chapter = domSelect('.searchqueryChapter').value ? validChapter(new APIValue(domSelect('.searchqueryChapter').value).parseNumber(), book) : 1;
-        var verse = domSelect('.searchqueryVerse').value ? validVerse(new APIValue(domSelect('.searchqueryVerse').value).parseNumber(true), book, chapter) : '';
+        var book = domSelect('.searchqueryBook').value || 'Genesis';
+        var chapter = domSelect('.searchqueryChapter').value || 1;
+        var verse = domSelect('.searchqueryVerse').value || '';
+
+        [book, chapter, verse] = validSearchQuery(book, chapter, verse);
 
         let chapterRange = new rangeParser(chapter)
         if (chapter.length && chapterRange.parse().length > 5) {
             chapter = `${chapterRange.start}-${chapterRange.start + 4}`
         }
-
 
         console.log(book, chapter, verse)
 

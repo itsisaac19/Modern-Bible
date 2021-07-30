@@ -3,6 +3,7 @@ function ESVparser (response, scrollBack = true) {
 
     //Log
     console.groupCollapsed('ESV Request');
+    console.log('Response: ', response);
     console.log(`Query: ${response.canonical}`);
 
     console.groupCollapsed('Passage');
@@ -68,11 +69,17 @@ function ESVparser (response, scrollBack = true) {
 
     let currentBook = GLOBAL_VAR_ARRAY.urlParamsObject.book.value
 
+    let verse = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value || 1;
+
     let chapter = GLOBAL_VAR_ARRAY.urlParamsObject.chapter.value;
-    let fullChapter = chapter ? false : true;
+    let fullChapter = new rangeParser(verse).isRange() ? false : true;
     let isMultipleChapters = new rangeParser(chapter).isRange();
 
-    let verse = GLOBAL_VAR_ARRAY.urlParamsObject.verse.value || 1;
+    function hasVerseRange () {
+        return response.canonical.replace(GLOBAL_VAR_ARRAY.urlParamsObject.book.value, '').includes('-') ? false : true;
+    }
+    fullChapter = hasVerseRange();
+    console.log('Is full chapter?',  fullChapter)
 
     // DOM Insert: Book
     var topBook = document.querySelector('.biblecontainer biblepassageinfo biblebook')
@@ -117,7 +124,7 @@ function ESVparser (response, scrollBack = true) {
         }
 
         var lastVerseNumber = cleanText(document.querySelectorAll('bibletextcontainer versenumber')[document.querySelectorAll('bibletextcontainer versenumber').length - 1].innerHTML)   
-        if (fullChapter == true && isMultipleChapters == false) topChapterVerse.innerHTML = chapter + ':' + verse + '-' + lastVerseNumber;
+        if (fullChapter == true && isMultipleChapters == false) topChapterVerse.innerHTML = chapter + ':1-' + lastVerseNumber;
 
         if (fullChapter == true) { 
             return readyCallback()

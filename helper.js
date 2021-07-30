@@ -66,56 +66,65 @@ class APIValue {
     }
 }
 
-const validBook = (book) => {
-    if (books.includes(book)) {
-        return book;
+
+const validSearchQuery = (book, chapter, verse) => {
+    // Book
+    if (!books.includes(book)) {
+        book = validBook(book);
+    }
+
+    // Chapter
+    if (new rangeParser(chapter).isRange()) {
+        validChapter(chapter, book);
+    } else {
+        chapter = chapter > booksAndInfo[book][0] ? booksAndInfo[book][0] : parseInt(chapter);
     }
     
-    if (book.toLowerCase() == 'songofsolomon') {
-        return 'SongofSolomon';
-    } 
-
-    if (isNum(book.charAt(0))) { // If the first character IS A NUMBER
-        return book.charAt(0) + book.toTitleCase(1)
+    // Verse 
+    if (new rangeParser(verse).isRange()) {
+        validVerse(verse, book, chapter);
     } else {
-        return book.toTitleCase()
+        if (masterArray[book].chapters[chapter]) {
+            verse = verse > masterArray[book].chapters[chapter] ? masterArray[book].chapters[chapter] : parseInt(verse);
+        }
     }
+
+    console.log(book, chapter, verse);
+    return [book, chapter, verse || ''];
+}
+
+const validBook = (book) => {
+    if (book.toLowerCase() == 'psalm' || book.toLowerCase() == 'psalms') return 'Psalms';
+    
+    let result = new Fuse(books, {
+        includeScore: true,
+    }).search(book); console.log(result);
+     
+    return result[0] ? result[0].item : 'Genesis';
 }
 
 const validChapter = (chapter, book) => {
-    let range = new rangeParser(chapter);
-    if (chapter.length && range.isRange()) {
-        let start = range.parse().start;
-        let end = range.parse().end;
-        return `${start}-${end > booksAndInfo[book][0] ? booksAndInfo[book][0] : end}`
-    }
-
-    return chapter > booksAndInfo[book][0] ? booksAndInfo[book][0] : chapter;
+    console.log(book, chapter)
+    let range = new rangeParser(chapter).parse();
+    return `${range.start}-${range.end > booksAndInfo[book][0] ? booksAndInfo[book][0] : range.end}`
 }
 
 const validVerse = (verse, book, chapter) => {
     const verseCount = masterArray[book].chapters[chapter]
 
-    if (verse.length && verse.includes('-')) {
-        let firstVerse = parseInt(verse.substring(0, verse.indexOf('-'))) <= 0 ? 1 : parseInt(verse.substring(0, verse.indexOf('-')));
-        let lastVerse = parseInt(verse.substring(verse.indexOf('-')+1, verse.length));
+    let range = new rangeParser(verse).parse();
+    let firstVerse = range.start;
+    let lastVerse = range.end;
 
-        console.log(firstVerse, lastVerse)
-
-        if (firstVerse >= lastVerse) {
-            return firstVerse;
-        } 
-
-        if (verseCount) {
-            lastVerse = lastVerse > verseCount ? verseCount : lastVerse;
-        }
-
-        return `${firstVerse}-${lastVerse}`;
-    }  
+    if (firstVerse >= lastVerse) {
+        return firstVerse;
+    } 
 
     if (verseCount) {
-        return verse > verseCount ? verseCount : verse;
+        lastVerse = lastVerse > masterArray[book].chapters[chapter] ? masterArray[book].chapters[chapter] : lastVerse;
     }
+
+    return `${firstVerse}-${lastVerse}`;
 }
 
 const WEBChapters = (length) => {
@@ -170,15 +179,27 @@ const insertChapterSpacers = (chapter) => {
 
 
 class rangeParser {
-    constructor(range) {
+    constructor(range, start, end) {
         this.range = range;
+        this.start = start;
+        this.end = end;
     }
-    parse() {
+    parse(cb=() => {}) {
         let range = this.range;
 
         if (range.includes('-')) {
             let firstVerse = parseInt(range.substring(0, range.indexOf('-'))) <= 0 ? 1 : parseInt(range.substring(0, range.indexOf('-')));
             let lastVerse = parseInt(range.substring(range.indexOf('-')+1, range.length));
+            this.start = firstVerse;
+            this.end = lastVerse;
+            cb({
+                start: firstVerse, 
+                end: lastVerse, 
+                length: lastVerse - firstVerse,
+                isNegative: firstVerse > lastVerse,
+                inverted: `${lastVerse}-${firstVerse}`,
+                input: range,
+            });
             return {
                 start: firstVerse, 
                 end: lastVerse, 
@@ -190,7 +211,7 @@ class rangeParser {
         }
     }
     isRange() {
-        if (this.range.includes('-') && this.parse().start) return true;
+        if (this.range.length && this.range.includes('-') && this.parse().start) return true;
         return false;
     }
 }
