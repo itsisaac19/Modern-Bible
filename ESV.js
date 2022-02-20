@@ -86,7 +86,7 @@ function ESVparser (response, scrollBack = true) {
         return response.canonical.replace(GLOBAL_VAR_ARRAY.urlParamsObject.book.value, '').includes('-') ? false : true;
     }
     fullChapter = hasVerseRange();
-    console.log('Is full chapter?',  fullChapter)
+    console.log({ fullChapter })
 
     // DOM Insert: Book
     var topBook = document.querySelector('.biblecontainer biblepassageinfo biblebook')
@@ -148,7 +148,6 @@ function ESVparser (response, scrollBack = true) {
 
 
         if (isMultipleChapters == true) { 
-            console.log('inserting chapter spacers')
             insertChapterSpacers(chapter)
         }
         

@@ -74,22 +74,57 @@ const validSearchQuery = (book, chapter, verse) => {
     }
 
     // Chapter
-    if (new rangeParser(chapter).isRange()) {
-        validChapter(chapter, book);
+    let isChapterRange = chapter.includes('-') || chapter.includes(',');
+    if (isChapterRange) {
+        let range = rangeValues(chapter, 'auto');
+        console.log('Dealing with a range',  [range.start, range.end]);
+
+        let ceilingChapter = booksAndInfo[book][0];
+
+        if (range.length > 4) {
+            range.end = range.start + 4;
+        }
+        if (range.end > ceilingChapter) {
+            range.end = ceilingChapter;
+        }
+
+        chapter = `${range.start}-${range.end}`;
     } else {
         chapter = chapter > booksAndInfo[book][0] ? booksAndInfo[book][0] : parseInt(chapter);
     }
     
     // Verse 
-    if (new rangeParser(verse).isRange()) {
-        validVerse(verse, book, chapter);
+    let ceilingVerse = masterArray[book].chapters[chapter];
+
+    if (isChapterRange) {
+        verse = ''
+    } else if (verse.includes('-') || verse.includes(',')) {
+        let range = rangeValues(verse, 'auto');
+        let firstVerse = range.start;
+        let lastVerse = range.end;
+    
+        if (firstVerse >= lastVerse) {
+            firstVerse = lastVerse;
+        } 
+        
+        if (ceilingVerse) {
+            if (lastVerse > ceilingVerse) {
+                lastVerse = ceilingVerse;
+            }
+        }
+    
+        verse = `${firstVerse}-${lastVerse}`;
     } else {
-        if (masterArray[book].chapters[chapter]) {
-            verse = verse > masterArray[book].chapters[chapter] ? masterArray[book].chapters[chapter] : parseInt(verse);
+        if (ceilingVerse) {
+            if (verse > ceilingVerse) {
+                verse = ceilingVerse;
+            } else {
+                verse = parseInt(verse);
+            }
         }
     }
 
-    console.log(book, chapter, verse);
+    console.log('Validated Search Query:', {book, chapter, verse});
     return [book, chapter, verse || ''];
 }
 
@@ -118,30 +153,6 @@ const validBook = (book) => {
     return result[0] ? result[0].item : 'Genesis';
 }
 
-const validChapter = (chapter, book) => {
-    console.log(book, chapter)
-    let range = new rangeParser(chapter).parse();
-    return `${range.start}-${range.end > booksAndInfo[book][0] ? booksAndInfo[book][0] : range.end}`
-}
-
-const validVerse = (verse, book, chapter) => {
-    const verseCount = masterArray[book].chapters[chapter]
-
-    let range = new rangeParser(verse).parse();
-    let firstVerse = range.start;
-    let lastVerse = range.end;
-
-    if (firstVerse >= lastVerse) {
-        return firstVerse;
-    } 
-
-    if (verseCount) {
-        lastVerse = lastVerse > masterArray[book].chapters[chapter] ? masterArray[book].chapters[chapter] : lastVerse;
-    }
-
-    return `${firstVerse}-${lastVerse}`;
-}
-
 const WEBChapters = (length) => {
     var chapterString = '';
     for (var i = 1; i <= length; i++) {
@@ -165,43 +176,34 @@ const chapterSpacer = (num) => {
 
 const insertChapterSpacers = (chapter) => {
     // Get the end chapter in the range 
-    var chapterCount = (new rangeParser(chapter).parse().end + 1);
-    var chapterStart = new rangeParser(chapter).parse().start;
 
-    // Initalize the occurrence variable
-    var occurrenceLookingFor = 1;
+    let range = rangeValues(chapter, '-');
+    let chapterStart = range.start;
+    let chapterCount = range.length;
 
-    // Loop through the number of chapters
-    for (var i = chapterStart+1; i < chapterCount; i++) {
-        // Initalize the occurences tracked so far variable
-        var occurrencesSoFar = 0;
+    // New idea:
+    let verseElements = document.querySelectorAll('versenumber:not(.narrative)');
+    let currentCount = chapterStart + 1;
+    let prevVerseValue = 0;
 
-        // a some loop over all elements with the tag of versenumber
-        [...document.querySelectorAll('versenumber')].some((v) => {
-            let verseIndex = [...document.querySelectorAll('bibletextcontainer versenumber')].indexOf(v);
-            let previousVerseNode = document.querySelectorAll('bibletextcontainer versenumber')[verseIndex - 1];
-            let previousVerseNumber = previousVerseNode ? parseInt(previousVerseNode.innerHTML.replace(/&nbsp;/gi, '')) : 0;
+    verseElements.forEach(v => {
+        let verseValue = parseInt(v.innerHTML);
+        if (verseValue > prevVerseValue) { // If the verse is greater than the previous verse, THIS IS NORMAL :)
+            prevVerseValue = verseValue;
+        } else { // If the verse is less than the previous verse, THIS IS NOT NORMAL :(, this means a new chapter has started
+            if (currentCount > (chapterCount + chapterStart)) {
+                console.warn('Found occurence but there should not be any more chapters');
+            };
 
-            let currentVersenumber = parseInt(v.innerHTML.replace(/&nbsp;/gi, ''));
+            let spacer = chapterSpacer(currentCount);
+            v.parentNode.insertBefore(spacer, v.previousElementSibling); 
+            console.log('Inserted chapter spacer', spacer);
+            currentCount++;
+        };
 
-            // If the current verse number is less than the verse number before it:
-            if (currentVersenumber < previousVerseNumber) {
-                // Flag that we have found a new occurrence
-                occurrencesSoFar++;
+        prevVerseValue = verseValue;
+    })
 
-                // If the number of occurrences we have found is the same as the number of occurrences we are looking for
-                if (occurrencesSoFar == occurrenceLookingFor) {
-                    // Insert a spacer element
-                    previousVerseNode.nextSibling.after(chapterSpacer(i))
-                    
-                    // Set the occurrence looking for to the next occurrence
-                    occurrenceLookingFor++;
-                    return true;
-                } 
-                return false;
-            } 
-        })
-    }
 
     document.querySelector('bibletextcontainer').prepend(chapterSpacer(chapterStart));
 
@@ -223,6 +225,23 @@ const insertChapterSpacers = (chapter) => {
     });
 }
 
+const rangeValues = (range, rangeKey='auto') => {
+    if (rangeKey = 'auto') {
+        rangeKey = range.includes('-') ? '-' : ',';
+    }
+
+    let start = range.substring(0, range.indexOf(rangeKey));
+    let end = range.substring(range.indexOf(rangeKey) + 1);
+
+    return {
+        start: parseInt(start), 
+        end: parseInt(end), 
+        length: (end - start),
+        isNegative: (start > end),
+        inverted: `${end}-${start}`,
+        input: range,
+    };
+};
 
 class rangeParser {
     constructor(range, start, end) {
@@ -234,6 +253,9 @@ class rangeParser {
         let range = this.range;
 
         if (range.includes('-')) {
+            let start = range.substring(0, range.indexOf('-'));
+            let end = range.substring(range.indexOf('-') + 1);
+
             let firstVerse = parseInt(range.substring(0, range.indexOf('-'))) <= 0 ? 1 : parseInt(range.substring(0, range.indexOf('-')));
             let lastVerse = parseInt(range.substring(range.indexOf('-')+1, range.length));
             this.start = firstVerse;

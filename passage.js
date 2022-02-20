@@ -146,9 +146,11 @@ function setPassageHinter () {
 }
 
 function readyCallback () {
-    setMetaTags()
-    setPassageHinter()
-    placeDataLists()
+    setMetaTags();
+    setPassageHinter();
+    placeDataLists();
+
+    console.log('Now displaying: ', GLOBAL_VAR_ARRAY.urlParamsObject)
 }
 
 function fetchBible (book, chapter, verse, version) {
@@ -533,7 +535,10 @@ function ChapterNavigation(currChap) {
         chapterAfter = range.end + 1;
     }
 
-    console.log(`Chapter before ${chapterBefore}, chapter after ${chapterAfter}`)
+    console.log('Chapter Navigation Parsed:', {
+        chapterBefore,
+        chapterAfter
+    })
 
     var bookBefore = books[bookIndex - 1]
     var bookAfter = books[bookIndex + 1]
@@ -631,13 +636,6 @@ function searchListeners() {
         var verse = domSelect('.searchqueryVerse').value || '';
 
         [book, chapter, verse] = validSearchQuery(book, chapter, verse);
-
-        let chapterRange = new rangeParser(chapter)
-        if (chapter.length && chapterRange.parse().length > 5) {
-            chapter = `${chapterRange.start}-${chapterRange.start + 4}`
-        }
-
-        verse = chapterRange.isRange() ? '' : verse;
 
         console.log(book, chapter, verse)
 
